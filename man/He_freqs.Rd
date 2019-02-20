@@ -4,24 +4,33 @@
 \alias{He_freqs}
 \title{Calculate expected heterozygosity from allele frequencies}
 \usage{
-He_freqs(dat)
+He_freqs(dat, popCol = NA, locusCol = NA, freqCol = NA)
 }
 \arguments{
-\item{dat}{Matrix: Rows are population pools, columns are loci, cells are the Ref allele
-frequencies.}
+\item{dat}{Matrix or Data table/frame: Can take a matrix of allele frequencies (row names
+are populations, column names are loci, cells are frequencies of Ref alleles) or
+a data table/frame in long format (requires)}
+
+\item{popCol}{Character: The column name in the long format data table/frame \code{dat}
+corresponding to the population ID.}
+
+\item{locusCol}{Character: The column name in the long format data table/frame \code{dat}
+corresponding to the locus ID.}
+
+\item{freqCol}{Character: The column name in the long format data table/frame \code{dat}
+corresponding to the frequency of the Ref allele for a locus in a population..}
 }
 \value{
-Returns a list with the following indexed data tables: \cr
+Returns a list with the following indexed items (data tables): \cr
 \enumerate{
-    \item \code{poolAv} = The overall pool mean across loci.
-    \item \code{locusAv} = The He for each locus and pool combination.
+    \item \code{popXlocus} = He for each population x locus combination (columns:
+    \code{$POP}, \code{$LOCUS}, \code{$HE}).
+    \item \code{popAv} = Average He per populations (columns: \code{$POP}, \code{$HE.AV}).
+    \item \code{locusAv} = Average He per locus (columns: \code{$LOCUS}, \code{$HE.AV})
 }
-For each itemed index, there is a data table with columns \code{$POOL} (= population
-pool ID) and \code{$HE} (= the expected heterozygosity). Additionally, in the
-index \code{$locusAv}, there is a column \code{$LOCUS} (= the locus ID).
 }
 \description{
-Takes a matrix of allele frequencies for different population pools,
+Takes a matrix or data table/frame of allele frequencies for different populations,
 at different loci, and returns various statistics for expected heterozygosity (He).
 Assumes biallelic data.
 }
@@ -30,8 +39,12 @@ Calculates He as 2 * p * q; where p = the Ref allele frequency, and
 q = the Alt allele frequency.
 }
 \examples{
-data(pgposerFreqs)
+# Data as matrix
+data(genomaliciousFreqs)
+He1 <- He_freqs(genomaliciousFreqs)
 
-He <- He_freqs(pgposerFreqs)
+# Data as long data table
+data(genomaliciousFreqsLong)
+He2 <- He_freqs(genomaliciousFreqsLong, popCol='POP', locusCol='LOCUS', freqCol='FREQ')
 
 }

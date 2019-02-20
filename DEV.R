@@ -18,11 +18,11 @@ save(genomaliciousPi, file='data/genomaliciousPi.RData')
 genomaliciousGenos <- fread('inst/extdata/genomaliciousGenos.csv')
 save(genomaliciousGenos, file='data/genomaliciousGenos.Rdata')
 
-fwrite(pgposerPi, 'inst/extdata/genomaliciousPi.csv')
-fwrite(pgposerReads, 'inst/extdata/genomaliciousReads.csv')
-fwrite(pgposerGenos, 'inst/extdata/genomaliciousGenos.csv')
+genomaliciousFreqs <- readRDS('inst/extdata/genomaliciousFreqs.RDS')
+save(genomaliciousFreqs, file='data/genomaliciousFreqs.Rdata')
 
-for(oldfile in list.files('./inst/extdata/')){
-  newfile <- gsub('pgposerDemo', 'genomalicious', oldfile)
-  file.rename(from=paste0('./inst/extdata/', oldfile), to=paste0('./inst/extdata/', newfile))
-}
+genomaliciousFreqsLong <- as.data.table(genomaliciousFreqs)
+genomaliciousFreqsLong$POP <- rownames(genomaliciousFreqs)
+genomaliciousFreqsLong <- melt(genomaliciousFreqsLong, id='POP', variable.name='LOCUS', value.name='FREQ')
+save(genomaliciousFreqsLong, file='data/genomaliciousFreqsLong.Rdata')
+

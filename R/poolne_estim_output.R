@@ -2,9 +2,9 @@
 #'
 #' Searches a user specified directory for \code{summary_pi.out} or \code{summary_ne_eps.out} files,
 #' which are the output files from \code{poolne_estim} containing estimates of population allele frequencies
-#' and effective pool size (respectively), and merges these outputs into a single data.table.
+#' and effective pool size (respectively), merging these outputs into a single data.table.
 #'
-#' If merging \code{summary_pi.out} files, \code{Loci.txt} files are also requires, which have
+#' If merging \code{summary_pi.out} files, \code{Loci.txt} files are also required, which have
 #' the names of the loci in the same order as the rows in the \code{summary_pi.out} file.
 #' The \code{Loci.txt} files are produced by the function \code{poolne_estim_input}. \cr
 #' \cr
@@ -51,18 +51,18 @@
 #' }
 #'
 #' @examples
-#' # Create a link to raw external datasets in pgposer
-#' pgposerExtData <- paste0(find.package('pgposer'), '/extdata')
+#' # Create a link to raw external datasets in genomalicious
+#' genomaliciousExtData <- paste0(find.package('genomalicious'), '/extdata')
 #'
 #' # Use list.files() to show the summary_pi.out, Loci.txt and
 #' # summary_ne_eps.out text files
-#' list.files(pgposerExtData, pattern='summary_pi.out')
-#' list.files(pgposerExtData, pattern='Loci.txt')
-#' list.files(pgposerExtData, pattern='summary_ne_eps.out')
+#' list.files(genomaliciousExtData, pattern='summary_pi.out')
+#' list.files(genomaliciousExtData, pattern='Loci.txt')
+#' list.files(genomaliciousExtData, pattern='summary_ne_eps.out')
 #'
 #' # Merge the outputs
-#' pi.data <- poolne_estim_output(stat='pi', datDir=pgposerExtData, lociDir=pgposerExtData)
-#' ne.data <- poolne_estim_output(stat='ne', datDir=pgposerExtData)
+#' pi.data <- poolne_estim_output(stat='pi', datDir=genomaliciousExtData, lociDir=genomaliciousExtData)
+#' ne.data <- poolne_estim_output(stat='ne', datDir=genomaliciousExtData)
 #'
 #' @export
 poolne_estim_output <- function(stat=NA, datDir=NA, lociDir=NA){

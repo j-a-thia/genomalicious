@@ -16,14 +16,14 @@
 #' Note, for VCF files produced by Stacks, the $CHROM is given the same value as the $ID column.
 #'
 #' @examples
-#' # Create a link to raw external datasets in pgposer
-#' pgposerExtData <- paste0(find.package('pgposer'), '/extdata')
+#' # Create a link to raw external datasets in genomalicious
+#' genomaliciousExtData <- paste0(find.package('genomalicious'), '/extdata')
 #'
-#' # This command here shows you the VCF file that comes with pgposer
-#' list.files(pgposerExtData, pattern='vcf')
+#' # This command here shows you the VCF file that comes with genomalicious
+#' list.files(genomaliciousExtData, pattern='_poolseq.vcf')
 #'
 #' # Use this to create a path to that file
-#' vcfPath <- paste0(pgposerExtData, '/pgposer.vcf.txt')
+#' vcfPath <- paste0(genomaliciousExtData, '/genomalicious_poolseq.vcf')
 #'
 #' # You can read the file in as lines to see what it
 #' # looks like:

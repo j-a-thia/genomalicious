@@ -3,7 +3,7 @@
 #' A dataset of two populations, with 10 individuals each, and two loci. \cr
 #' \cr
 #'
-#' @usage data(pgposerGenos)
+#' @usage data(genomaliciousGenos)
 #'
 #' @format A data table with 4 columns and 40 rows.
 #'
@@ -18,5 +18,5 @@
 #'
 #' @docType data
 #' @keywords datasets
-#' @name pgposerGenos
+#' @name genomaliciousGenos
 NULL

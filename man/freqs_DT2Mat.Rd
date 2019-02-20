@@ -4,8 +4,8 @@
 \alias{freqs_DT2Mat}
 \title{Convert a data table of allele frequencies into a matrix (or vice versa)}
 \usage{
-freqs_DT2Mat(dat, popCol = "POOL", lociCol = "LOCUS",
-  freqCol = "FREQ", flip = FALSE)
+freqs_DT2Mat(dat, popCol = NA, lociCol = NA, freqCol = NA,
+  flip = FALSE)
 }
 \arguments{
 \item{dat}{Data table or Matrix: The object to transform. If this is a long data table
@@ -18,14 +18,11 @@ freqs_DT2Mat(dat, popCol = "POOL", lociCol = "LOCUS",
 The population pool column serves as the pivot point to convert the long data table into a wide matrix.
 If convertin from a frequency matrix to a data table, see argument \code{flip}.}
 
-\item{popCol}{Character: The column name with the population information.
-Default = \code{'POOL'} (e.g. for pool-seq data).}
+\item{popCol}{Character: The column name with the population information.}
 
-\item{lociCol}{Character: The column name with the locus information.
-Default = \code{'LOCUS'}.}
+\item{lociCol}{Character: The column name with the locus information.}
 
-\item{freqCol}{Character: The column name with the Ref allele frequency.
-Default = \code{'FREQ'}.}
+\item{freqCol}{Character: The column name with the Ref allele frequency.}
 
 \item{flip}{Logical: Instead of converting a (long) data table to a (wide) matrix,
 should a (wide) matrix be converted into a (long) data table? Default = \code{FALSE}.
@@ -35,7 +32,7 @@ population IDs in the row names, and frequencies in the cells. When \code{TRUE},
 }
 \value{
 When \code{flip=FALSE}, converts a data table into a frequency matrix. When
-\code{flip=TRUE}, converts a matrix into a data table with three columns: (1) \code{$POOL},
+\code{flip=TRUE}, converts a matrix into a data table with three columns: (1) \code{$POP},
 the population ID (as for pool-seq data); (2) \code{$LOCUS}, the locus ID; and (3) \code{FREQ},
 the Ref allele frequency.
 }
@@ -45,13 +42,13 @@ a matrix in wide format (loci in columns and populations in rows). The reverse
 can also be done.
 }
 \examples{
-data(pgposerPi)
+data(genomaliciousPi)
 
 # Convert a long data table to a wide matrix
-freqMat <- freq_DT2Mat(pgposerPi, popCol='POOL', lociCol='LOCUS', freqCol='PI', flip=FALSE)
+freqMat <- freqs_DT2Mat(genomaliciousFreqsLong, popCol='POP', lociCol='LOCUS', freqCol='FREQ', flip=FALSE)
 
 # Convert a wide matrix back to a data table
-freqDT <- freq_DT2Mat(freqMat, flip=TRUE)
+freqDT <- freqs_DT2Mat(freqMat, flip=TRUE)
 
 export
 }

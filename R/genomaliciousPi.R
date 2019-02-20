@@ -1,6 +1,6 @@
 #' An example of collated data after analysis by \code{poolne_estim}
 #'
-#' \code{pgposer} allows collation of output files from Gautier et al.'s (2013) programme
+#' \code{genomalicious} allows collation of output files from Gautier et al.'s (2013) programme
 #' \code{poolne_estim}. \cr
 #' \cr
 #' Read counts from replicate sequencing events are processed by \code{PoolNeEstim_gen_inputs},
@@ -10,7 +10,7 @@
 #' The product of this workflow is exemplified in this dataset. \cr
 #' \cr
 #' Data of this structure forms one of the key inputs for a number of analysis functions
-#' provided by \code{pgposer}, e.g.: \cr
+#' provided by \code{genomalicious}, e.g.: \cr
 #' \itemize{
 #'   \item \code{sim_freq}
 #'   \item \code{pca_pools}
@@ -19,7 +19,7 @@
 #'   \item \code{Fst_pools_demes}
 #' }
 #'
-#' @usage data(pgposerPi)
+#' @usage data(genomaliciousPi)
 #'
 #' @format A data table with 6 columns and 15 rows.
 #'
@@ -41,5 +41,5 @@
 #'
 #' @docType data
 #' @keywords datasets
-#' @name pgposerPi
+#' @name genomaliciousPi
 NULL
