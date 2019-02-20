@@ -1,0 +1,9 @@
+CHROM	LOCUS
+Chrom_1	Chrom_1_8
+Chrom_2	Chrom_2_16
+Chrom_3	Chrom_3_24
+Chrom_4	Chrom_4_32
+Chrom_5	Chrom_5_40
+Chrom_6	Chrom_6_48
+Chrom_7	Chrom_7_56
+Chrom_8	Chrom_8_64

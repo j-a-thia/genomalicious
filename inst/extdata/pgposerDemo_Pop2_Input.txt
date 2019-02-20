@@ -1,0 +1,4 @@
+8 3 pgposerDemo_Pop2_Ref.txt pgposerDemo_Pop2_Dep.txt
+30 30 30
+1000 25 5000 20 50 9344
+0.3 0.3 100 1.25 0.25 0.4 0.7

@@ -1,0 +1,14 @@
+##This is a toy dataset for the R package pgposer; it emulates a VCF file																				
+"##INFO=<ID=DP,Number=1,Type=Integer,Description='The total depth across samples'>"																				
+"##FORMAT=<ID=DP,Number=1,Type=Integer,Description='The total depth in a sample'>"																				
+"##FORMAT=<ID=RO,Number=1,Type=Integer,Description='The reference allele counts in a sample'>"																				
+"##FORMAT=<ID=AO,Number=1,Type=Integer,Description='The alternate allele counts in a sample'>"																				
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	Pop1_Rep1	Pop1_Rep2	Pop1_Rep3	Pop2_Rep1	Pop2_Rep2	Pop2_Rep3	Pop3_Rep1	Pop3_Rep2	Pop3_Rep3	Pop4_Rep1	Pop4_Rep2	Pop4_Rep3
+Chrom_1	8	.	A	T	50	PASS	DP=854	DP:RO:AO	113:63:50	48:32:16	46:26:20	119:63:56	55:28:27	44:22:22	86:66:20	64:46:18	46:31:15	120:82:38	51:34:17	62:42:20
+Chrom_2	16	.	C	G	40	PASS	DP=785	DP:RO:AO	82:60:22	47:38:09	48:26:22	85:61:24	58:41:17	49:32:17	65:44:21	83:60:23	29:16:13	99:57:42	70:36:34	70:38:32
+Chrom_3	24	.	G	A	45	PASS	DP=864	DP:RO:AO	101:90:11	52:50:02	48:47:01	85:75:10	52:50:02	68:65:3	102:95:7	80:66:14	36:31:05	108:100:8	48:46:02	84:77:7
+Chrom_4	32	.	T	C	43	PASS	DP=792	DP:RO:AO	101:73:28	55:41:14	55:37:18	98:41:57	39:15:24	41:15:26	66:11:55	79:28:51	32:06:26	102:41:61	58:29:29	66:22:44
+Chrom_5	40	.	A	C	30	PASS	DP=825	DP:RO:AO	100:22:78	54:20:34	43:11:32	88:37:51	48:21:27	53:14:39	92:62:30	86:57:29	34:19:15	113:71:42	62:39:23	52:37:15
+Chrom_6	48	.	T	G	37	PASS	DP=854	DP:RO:AO	101:51:50	51:26:25	50:24:26	116:43:73	63:23:40	39:20:19	85:78:7	87:81:6	33:31:02	99:90:9	58:50:08	72:64:8
+Chrom_7	56	.	C	G	38	PASS	DP=820	DP:RO:AO	109:50:59	48:21:27	42:23:19	98:27:71	61:23:38	43:21:22	83:17:66	75:15:60	42:09:33	93:25:68	60:13:47	66:16:50
+Chrom_8	64	.	T	A	52	PASS	DP=838	DP:RO:AO	101:3:98	61:05:56	44:04:40	95:6:89	62:03:59	46:04:42	80:14:66	78:17:61	37:07:30	100:20:80	63:08:55	71:7:64
