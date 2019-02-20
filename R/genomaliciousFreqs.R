@@ -9,15 +9,15 @@
 #'   \item \code{Fst_freqs_pairs}
 #' }
 #'
-#' @usage data(pgposerFreqs)
+#' @usage data(genomaliciousFreqs)
 #'
 #' @format A data table with 5 columns and 3 rows.
 #'
-#' @details Each column is a locus and rows are populations. Use \code{colnames(pgposerFreqs)} and
-#' \code{rownames(pgposerFerqs)} to get the locus and population names, respectively. Cells contain
+#' @details Each column is a locus and rows are populations. Use \code{colnames(genomaliciousFreqs)} and
+#' \code{rownames(genomaliciousFerqs)} to get the locus and population names, respectively. Cells contain
 #' the frequencies for the Ref allele.
 #'
 #' @docType data
 #' @keywords datasets
-#' @name pgposerFreqs
+#' @name genomaliciousFreqs
 NULL
