@@ -2,10 +2,9 @@ Package: genomalicious
 Type: Package
 Title: A smorgasbord of R functions for population genomic analyses
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Author: Joshua Thia
+Maintainer: Joshua Thia <josh.thia@live.com>
+Description: Functions for importing, manipulating, and reformatting pooled and individually sequenced RAD-seq data in R.
 Depends: 
 	data.table
 	, ggplot2
@@ -18,4 +17,4 @@ Depends:
 License: GNU GPL v3
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.1.1
+RoxygenNote: 6.1.1.9000
