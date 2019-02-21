@@ -17,23 +17,24 @@
 #' }
 #'
 #' @return Returns a list with two indices: \code{$Fst} is the calculated FST among the
-#' pools, and \code{$pooldat} is the \code{poolfstat} object used to generate said FST.
+#' pools using a function call of \code{poolfstat::computeFST}, whereas \code{$pooldat} is the
+#' \code{poolfstat} object used to generate said FST values.
 #'
 #' @examples
 #' # Load in the pool metadata and reads
-#' data(pgposerInfo)
-#' data(pgposerReads)
+#' data(genomaliciousInfo)
+#' data(genomaliciousReads)
 #'
 #' # Subset to keep only Rep1 reads.
-#' X <- pgposerReads[grep(pattern='Rep1', x=pgposerReads$SAMPLE)]
+#' X <- genomaliciousReads[grep(pattern='Rep1', x=genomaliciousReads$SAMPLE)]
 #'
 #' # Need to add pool ID.
 #' X$POOL <- unlist(lapply(strsplit(X$SAMPLE, '_'), function(X){ return(X[1]) }))
 #'
 #' # Calculate FST using poolfstat
-#' DT2poolfstat(X, pgposerInfo)
+#' poolfstat_fromDT(X, genomaliciousInfo)
 #'
-DT2poolfstat <- function(dat, pool.info){
+poolfstat_fromDT <- function(dat, pool.info){
   # --------------------------------------------+
   # Libraries and assertions
   # --------------------------------------------+
