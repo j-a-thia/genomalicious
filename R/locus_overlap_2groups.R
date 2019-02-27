@@ -30,6 +30,7 @@
 #'
 #'@export
 locus_overlap_2groups <- function(sigA, sigB, lociA, lociB, perms){
+  # BEGIN ............
   # The observed number of shared loci between group A and B
   shareObs <- length(intersect(sigA, sigB))
 
@@ -47,6 +48,8 @@ locus_overlap_2groups <- function(sigA, sigB, lociA, lociB, perms){
   # Probability that null permutations produced equal or higher numbers
   # of overlap between two groups
   sum(shareNull >= shareObs)/perms
+
+  # .......... END
 }
 
 

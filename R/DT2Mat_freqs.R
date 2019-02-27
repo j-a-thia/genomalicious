@@ -35,13 +35,13 @@
 #' data(genomaliciousPi)
 #'
 #' # Convert a long data table to a wide matrix
-#' freqMat <- freqs_DT2Mat(genomaliciousFreqsLong, popCol='POP', lociCol='LOCUS', freqCol='FREQ', flip=FALSE)
+#' freqMat <- DT2Mat_freqs(genomaliciousFreqsLong, popCol='POP', lociCol='LOCUS', freqCol='FREQ', flip=FALSE)
 #'
 #' # Convert a wide matrix back to a data table
-#' freqDT <- freqs_DT2Mat(freqMat, flip=TRUE)
+#' freqDT <- DT2Mat_freqs(freqMat, flip=TRUE)
 #'
 #' export
-freqs_DT2Mat <- function(dat, popCol=NA, lociCol=NA, freqCol=NA, flip=FALSE){
+DT2Mat_freqs <- function(dat, popCol=NA, lociCol=NA, freqCol=NA, flip=FALSE){
   # BEGIN ............
 
   # --------------------------------------------+
