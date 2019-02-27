@@ -4,6 +4,8 @@
 libs <- c('devtools', 'roxygen2', 'testthat', 'knitr')
 for(L in libs){require(L, character.only=T)}
 
+roxygenise('./', clean=TRUE)
+
 library(data.table)
 
 genomaliciousInfo <- data.table(POOL=paste0('Pop', 1:4), INDS=30)

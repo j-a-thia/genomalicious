@@ -7,12 +7,12 @@
     "folds" : "",
     "hash" : "3595608077",
     "id" : "32C797FB",
-    "lastKnownWriteTime" : 1551251205,
-    "last_content_update" : 1551251205195,
+    "lastKnownWriteTime" : 1551251807,
+    "last_content_update" : 1551251807842,
     "path" : "~/GitHub/genomalicious/R/locus_overlap_2groups.R",
     "project_path" : "R/locus_overlap_2groups.R",
     "properties" : {
-        "cursorPosition" : "42,43",
+        "cursorPosition" : "14,32",
         "scrollLine" : "0",
         "tempName" : "Untitled1"
     },
