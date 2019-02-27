@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1551248821587.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3595608077",
+    "id" : "32C797FB",
+    "lastKnownWriteTime" : 1551251205,
+    "last_content_update" : 1551251205195,
+    "path" : "~/GitHub/genomalicious/R/locus_overlap_2groups.R",
+    "project_path" : "R/locus_overlap_2groups.R",
+    "properties" : {
+        "cursorPosition" : "42,43",
+        "scrollLine" : "0",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
