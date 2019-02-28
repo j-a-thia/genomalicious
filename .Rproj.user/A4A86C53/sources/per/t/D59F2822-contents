@@ -40,9 +40,9 @@
 #' X$POOL <- unlist(lapply(strsplit(X$SAMPLE, '_'), function(X){ return(X[1]) }))
 #'
 #' # Calculate FST using poolfstat
-#' poolfstat_fromDT(X, genomaliciousInfo)
+#' poolfstat_DT(X, genomaliciousInfo)
 #'
-poolfstat_fromDT <- function(dat, pool.info){
+poolfstat_DT <- function(dat, pool.info){
   # --------------------------------------------+
   # Libraries and assertions
   # --------------------------------------------+

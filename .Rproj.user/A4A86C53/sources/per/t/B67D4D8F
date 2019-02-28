@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1550980886720.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3156567671",
+    "id" : "B67D4D8F",
+    "lastKnownWriteTime" : 1551354731,
+    "last_content_update" : 1551354731259,
+    "path" : "~/GitHub/genomalicious/R/pca_DTpools.R",
+    "project_path" : "R/pca_DTpools.R",
+    "properties" : {
+        "cursorPosition" : "0,0",
+        "scrollLine" : "0",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
