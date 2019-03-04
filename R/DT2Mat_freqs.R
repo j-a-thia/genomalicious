@@ -2,13 +2,13 @@
 #'
 #' Takes a data table of allele frequencies in long format and converts it into
 #' a matrix in wide format (loci in columns and populations in rows). The reverse
-#' can also be done.
+#' can also be done. See also \code{DT2Mat_genos} for converting matrix of genotypes.
 #'
 #' @param dat Data table or Matrix: The object to transform. If this is a long data table
 #' # of allele frequencies, then three columns are required:
 #' \enumerate{
 #'    \item (1) The population ID (see param \code{popCol}).
-#'    \item (2) The locus ID (see param \code{lociCol}).
+#'    \item (2) The locus ID (see param \code{locusCol}).
 #'    \item (3) The Ref allele frequency (see param \code{freqCol}).
 #' }
 #' The population pool column serves as the pivot point to convert the long data table into a wide matrix.
@@ -16,7 +16,7 @@
 #'
 #' @param popCol Character: The column name with the population information.
 #'
-#' @param lociCol Character: The column name with the locus information.
+#' @param locusCol Character: The column name with the locus information.
 #'
 #' @param freqCol Character: The column name with the Ref allele frequency.
 #'
@@ -24,7 +24,7 @@
 #' should a (wide) matrix be converted into a (long) data table? Default = \code{FALSE}.
 #' If \code{TRUE}, then param \code{dat} must be a matrix, with loci names as column headers,
 #' population IDs in the row names, and frequencies in the cells. When \code{TRUE}, params
-#' \code{popCol}, \code{lociCol}, and \code{freqCol} become void.
+#' \code{popCol}, \code{locusCol}, and \code{freqCol} become void.
 #'
 #' @return When \code{flip=FALSE}, converts a data table into a frequency matrix. When
 #' \code{flip=TRUE}, converts a matrix into a data table with three columns: (1) \code{$POP},
@@ -35,13 +35,13 @@
 #' data(genomaliciousPi)
 #'
 #' # Convert a long data table to a wide matrix
-#' freqMat <- DT2Mat_freqs(genomaliciousFreqsLong, popCol='POP', lociCol='LOCUS', freqCol='FREQ', flip=FALSE)
+#' freqMat <- DT2Mat_freqs(genomaliciousFreqsLong, popCol='POP', locusCol='LOCUS', freqCol='FREQ', flip=FALSE)
 #'
 #' # Convert a wide matrix back to a data table
 #' freqDT <- DT2Mat_freqs(freqMat, flip=TRUE)
 #'
 #' @export
-DT2Mat_freqs <- function(dat, popCol=NA, lociCol=NA, freqCol=NA, flip=FALSE){
+DT2Mat_freqs <- function(dat, popCol=NA, locusCol=NA, freqCol=NA, flip=FALSE){
   # BEGIN ............
 
   # --------------------------------------------+
@@ -64,13 +64,14 @@ DT2Mat_freqs <- function(dat, popCol=NA, lociCol=NA, freqCol=NA, flip=FALSE){
     stop("Argument dat is frequency matrix, but has no population IDs in the row names.")
   }
 
-  # If providing a data table, check that popCol, lociCol, and freqCol are in dat.
+  # If providing a data table, check that popCol, locusCol, and freqCol are in dat.
   if(class(dat)[1]=='data.table'){
-    if(length(which((c(popCol, lociCol, freqCol) %in% colnames(dat))==FALSE)) > 0){
-      stop("Argument dat does not have columns specified in arguments popCol, lociCol, or freqCol.")
+    if(length(which((c(popCol, locusCol, freqCol) %in% colnames(dat))==FALSE)) > 0){
+      stop("Argument dat does not have columns specified in arguments popCol, locusCol, or freqCol.")
     }
   }
 
+  # Check the column arguments are specified
   if(flip==FALSE){
     if(is.na(popCol)){
       stop("Argument popCol unspecified.")
@@ -90,15 +91,23 @@ DT2Mat_freqs <- function(dat, popCol=NA, lociCol=NA, freqCol=NA, flip=FALSE){
   # Code
   # --------------------------------------------+
   if(flip==FALSE){
-    freqDT <- spread(dat[, c(popCol, freqCol, lociCol), with=FALSE], key=lociCol, value=freqCol)
+    # Spread out the data table
+    freqDT <- spread(dat[, c(popCol, freqCol, locusCol), with=FALSE], key=locusCol, value=freqCol)
+    # Get the population column values
+    popVals <- freqDT[[popCol]]
+    # Turn the data table into a matrix
     freqMat <- as.matrix(freqDT[, !popCol, with=FALSE])
-    rownames(freqMat) <- freqDT[[popCol]]
+    # Add population values as rows
+    rownames(freqMat) <- popVals
     return(freqMat)
+
   } else if(flip==TRUE){
+      # Turn matrix into data table, keep row names
       freqDT <- data.table(dat, keep.rownames=TRUE)
-      colnames(freqDT)[which(colnames(freqDT)=='rn')] <- 'POP'
-      locusNames <- colnames(freqDT)[which(colnames(freqDT)!='POP')]
-      freqDT <- melt(freqDT, id.vars='POP', variable='LOCUS', value='FREQ')
+      # The row names are turned into a column 'rn', replace.
+      colnames(freqDT)[which(colnames(freqDT)=='rn')] <- popCol
+      # Rejig the data table
+      freqDT <- melt(freqDT, id.vars=popCol, variable=locusCol, value=freqCol)
       return(freqDT)
   }
 

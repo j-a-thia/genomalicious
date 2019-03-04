@@ -28,3 +28,8 @@ genomaliciousFreqsLong$POP <- rownames(genomaliciousFreqs)
 genomaliciousFreqsLong <- melt(genomaliciousFreqsLong, id='POP', variable.name='LOCUS', value.name='FREQ')
 save(genomaliciousFreqsLong, file='data/genomaliciousFreqsLong.Rdata')
 
+genomalicious4pops <- readRDS('inst/extdata/genomalicious_FastSimCoal_30Diploids.RDS')
+setnames(genomalicious4pops, c('IND', 'GENO'), c('SAMPLE', 'GT'))
+goodloci <- filter_maf(genomalicious4pops, 0.01, 'genos')
+genomalicious4pops <- genomalicious4pops[LOCUS %in% goodloci]
+save(genomalicious4pops, file='data/genomalicious4pops.Rdata')
