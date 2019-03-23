@@ -35,3 +35,7 @@ are run where loci are randomly drawn from each groups set of loci at a size equ
 to that deemed statistically significant. In other words, if a test determined 2 loci out
 of 100 were significant, a null draw would randomly sample 2 loci from the set of 100.
 }
+\examples{
+locus_overlap_2groups(sigA=c(1,5), sigB=5, lociA=1:100, lociB=1:100, perm=1000)
+
+}

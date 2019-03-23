@@ -19,7 +19,7 @@
 #'
 #' @param locusCol Character: The column name with the locus information.
 #'
-#' @param gneoCol Character: The column name with the genotype information.
+#' @param genoCol Character: The column name with the genotype information.
 #'
 #' @param flip Logical: Instead of converting a (long) data table to a (wide) matrix,
 #' should a (wide) matrix be converted into a (long) data table? Default = \code{FALSE}.
@@ -33,13 +33,13 @@
 #' the Ref allele frequency.
 #'
 #' @examples
-#' data(genomaliciousPi)
+#' data(genomaliciousGenos)
 #'
 #' # Convert a long data table to a wide matrix
-#' freqMat <- DT2Mat_freqs(genomaliciousFreqsLong, sampCol='SAMPLE', locusCol='LOCUS', genoCol='FREQ', flip=FALSE)
+#' genoMat <- DT2Mat_genos(genomaliciousGenos, sampCol='SAMPLE', locusCol='LOCUS', genoCol='GT', flip=FALSE)
 #'
 #' # Convert a wide matrix back to a data table
-#' freqDT <- DT2Mat_freqs(freqMat, flip=TRUE)
+#' genoDT <- DT2Mat_genos(genoMat, sampCol='SAMPLE', locusCol='LOCUS', genoCol='GT', flip=TRUE)
 #'
 #' @export
 DT2Mat_genos <- function(dat, sampCol=NA, locusCol=NA, genoCol=NA, genoScore='counts', flip=FALSE){

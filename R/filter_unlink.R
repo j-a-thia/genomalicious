@@ -9,8 +9,6 @@
 #' @return Returns a character vector of locus names in \code{dat$LOCUS} that are not on the same
 #' contig in \code{dat$CHROM}.
 #'
-#' @example
-#'
 #' @export
 filter_unlink <- function(dat){
 

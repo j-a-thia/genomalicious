@@ -10,7 +10,7 @@
 #' \code{$DP}, \code{$RO}.
 #'
 #' @param pool.info Data table: Contains the sample sample sizes (number of diploids) for
-#' for each unique pool listed in \code{dat$POOL}. Requires two columns: \nr
+#' for each unique pool listed in \code{dat$POOL}. Requires two columns: \cr
 #' \enumerate{
 #'    \item \code{$POOL} The pools listed in \code{$dat$POOL}.
 #'    \item \code{$INDS} The number of diploid individuals for the pools.

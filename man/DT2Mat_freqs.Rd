@@ -42,12 +42,12 @@ a matrix in wide format (loci in columns and populations in rows). The reverse
 can also be done. See also \code{DT2Mat_genos} for converting matrix of genotypes.
 }
 \examples{
-data(genomaliciousPi)
+data(genomaliciousFreqsLong)
 
 # Convert a long data table to a wide matrix
 freqMat <- DT2Mat_freqs(genomaliciousFreqsLong, popCol='POP', locusCol='LOCUS', freqCol='FREQ', flip=FALSE)
 
 # Convert a wide matrix back to a data table
-freqDT <- DT2Mat_freqs(freqMat, flip=TRUE)
+freqDT <- DT2Mat_freqs(freqMat, popCol='POP', locusCol='LOCUS', freqCol='FREQ', flip=TRUE)
 
 }

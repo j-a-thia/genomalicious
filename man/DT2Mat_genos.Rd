@@ -23,13 +23,13 @@ If converting from a genotypes matrix to a data table, see argument \code{flip}.
 
 \item{locusCol}{Character: The column name with the locus information.}
 
+\item{genoCol}{Character: The column name with the genotype information.}
+
 \item{flip}{Logical: Instead of converting a (long) data table to a (wide) matrix,
 should a (wide) matrix be converted into a (long) data table? Default = \code{FALSE}.
 If \code{TRUE}, then param \code{dat} must be a matrix, with loci names as column headers,
 sample IDs in the row names, and frequencies in the cells. When \code{TRUE}, params
 \code{sampCol}, \code{locusCol}, and \code{genoCol} are used to structure the new matrix.}
-
-\item{gneoCol}{Character: The column name with the genotype information.}
 }
 \value{
 When \code{flip=FALSE}, converts a data table into a frequency matrix. When
@@ -43,12 +43,12 @@ a matrix in wide format (loci in columns and individuals in rows). The reverse
 can also be done. See also \code{DT2Mat_freqs} for converting matrix of frequencies.
 }
 \examples{
-data(genomaliciousPi)
+data(genomaliciousGenos)
 
 # Convert a long data table to a wide matrix
-freqMat <- DT2Mat_freqs(genomaliciousFreqsLong, sampCol='SAMPLE', locusCol='LOCUS', genoCol='FREQ', flip=FALSE)
+genoMat <- DT2Mat_genos(genomaliciousGenos, sampCol='SAMPLE', locusCol='LOCUS', genoCol='GT', flip=FALSE)
 
 # Convert a wide matrix back to a data table
-freqDT <- DT2Mat_freqs(freqMat, flip=TRUE)
+genoDT <- DT2Mat_genos(genoMat, sampCol='SAMPLE', locusCol='LOCUS', genoCol='GT', flip=TRUE)
 
 }

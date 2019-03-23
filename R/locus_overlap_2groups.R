@@ -25,10 +25,10 @@
 #' @return The value returned is the proportion of null permutations that were greater or
 #' equal to the observed value (i.e. the empirical number of significant loci shared between groups).
 #'
-#' @example
-#' #' locus_overlap_2groups(sigA=c(1,5), sigB=5, lociA=1:100, lociB=1:100, perm=1000)
+#' @examples
+#' locus_overlap_2groups(sigA=c(1,5), sigB=5, lociA=1:100, lociB=1:100, perm=1000)
 #'
-#'@export
+#' @export
 locus_overlap_2groups <- function(sigA, sigB, lociA, lociB, perms){
   # BEGIN ............
   # The observed number of shared loci between group A and B

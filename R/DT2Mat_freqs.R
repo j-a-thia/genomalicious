@@ -32,13 +32,13 @@
 #' the Ref allele frequency.
 #'
 #' @examples
-#' data(genomaliciousPi)
+#' data(genomaliciousFreqsLong)
 #'
 #' # Convert a long data table to a wide matrix
 #' freqMat <- DT2Mat_freqs(genomaliciousFreqsLong, popCol='POP', locusCol='LOCUS', freqCol='FREQ', flip=FALSE)
 #'
 #' # Convert a wide matrix back to a data table
-#' freqDT <- DT2Mat_freqs(freqMat, flip=TRUE)
+#' freqDT <- DT2Mat_freqs(freqMat, popCol='POP', locusCol='LOCUS', freqCol='FREQ', flip=TRUE)
 #'
 #' @export
 DT2Mat_freqs <- function(dat, popCol=NA, locusCol=NA, freqCol=NA, flip=FALSE){

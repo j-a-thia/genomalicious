@@ -1,5 +1,0 @@
-X<- DT2Mat_genos(genomalicious4pops, sampCol='SAMPLE', locusCol='LOCUS', genoCol='GT')
-
-X[1:5, 1:5]
-
-pcaX <- prcomp(X, scale=TRUE, center=TRUE)
