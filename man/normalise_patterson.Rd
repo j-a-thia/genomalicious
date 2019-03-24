@@ -17,3 +17,6 @@ genotypes normalised
 \description{
 Perform the Patterson et al. (2006) normalisation to a genotype matrix
 }
+\references{
+Patterson et al. (2006) Population structure and eigenanalysis. PLOS Genetics.
+}

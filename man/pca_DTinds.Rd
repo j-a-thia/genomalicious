@@ -2,10 +2,10 @@
 % Please edit documentation in R/pca_DTinds.R
 \name{pca_DTinds}
 \alias{pca_DTinds}
-\title{Conduct a PCA on individual genotypes stored in a data table}
+\title{Conduct a PCA on individual genotypes stored in a (long) data table}
 \usage{
 pca_DTinds(dat, scaling = "center", sampCol = "SAMPLE",
-  locusCol = "LOCUS", genoCol = "GT")
+  locusCol = "LOCUS", genoCol = "GT", popCol = NULL)
 }
 \arguments{
 \item{dat}{Data table: A long data table, e.g. like that imported from
@@ -13,7 +13,8 @@ pca_DTinds(dat, scaling = "center", sampCol = "SAMPLE",
 
 \item{scaling}{Character: How should the data (loci) be scaled? Set to
 \code{'center'} (default) to scale to mean = 0 and variance = 1. Set to
-\code{'patterson'} to use the Patteron et al. (2006) normalisation.}
+\code{'patterson'} to use the Patteron et al. (2006) normalisation.
+Set to \code{'none'} if you don't want to do any scaling pre-PCA.}
 
 \item{sampCol}{Character: The column name with the sampled individual information.
 Default is \code{'SAMPLE'}.}
@@ -23,7 +24,31 @@ Default is \code{'LOCUS'}.}
 
 \item{genoCol}{Character: The column name with the genotype information.
 Default is \code{'GT'}.}
+
+\item{popCol}{Character: An optional argument. The column name with the
+population information. Default is \code{NULL}. If specified, population
+membership is stored in the returned object.}
+}
+\value{
+Returns a \code{prcomp} object
 }
 \description{
-Conduct a PCA on individual genotypes stored in a data table
+Takes a long data table of genotypes and conducts a PCA using R's
+\code{prcomp()} function. Different options for scaling the genotypes
+pre-PCA are available.
+}
+\examples{
+# Data
+data(genomalicious4pops)
+
+# Conduct the PCA with Patterson et al.'s (2006) normalisation, and
+# population specified
+pca <- pca_DTinds(dat=genomalicious4pops, scaling='patterson', popCol='POP')
+
+# Plot the PCA
+pca_plot()
+
+}
+\references{
+Patterson et al. (2006) Population structure and eigenanalysis. PLOS Genetics.
 }

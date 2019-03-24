@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1553385636291.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "808261823",
+    "id" : "474A130",
+    "lastKnownWriteTime" : 1553386451,
+    "last_content_update" : 1553386451366,
+    "path" : "~/GitHub/genomalicious/R/normalise_patterson.R",
+    "project_path" : "R/normalise_patterson.R",
+    "properties" : {
+        "cursorPosition" : "9,3",
+        "scrollLine" : "0",
+        "tempName" : "Untitled2"
+    },
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
