@@ -30,7 +30,8 @@ population information. Default is \code{NULL}. If specified, population
 membership is stored in the returned object.}
 }
 \value{
-Returns a \code{prcomp} object
+Returns a \code{prcomp} object. If argumet \code{popCols} was specified,
+and additional index of \code{$pops} is also also present.
 }
 \description{
 Takes a long data table of genotypes and conducts a PCA using R's
@@ -46,7 +47,7 @@ data(genomalicious4pops)
 pca <- pca_DTinds(dat=genomalicious4pops, scaling='patterson', popCol='POP')
 
 # Plot the PCA
-pca_plot()
+pca_scatter(pca)
 
 }
 \references{

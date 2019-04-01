@@ -25,7 +25,8 @@
 #' population information. Default is \code{NULL}. If specified, population
 #' membership is stored in the returned object.
 #'
-#' @return Returns a \code{prcomp} object
+#' @return Returns a \code{prcomp} object. If argumet \code{popCols} was specified,
+#' and additional index of \code{$pops} is also also present.
 #'
 #' @references
 #' Patterson et al. (2006) Population structure and eigenanalysis. PLOS Genetics.
@@ -39,7 +40,7 @@
 #' pca <- pca_DTinds(dat=genomalicious4pops, scaling='patterson', popCol='POP')
 #'
 #' # Plot the PCA
-#' pca_plot()
+#' pca_scatter(pca)
 #'
 #' @export
 

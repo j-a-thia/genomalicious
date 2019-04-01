@@ -1,0 +1,1 @@
+read.vcf('inst/extdata/genomalicious_poolseq.vcf')
