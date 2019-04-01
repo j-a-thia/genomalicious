@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1553671970934.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3674589889",
+    "id" : "BEB4F136",
+    "lastKnownWriteTime" : 1550636440,
+    "last_content_update" : 1550636440,
+    "path" : "~/GitHub/genomalicious/R/poolne_estim_input.R",
+    "project_path" : "R/poolne_estim_input.R",
+    "properties" : {
+        "cursorPosition" : "24,0",
+        "scrollLine" : "19"
+    },
+    "relative_order" : 5,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
