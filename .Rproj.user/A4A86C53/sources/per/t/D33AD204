@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1554413914993.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3703217077",
+    "id" : "D33AD204",
+    "lastKnownWriteTime" : 1554416682,
+    "last_content_update" : 1554416682354,
+    "path" : "~/GitHub/genomalicious/R/pca_plot.R",
+    "project_path" : "R/pca_plot.R",
+    "properties" : {
+        "cursorPosition" : "40,33",
+        "scrollLine" : "35",
+        "tempName" : "Untitled2"
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
