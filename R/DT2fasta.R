@@ -11,7 +11,7 @@
 #' @export
 DT2fasta <- function(dat, fastaFile){
   # Add the '>' to locus column
-  dat$LOCUS <- paste0('> ', dat$LOCUS)
+  dat$LOCUS <- paste0('>', dat$LOCUS)
   
   # Convert to lines. Transpose dat to read rows in.
   fastaLines <- unlist(t(dat))
