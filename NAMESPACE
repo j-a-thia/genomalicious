@@ -2,6 +2,7 @@
 
 export(DT2Mat_freqs)
 export(DT2Mat_genos)
+export(DT2fasta)
 export(He_freqs)
 export(bayescan_inputs_pool)
 export(dadi_inputs_pool)
