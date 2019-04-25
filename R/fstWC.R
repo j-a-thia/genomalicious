@@ -1,0 +1,98 @@
+#' Calculate Weir and Cockerham's FST
+#'
+#' @param freqMat Matrix: Ref allele counts. Rows = populations,
+#' columns = loci; make sure both are named. Row names used to label output FST matrix.
+#'
+#' @param sampMat Matrix: Number of sampled individuals. Rows = populations,
+#' columns = loci.
+#'
+#' @param pairs Logical: Should pairwise FSTwc be calculated (TRUE) or the
+#' among population FSTwc (FALSE)?
+#'
+#' @return A list with two indices. \code{$fst.mean} contains the mean FST. In pairwise analyses,
+#' this is a data table with population pairs. \code{$fst.locus} contains the locus-specific
+#' FST values. If analysis was not pairwise, this is a vector, but for pairwise analyses,
+#' this is a data table with population pairs.
+#'
+#' @references
+#' Weir, Cockerham (1984) Estimating F-statistics for the analysis of population structure. Evol. \n
+#' Weir, Hill (2002) Estimating F-statistics. Annu. Rev. Genet
+#'
+#' @examples
+#' freqMat <- genomaliciousFreqs
+#' sampMat <- matrix(rep(30, 32), nrow=4, ncol=8)
+#' rownames(sampMat) <- paste0('Pop', 1:4)
+#' colnames(sampMat) <- colnames(freqMat); rownames(sampMat) <- rownames(freqMat)
+#'
+#' fstWC(freqMat, sampMat, pairs=FALSE)
+#' fstWC(freqMat, sampMat, pairs=TRUE)
+#'
+#' @export
+fstWC <- function(freqMat, sampMat, pairs=FALSE){
+  # --------------------------------------------+
+  # Libraries and assertions
+  # --------------------------------------------+
+  require(data.table)
+
+  # Check dimensions
+  if(sum(dim(freqMat) == dim(sampMat))!=2){
+    stop('The dimensions of arguments freqMat and sampMat are not equivalent.')
+  }
+
+  # Check class
+  if(sum(c(class(freqMat), class(sampMat))=='matrix')!=2){
+    stop('Arguments freqMat and sampMat must both be matrices.')
+  }
+
+  # Check all samples and loci are present in both matrices
+  if(sum(rownames(freqMat) %in% rownames(sampMat))!=nrow(sampMat)){
+    stop('Make sure all row names in freqMat are also in sampMat.')
+  }
+  if(sum(colnames(freqMat) %in% colnames(sampMat))!=ncol(sampMat)){
+    stop('Make sure all column names in freqMat are also in sampMat.')
+  }
+
+  # Make sure sampMat and freqMat are in the same order row-wise
+  sampMat <- sampMat[rownames(freqMat), ]
+
+  # --------------------------------------------+
+  # Code
+  # --------------------------------------------+
+  if(pairs==FALSE){
+    # Calculate variance per locus
+    lociVar <- fstWC_varcomps(freqMat, sampleMat)
+    # Theta across loci
+    thetaMean <- sum(lociVar$NUMER) / sum(lociVar$DENOM)
+    # Theta per locus
+    thetaLocus <- lociVar$NUMER / lociVar$DENOM
+    names(thetaLocus) <- lociVar$LOCUS
+
+    # Return
+    return(list(fst.mean=thetaMean, fst.locus=thetaLocus))
+
+  } else if(pairs==TRUE){
+    pairCombos <- combn(x=rownames(freqMat), m=2)
+
+    # For the Xth pair
+    pairLs <- apply(pairCombos, 2, function(X){
+      # Calculate variance per locus
+      lociVar <- fstWC_varcomps(freqMat[X,], sampleMat[X,])
+      # Theta across loci
+      thetaMean <- data.table(POP1=X[1], POP2=X[2]
+                    , FST=sum(lociVar$NUMER) / sum(lociVar$DENOM))
+      # Theta per locus
+      thetaLocus <- data.table(POP1=X[1], POP2=X[2]
+                              , LOCUS=lociVar$LOCUS
+                              , FST=lociVar$NUMER / lociVar$DENOM)
+
+      # Return list
+      return(list(mean=thetaMean, bylocus=thetaLocus))
+    })
+
+    # Return
+    return(list(fst.mean=do.call('rbind', lapply(pairLs, function(X){ X$mean}))
+                , fst.locus=do.call('rbind', lapply(pairLs, function(X){ X$bylocus}))
+                ))
+
+  }
+}

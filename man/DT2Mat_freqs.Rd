@@ -37,8 +37,8 @@ the population ID (as for pool-seq data); (2) \code{$LOCUS}, the locus ID; and (
 the Ref allele frequency.
 }
 \description{
-Takes a data table of allele frequencies in long format and converts it into
-a matrix in wide format (loci in columns and populations in rows). The reverse
+Takes a data table of allele frequencies in long-format and converts it into
+a matrix in wide-format (loci in columns and populations in rows). The reverse
 can also be done. See also \code{DT2Mat_genos} for converting matrix of genotypes.
 }
 \examples{

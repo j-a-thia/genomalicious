@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1556169219466.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "114827261",
+    "id" : "841AE794",
+    "lastKnownWriteTime" : 1556169406,
+    "last_content_update" : 1556169406943,
+    "path" : "~/GitHub/genomalicious/R/idip_DT.R",
+    "project_path" : "R/idip_DT.R",
+    "properties" : {
+        "cursorPosition" : "1,10",
+        "scrollLine" : "0",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

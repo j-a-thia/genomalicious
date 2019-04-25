@@ -1,7 +1,7 @@
 #' Convert a data table of allele frequencies into a matrix (or vice versa)
 #'
-#' Takes a data table of allele frequencies in long format and converts it into
-#' a matrix in wide format (loci in columns and populations in rows). The reverse
+#' Takes a data table of allele frequencies in long-format and converts it into
+#' a matrix in wide-format (loci in columns and populations in rows). The reverse
 #' can also be done. See also \code{DT2Mat_genos} for converting matrix of genotypes.
 #'
 #' @param dat Data table or Matrix: The object to transform. If this is a long data table

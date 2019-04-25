@@ -5,16 +5,17 @@
 \title{Convert a data table of genotypes into a matrix (or vice versa)}
 \usage{
 DT2Mat_genos(dat, sampCol = NA, locusCol = NA, genoCol = NA,
-  genoScore = "counts", flip = FALSE)
+  genoScore = "sep", flip = FALSE)
 }
 \arguments{
 \item{dat}{Data table or Matrix: The object to transform. If this is a long data table
-# of genotypes coded as per VCF specifications, e.g. ('0/0', '0/1', '1/1').
+# of genotypes coded as per VCF specifications, e.g. ('0/0', '0/1', '1/1'), or counts
+of the Ref alleles e.g. (0, 1, 2).
 Three columns are required:
 \enumerate{
    \item (1) The sampled individual ID (see param \code{sampCol}).
    \item (2) The locus ID (see param \code{locusCol}).
-   \item (3) The Ref allele frequency (see param \code{genoCol}).
+   \item (3) The genotype (see param \code{genoCol}).
 }
 The sampled individual ID column serves as the pivot point to convert the long data table into a wide matrix.
 If converting from a genotypes matrix to a data table, see argument \code{flip}.}
@@ -25,16 +26,20 @@ If converting from a genotypes matrix to a data table, see argument \code{flip}.
 
 \item{genoCol}{Character: The column name with the genotype information.}
 
+\item{genoScore}{Character: Should the returned genotypes by represented as
+\code{'counts'} of the Ref allele (integer from 0 -> 2), or separated alleles,
+\code{'sep'} (character, '0/0', '0/1', or '1/1')? Default = \code{'sep'}.}
+
 \item{flip}{Logical: Instead of converting a (long) data table to a (wide) matrix,
 should a (wide) matrix be converted into a (long) data table? Default = \code{FALSE}.
 If \code{TRUE}, then param \code{dat} must be a matrix, with loci names as column headers,
-sample IDs in the row names, and frequencies in the cells. When \code{TRUE}, params
+sample IDs in the row names, and genotypes in the cells. When \code{TRUE}, params
 \code{sampCol}, \code{locusCol}, and \code{genoCol} are used to structure the new matrix.}
 }
 \value{
-When \code{flip=FALSE}, converts a data table into a frequency matrix. When
+When \code{flip=FALSE}, converts a data table into a genotype matrix. When
 \code{flip=TRUE}, converts a matrix into a data table with three columns: (1) \code{$SAMPLE},
-the sample ID; (2) \code{$LOCUS}, the locus ID; and (3) \code{FREQ},
+the sample ID; (2) \code{$LOCUS}, the locus ID; and (3) \code{GT},
 the Ref allele frequency.
 }
 \description{
@@ -46,9 +51,24 @@ can also be done. See also \code{DT2Mat_freqs} for converting matrix of frequenc
 data(genomaliciousGenos)
 
 # Convert a long data table to a wide matrix
-genoMat <- DT2Mat_genos(genomaliciousGenos, sampCol='SAMPLE', locusCol='LOCUS', genoCol='GT', flip=FALSE)
+genoMatSep <- DT2Mat_genos(genomaliciousGenos
+              , sampCol='SAMPLE'
+              , locusCol='LOCUS'
+              , genoCol='GT'
+              , flip=FALSE)
+genoMatCounts <- DT2Mat_genos(genomaliciousGenos
+              , sampCol='SAMPLE'
+              , locusCol='LOCUS'
+              , genoCol='GT'
+              , genoScore='counts'
+              , flip=FALSE)
 
 # Convert a wide matrix back to a data table
-genoDT <- DT2Mat_genos(genoMat, sampCol='SAMPLE', locusCol='LOCUS', genoCol='GT', flip=TRUE)
+genoDTSep <- DT2Mat_genos(genoMat
+              , sampCol='SAMPLE'
+              , locusCol='LOCUS'
+              , genoCol='GT'
+              , genoScore='sep'
+              , flip=TRUE)
 
 }
