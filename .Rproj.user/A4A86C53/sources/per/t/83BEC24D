@@ -5,15 +5,15 @@
     "dirty" : false,
     "encoding" : "UTF-8",
     "folds" : "",
-    "hash" : "1397941996",
+    "hash" : "2965192027",
     "id" : "83BEC24D",
-    "lastKnownWriteTime" : 1556169653,
-    "last_content_update" : 1556169653,
+    "lastKnownWriteTime" : 1556192544,
+    "last_content_update" : 1556192544913,
     "path" : "~/GitHub/genomalicious/R/allele_counts.R",
     "project_path" : "R/allele_counts.R",
     "properties" : {
         "cursorPosition" : "12,0",
-        "scrollLine" : "0"
+        "scrollLine" : "8"
     },
     "relative_order" : 4,
     "source_on_save" : false,

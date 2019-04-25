@@ -1,7 +1,7 @@
 #' Convert between genotype scores (separated alleles vs counts)
 #'
 #' Assumes biallelic genotypes and can interchange between separated
-#' alleles ('0/0', '0/1', '1/1') and Ref allele counts (0, 1, 2).
+#' alleles ('0/0', '0/1', '1/1') or Ref allele counts (0, 1, 2).
 #'
 #' @param dat Character/Integer: A vector of genotypes. If the class
 #' is \code{'character'}, then assumes separated alleles and converts into
@@ -15,7 +15,8 @@ genoscore_converter <- function(dat){
   }
 
   if(class(dat)=='character'){
-    gt <- lapply(strsplit(dat, split='/', fixed=TRUE), function(x){sum(as.integer(x))})
+    gt <- lapply(strsplit(dat, split='/', fixed=TRUE)
+                 , function(x){2-sum(as.integer(x))})
     return(unlist(gt))
   }
 

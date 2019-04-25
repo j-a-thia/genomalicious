@@ -14,5 +14,5 @@ convert into separated alleles.}
 }
 \description{
 Assumes biallelic genotypes and can interchange between separated
-alleles ('0/0', '0/1', '1/1') and Ref allele counts (0, 1, 2).
+alleles ('0/0', '0/1', '1/1') or Ref allele counts (0, 1, 2).
 }
