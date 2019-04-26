@@ -13,19 +13,26 @@
 #' @param locusCol Character: Locus ID. Default = \code{'LOCUS'}
 #' @param refCol Character: Reference allele. Default = \code{'REF'}
 #' @param altCol Character: Alternate allele. Default = \code{'ALT'}
-#' @param freqCol Character: The reference allele frequency. Default = \code{'P'}.
+#' @param freqCol Character: The reference allele frequency. Default = \code{'FREQ'}.
 #' @param indsCol Character: The number of individuals per population pool. Default = \code{'INDS'}.
 #' @param poolSub Character: The pools to subset out of \code{poolCol}. Default = \code{NULL}.
 #'
 #' @return Returns a data tablein the DADI input format.
 #'
+#' @examples
+#' data(genomaliciousPi)
+#' genomaliciousPi
+#'
+#' dadi_inputs_pools(genomaliciousPi, poolCol='POOL', locusCol='LOCUS', refCol='REF', altCol='ALT', freqCol='P', indsCol='INDS')
+#'
+#'
 #' @export
-dadi_inputs_pool <- function(dat
+dadi_inputs_pools <- function(dat
                              , poolCol='POOL'
                              , locusCol='LOCUS'
                              , refCol='REF'
                              , altCol='ALT'
-                             , freqCol='P'
+                             , freqCol='FREQ'
                              , indsCol='INDS'
                              , poolSub=NULL){
 

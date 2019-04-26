@@ -25,7 +25,8 @@
 #' population information. Default is \code{NULL}. If specified, population
 #' membership is stored in the returned object.
 #'
-#' @return Returns a \code{prcomp} object
+#' @return Returns a \code{prcomp} object. If argumet \code{popCols} was specified,
+#' and additional index of \code{$pops} is also also present.
 #'
 #' @references
 #' Patterson et al. (2006) Population structure and eigenanalysis. PLOS Genetics.
@@ -36,14 +37,14 @@
 #'
 #' # Conduct the PCA with Patterson et al.'s (2006) normalisation, and
 #' # population specified
-#' pca <- pca_DTinds(dat=genomalicious4pops, scaling='patterson', popCol='POP')
+#' pca <- pca_DTgenos(dat=genomalicious4pops, scaling='patterson', popCol='POP')
 #'
 #' # Plot the PCA
-#' pca_plot()
+#' pca_scatter(pca)
 #'
 #' @export
 
-pca_DTinds <- function(dat, scaling='center', sampCol='SAMPLE'
+pca_DTgenos <- function(dat, scaling='center', sampCol='SAMPLE'
                        , locusCol='LOCUS', genoCol='GT', popCol=NULL){
 
   # BEGIN ...........
@@ -61,7 +62,11 @@ pca_DTinds <- function(dat, scaling='center', sampCol='SAMPLE'
   # Code
   # --------------------------------------------+
   # Convert to a genotype matrix
-  genoMat <- DT2Mat_genos(dat, sampCol=sampCol, locusCol=locusCol, genoCol=genoCol)
+  genoMat <- DT2Mat_genos(dat
+                          , sampCol=sampCol
+                          , locusCol=locusCol
+                          , genoCol=genoCol
+                          , genoScore='counts')
 
   # Scale
   if(scaling=='center'){

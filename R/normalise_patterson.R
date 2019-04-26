@@ -1,6 +1,6 @@
 #' Perform the Patterson et al. (2006) normalisation to a genotype matrix
 
-#' @param dat Matrix: Counts of Ref allele. E.g. the C(i,j) table described
+#' @param dat Matrix: Counts of Ref allele per individual, e.g. the C(i,j) table described
 #' in Patterson et al. (2006).
 #'
 #' @return Returns a matrix with the same deminsions as \code{dat}, but with
@@ -13,7 +13,7 @@
 normalise_patterson <- function(dat){
   # Iterate over each j locus, normalise genotypes
   M <- apply(dat, 2, function(j){
-    # Locus j correction factor
+    # Locus j correction factor ("mean genotype")
     u <- sum(j)/length(j)
     # The underlying allele frequency
     p <- u/2
