@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1556316743165.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1999586398",
+    "id" : "7B374FB4",
+    "lastKnownWriteTime" : 1550785387,
+    "last_content_update" : 1550785387,
+    "path" : "~/GitHub/genomalicious/R/genos2freqs.R",
+    "project_path" : "R/genos2freqs.R",
+    "properties" : {
+        "cursorPosition" : "66,0",
+        "scrollLine" : "29"
+    },
+    "relative_order" : 6,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
