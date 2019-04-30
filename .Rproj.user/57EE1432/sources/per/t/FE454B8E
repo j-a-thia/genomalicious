@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1556585115043.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2670974831",
+    "id" : "FE454B8E",
+    "lastKnownWriteTime" : 1556603871,
+    "last_content_update" : 1556603871780,
+    "path" : "~/GitHub/genomalicious/R/poolfstat_DT.R",
+    "project_path" : "R/poolfstat_DT.R",
+    "properties" : {
+        "cursorPosition" : "33,24",
+        "scrollLine" : "22"
+    },
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
