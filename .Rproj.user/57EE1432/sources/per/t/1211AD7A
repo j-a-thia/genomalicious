@@ -5,15 +5,15 @@
     "dirty" : false,
     "encoding" : "UTF-8",
     "folds" : "",
-    "hash" : "2975501259",
+    "hash" : "1599118533",
     "id" : "1211AD7A",
-    "lastKnownWriteTime" : 1556603762,
-    "last_content_update" : 1556603762770,
+    "lastKnownWriteTime" : 1556605694,
+    "last_content_update" : 1556605694254,
     "path" : "~/GitHub/genomalicious/R/poolfstat_boot.R",
     "project_path" : "R/poolfstat_boot.R",
     "properties" : {
-        "cursorPosition" : "16,2",
-        "scrollLine" : "0"
+        "cursorPosition" : "35,50",
+        "scrollLine" : "28"
     },
     "relative_order" : 3,
     "source_on_save" : false,

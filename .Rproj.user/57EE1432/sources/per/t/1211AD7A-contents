@@ -7,7 +7,7 @@
 #' @param dat Pooldata: The main data class object for \code{poolfstat}. Can be created
 #' from a data table of read counts using \code{poolfstat_DT}.
 #'
-#' @param num.sims Integer: The number of bootstrap simulations to run. Default = 100.
+#' @param num.boots Integer: The number of bootstrap simulations to run. Default = 100.
 #'
 #' @param method Character: Either 'Anova' (default) or 'Identity'. Passed to \{method} argument
 #' in \code{poolfstat::computeFST()}.
@@ -36,9 +36,9 @@
 #' bootFst <- poolfstat_boot(poolFst$pooldat, 100)
 #'
 #' @export
-poolfstat_boot <- function(dat, num.sims=100, method='Anova', snp.index=NA){
+poolfstat_boot <- function(dat, num.boots=100, method='Anova', snp.index=NA){
   # Iterate over sims
-  fstBoot <- lapply(1:num.sims, function(sim){
+  fstBoot <- lapply(1:num.boots, function(sim){
     # Make a new copy of data to bootstrap
     bootDat <- dat
     # Rows in data matrices to resample
