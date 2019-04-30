@@ -7,7 +7,7 @@
 normalise_patterson(dat)
 }
 \arguments{
-\item{dat}{Matrix: Counts of Ref allele. E.g. the C(i,j) table described
+\item{dat}{Matrix: Counts of Ref allele per individual, e.g. the C(i,j) table described
 in Patterson et al. (2006).}
 }
 \value{

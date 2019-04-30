@@ -4,20 +4,11 @@
 \alias{poolfstat_boot}
 \title{Bootstrap FST values from \code{poolfstat}}
 \usage{
-poolfstat_boot(dat, pool.info, num.sims = 100)
+poolfstat_boot(dat, num.sims = 100, method = "Anova", snp.index = NA)
 }
 \arguments{
-\item{dat}{Data table: Contains read counts, e.g. like that been
-produced by the function \code{vcf2DT}. Must contain all the following columns:
-\code{$CHROM}, \code{$POS}, \code{$REF}, \code{$ALT}, \code{$LOCUS}, \code{$POOL},
-\code{$DP}, \code{$RO}.}
-
-\item{pool.info}{Data table: Contains the sample sample sizes (number of diploids) for
-for each unique pool listed in \code{dat$POOL}. Requires two columns: \cr
-\enumerate{
-   \item \code{$POOL} The pools listed in \code{$dat$POOL}.
-   \item \code{$INDS} The number of diploid individuals for the pools.
-}}
+\item{dat}{Pooldata: The main data class object for \code{poolfstat}. Can be created
+from a data table of read counts using \code{poolfstat_DT}.}
 
 \item{num.sims}{Integer: The number of bootstrap simulations to run. Default = 100.}
 }
@@ -32,8 +23,8 @@ pool size information.
 }
 \examples{
 #' # Load in the pool metadata and reads
-data(genomaliciousInfo)
 data(genomaliciousReads)
+data(genomaliciousInfo)
 
 # Subset to keep only Rep1 reads.
 X <- genomaliciousReads[grep(pattern='Rep1', x=genomaliciousReads$SAMPLE)]
@@ -41,7 +32,10 @@ X <- genomaliciousReads[grep(pattern='Rep1', x=genomaliciousReads$SAMPLE)]
 # Need to add pool ID.
 X$POOL <- unlist(lapply(strsplit(X$SAMPLE, '_'), function(X){ return(X[1]) }))
 
-# Bootstrap FST
-bootFST <- poolfstat_boot(X, genomaliciousInfo, 100)
+# Use poolfstat_DT to compute FST for this dataset and create a pooldata object
+poolFst <- poolfstat_DT(X, genomaliciousInfo)
+
+# Bootstrap FST, using pooldata object from poolFst
+bootFst <- poolfstat_boot(poolFst$pooldat, 100)
 
 }

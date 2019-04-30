@@ -4,7 +4,7 @@
 \alias{poolfstat_DT}
 \title{Calculate FST with \code{poolfstat} from a data table of read counts}
 \usage{
-poolfstat_DT(dat, pool.info)
+poolfstat_DT(dat, pool.info, method = "Anova", snp.index = NA)
 }
 \arguments{
 \item{dat}{Data table: Contains read counts, e.g. like that been
@@ -26,6 +26,12 @@ for each unique pool listed in \code{dat$POOL}. Requires two columns:
    \item \code{$POOL} The pools listed in \code{dat$POOL}.
    \item \code{$INDS} The number of diploid individuals for the pools.
 }}
+
+\item{method}{Character: Either 'Anova' (default) or 'Identity'. Passed to \code{method} argument
+in \code{poolfstat::computeFST}.}
+
+\item{snp.index}{List: A list of SNPs to consider. Default = \code{NA}.
+Passed to \code{snp.index} argument in \code{poolfstat::computeFST}.}
 }
 \value{
 Returns a list with two indices: \code{$Fst} is the calculated FST among the
@@ -50,5 +56,6 @@ X$POOL <- unlist(lapply(strsplit(X$SAMPLE, '_'), function(X){ return(X[1]) }))
 
 # Calculate FST using poolfstat
 poolfstat_DT(X, genomaliciousInfo)
+
 
 }
