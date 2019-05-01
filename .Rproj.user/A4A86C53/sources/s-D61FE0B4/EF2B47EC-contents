@@ -32,13 +32,31 @@
 #' from the \code{IDIP} analysis.
 #'
 #' @examples
-#' data(genomalicious_Freqs)
+#' data(genomalicious_PoolPi)
 #' freqDat <- genomalicious_PoolPi
 #' strucMat <- matrix(c(rep('metapop', 4)
 #'                , paste('Group', c(1,1,2,2))
 #'                , paste('Pop', 1:4, sep='')), ncol=4, byrow=TRUE)
-#' idip_DTfreqs(freqDat=genomaliciousPi, strucMat=metaPop
+#'
+#' metaPop <- matrix(c(rep('metapop', 4)
+#'                , paste('Group', c(1,1,2,2))
+#'                , paste('Pop', 1:4, sep='')), ncol=4, byrow=TRUE)
+#'
+#' idip4pops <- idip_DTfreqs(freqDat=genomalicious_PoolPi, strucMat=metaPop
 #'              , popCol='POOL', locusCol='LOCUS', freqCol='PI')
+#'
+#' # Simple example using 3 alleles
+#' als3 <- data.table(POP=c(rep('Pop1', 3), rep('Pop2', 3))
+#'            , LOCUS=rep('Locus1', 6), ALLELE=c(letters[1:3], letters[1:3])
+#'            , FREQ=c(0.5, 0.25, 0.25, 0.9, 0.05, 0.05))
+#' als3
+#'
+#' idip3als <- idip_DTfreqs(freqDat=als3
+#'                , strucMat=matrix(c(rep('metapop', 2), 'Pop1', 'Pop2'), ncol=2, byrow=TRUE)
+#'                , popCol='POP'
+#'                , locusCol='LOCUS'
+#'                , freqCol='FREQ'
+#'                , alleleCol='ALLELE')
 #'
 #' @export
 idip_DTfreqs <- function(freqDat, strucMat, popCol='POP'
@@ -51,7 +69,7 @@ idip_DTfreqs <- function(freqDat, strucMat, popCol='POP'
   for(libs in c('HierDpart', 'data.table', 'tidyr')){ require(libs, character.only=TRUE) }
 
   # Stop if strucMat doesn't meet min rows
-  if(nrow(struMat)<2){
+  if(nrow(strucMat)<2){
     stop('Argument strucMat must be a matrix with at least 2 rows.')}
 
   # Population check
@@ -66,6 +84,10 @@ idip_DTfreqs <- function(freqDat, strucMat, popCol='POP'
     match(c(popCol, locusCol, freqCol), colnames(freqDat))] <- c(
       'POP', 'LOCUS', 'FREQ')
 
+  if(is.na(alleleCol)==FALSE){
+    colnames(freqDat)[which(colnames(freqDat)==alleleCol)] <- 'ALLELE'
+    }
+
   # --------------------------------------------+
   # Code
   # --------------------------------------------+
@@ -73,18 +95,49 @@ idip_DTfreqs <- function(freqDat, strucMat, popCol='POP'
   # Unique loci
   uniqLoci <- unique(freqDat$LOCUS)
 
-  # Run IDIP for each locus
-  lociDivpar <- lapply(uniqLoci, function(locus){
-                sub <- freqDat[LOCUS==locus]
-                sub[, ALT.FREQ:=1-FREQ]
-                sub <- spread(sub[, c('POP', 'LOCUS', 'FREQ')]
-                              , key='POP', value='FREQ')[, !'LOCUS']
-                sub <- rbind(sub, 1-sub[1,])
+  # If alleleCol == NA, assume biallelic frequencies.
+  # Else, assume their are > 2 alleles, search in freqDat.
+  if(is.na(alleleCol)){
+    # Run IDIP for each locus
+    lociDivpar <- lapply(uniqLoci, function(locus){
+      sub <- freqDat[LOCUS==locus]
+      sub[, ALT.FREQ:=1-FREQ]
+      sub <- spread(sub[, c('POP', 'LOCUS', 'FREQ')]
+                    , key='POP', value='FREQ')[, !'LOCUS']
+      sub <- rbind(sub, 1-sub[1,])
 
-    # Run IDIP
-    idip <- IDIP(abun=as.matrix(sub), struc=strucMat)
-    return(idip)
-  })
+      # Run IDIP
+      idip <- IDIP(abun=as.matrix(sub), struc=strucMat)
+      return(idip)
+    })
+  } else{
+    lociDivpar <- lapply(uniqLoci, function(locus){
+                    sub <- freqDat[LOCUS==locus]
+                    uniqAls <- unique(sub$ALLELE)
+
+                    # Sub again by population, get allele frequencies.
+                    # This method is semi-redundant, but is used in case
+                    # not all alleles have been specified for each pop
+                    # at a locus.
+                    locusFreqs <- lapply(uniqPops, function(pop){
+                       # Sub again
+                       subsub <- sub[POP==pop, c('ALLELE', 'FREQ')]
+                       # Get allele frequencies at all possible alleles
+                       f <- subsub$FREQ[match(uniqAls, subsub$ALLELE)]
+                       # Correct for NAs and make a matrix of single column
+                       f[is.na(f)] <- 0
+                       f <- matrix(f, ncol=1, nrow=length(uniqAls)
+                                   , dimnames=list(uniqAls, pop))
+                       return(f)
+                    })
+                    locusFreqs <- do.call('cbind', locusFreqs)
+                    # IDIP
+                    idip <- IDIP(locusFreqs, strucMat)
+                    return(idip)
+
+    })
+  }
+
   lociDivpar <- do.call('cbind', lociDivpar)
   colnames(lociDivpar) <- uniqLoci
 
