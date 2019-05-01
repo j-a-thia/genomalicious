@@ -4,13 +4,13 @@
 \alias{poolfstat_boot}
 \title{Bootstrap FST values from \code{poolfstat}}
 \usage{
-poolfstat_boot(dat, num.sims = 100, method = "Anova", snp.index = NA)
+poolfstat_boot(dat, num.boots = 100, method = "Anova", snp.index = NA)
 }
 \arguments{
 \item{dat}{Pooldata: The main data class object for \code{poolfstat}. Can be created
 from a data table of read counts using \code{poolfstat_DT}.}
 
-\item{num.sims}{Integer: The number of bootstrap simulations to run. Default = 100.}
+\item{num.boots}{Integer: The number of bootstrap simulations to run. Default = 100.}
 }
 \value{
 Returns a vector of FST values produced by bootstrapping loci in the

@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1556714941818.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2635863960",
+    "id" : "EF2B47EC",
+    "lastKnownWriteTime" : 1556716598,
+    "last_content_update" : 1556716598072,
+    "path" : "~/GitHub/genomalicious/R/idip_DTfreqs.R",
+    "project_path" : "R/idip_DTfreqs.R",
+    "properties" : {
+        "cursorPosition" : "90,2",
+        "scrollLine" : "79",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

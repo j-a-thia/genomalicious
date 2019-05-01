@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1556716721612.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1932909173",
+    "id" : "841ECFB6",
+    "lastKnownWriteTime" : 1556716736,
+    "last_content_update" : 1556716736099,
+    "path" : "~/GitHub/genomalicious/R/fstWC.R",
+    "project_path" : "R/fstWC.R",
+    "properties" : {
+        "cursorPosition" : "17,101",
+        "scrollLine" : "7",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 6,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

@@ -8,34 +8,33 @@ roxygenise('./', clean=TRUE)
 
 library(data.table)
 
-genomaliciousInfo <- data.table(POOL=paste0('Pop', 1:4), INDS=30)
-save(genomaliciousInfo, file='data/genomaliciousInfo.RData')
+genomalicious_PoolInfo <- data.table(POOL=paste0('Pop', 1:4), INDS=30)
+save(genomalicious_PoolInfo, file='data/genomalicious_PoolInfo.RData')
 
-genomaliciousReads <- fread('inst/extdata/genomaliciousReads.csv')
-save(genomaliciousReads, file='data/genomaliciousReads.RData')
-refalt <- unique(genomaliciousReads[, c('LOCUS', 'REF', 'ALT')])
+genomalicious_PoolReads <- fread('inst/extdata/genomalicious_PoolReads.csv')
+save(genomalicious_PoolReads, file='data/genomalicious_PoolReads.RData')
+refalt <- unique(genomalicious_PoolReads[, c('LOCUS', 'REF', 'ALT')])
 
-genomaliciousPi <- fread('inst/extdata/genomaliciousPi.csv')
-genomaliciousPi <- cbind(genomaliciousPi, refalt[match(genomaliciousPi$LOCUS, refalt$LOCUS), c('REF', 'ALT')]
-                         , INDS=genomaliciousInfo$INDS[match(genomaliciousPi$POOL, genomaliciousInfo$POOL)]
+genomalicious_PoolPi <- fread('inst/extdata/genomalicious_PoolPi.csv')
+genomalicious_PoolPi <- cbind(genomalicious_PoolPi, refalt[match(genomalicious_PoolPi$LOCUS, refalt$LOCUS), c('REF', 'ALT')]
+                         , INDS=genomalicious_PoolInfo$INDS[match(genomalicious_PoolPi$POOL, genomalicious_PoolInfo$POOL)]
                          )
-save(genomaliciousPi, file='data/genomaliciousPi.RData')
+save(genomalicious_PoolPi, file='data/genomalicious_PoolPi.RData')
 
 
+# genomaliciousGenos <- fread('inst/extdata/genomaliciousGenos.csv')
+# save(genomaliciousGenos, file='data/genomaliciousGenos.RData')
 
-genomaliciousGenos <- fread('inst/extdata/genomaliciousGenos.csv')
-save(genomaliciousGenos, file='data/genomaliciousGenos.RData')
+genomalicious_Freqs <- readRDS('inst/extdata/genomalicious_Freqs.RDS')
+save(genomalicious_Freqs, file='data/genomalicious_Freqs.RData')
 
-genomaliciousFreqs <- readRDS('inst/extdata/genomaliciousFreqs.RDS')
-save(genomaliciousFreqs, file='data/genomaliciousFreqs.RData')
+genomalicious_FreqsLong <- as.data.table(genomalicious_Freqs)
+genomalicious_FreqsLong$POP <- rownames(genomalicious_Freqs)
+genomalicious_FreqsLong <- melt(genomalicious_FreqsLong, id='POP', variable.name='LOCUS', value.name='FREQ')
+save(genomalicious_FreqsLong, file='data/genomalicious_FreqsLong.RData')
 
-genomaliciousFreqsLong <- as.data.table(genomaliciousFreqs)
-genomaliciousFreqsLong$POP <- rownames(genomaliciousFreqs)
-genomaliciousFreqsLong <- melt(genomaliciousFreqsLong, id='POP', variable.name='LOCUS', value.name='FREQ')
-save(genomaliciousFreqsLong, file='data/genomaliciousFreqsLong.RData')
-
-genomalicious4pops <- readRDS('inst/extdata/genomalicious_FastSimCoal_30Diploids.RDS')
-setnames(genomalicious4pops, c('IND', 'GENO'), c('SAMPLE', 'GT'))
+genomalicious_4pops <- readRDS('inst/extdata/genomalicious_FastSimCoal_30Diploids.RDS')
+setnames(genomalicious_4pops, c('IND', 'GENO'), c('SAMPLE', 'GT'))
 goodloci <- filter_maf(genomalicious4pops, 0.01, 'genos')
 genomalicious4pops <- genomalicious4pops[LOCUS %in% goodloci]
-save(genomalicious4pops, file='data/genomalicious4pops.RData')
+save(genomalicious_4pops, file='data/genomalicious_4pops.RData')
