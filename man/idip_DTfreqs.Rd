@@ -42,12 +42,30 @@ from the \code{IDIP} analysis.
 Calculate diversity statistics with \code{IDIP} from a data table of frequencies
 }
 \examples{
-data(genomalicious_Freqs)
+data(genomalicious_PoolPi)
 freqDat <- genomalicious_PoolPi
 strucMat <- matrix(c(rep('metapop', 4)
                , paste('Group', c(1,1,2,2))
                , paste('Pop', 1:4, sep='')), ncol=4, byrow=TRUE)
-idip_DTfreqs(freqDat=genomaliciousPi, strucMat=metaPop
+
+metaPop <- matrix(c(rep('metapop', 4)
+               , paste('Group', c(1,1,2,2))
+               , paste('Pop', 1:4, sep='')), ncol=4, byrow=TRUE)
+
+idip4pops <- idip_DTfreqs(freqDat=genomalicious_PoolPi, strucMat=metaPop
              , popCol='POOL', locusCol='LOCUS', freqCol='PI')
+
+# Simple example using 3 alleles
+als3 <- data.table(POP=c(rep('Pop1', 3), rep('Pop2', 3))
+           , LOCUS=rep('Locus1', 6), ALLELE=c(letters[1:3], letters[1:3])
+           , FREQ=c(0.5, 0.25, 0.25, 0.9, 0.05, 0.05))
+als3
+
+idip3als <- idip_DTfreqs(freqDat=als3
+               , strucMat=matrix(c(rep('metapop', 2), 'Pop1', 'Pop2'), ncol=2, byrow=TRUE)
+               , popCol='POP'
+               , locusCol='LOCUS'
+               , freqCol='FREQ'
+               , alleleCol='ALLELE')
 
 }
