@@ -4,22 +4,29 @@
 \alias{allele_counts}
 \title{Calculate allele counts}
 \usage{
-allele_counts(dat)
+allele_counts(dat, biallelic = TRUE)
 }
 \arguments{
 \item{dat}{Character/Integer: A vector of genotypes. If the class
 is \code{'character'}, then assumes alleles are separated
-with a '/'. If theclass is \code{'integer'}, then assumes counts of
-Ref alleles.}
+with a '/'. Doesn't have to be biallelic (see param \code{biallelic}).
+If the class is \code{'integer'}, then assumes counts of
+Ref alleles, in which case, it does assumes biallelic.}
+
+\item{biallelic}{Logical: Is the data biallelic? If alleles separated
+by '/' (character vector), expect \code{dat} to take form: '0/0', '0/1', or '1/1'.
+If alleles coded as counts of Ref allele, expect \code{dat} to take form:
+0, 1, or 2. Default =\code{TRUE}.}
 }
 \value{
-A vector of alleles counts for Ref ('0') and Alt ('1') alleles.
+A vector of alleles counts.
 }
 \description{
 Calculate allele counts
 }
 \examples{
 allele_counts(c('1/1', '0/1', '0/1', '0/0', '0/0'))
+allele_counts(c('1/1', '2/3', '1/3', '0/0', '2/2'), biallelic=FALSE)
 allele_counts(c(2, 1, 1, 0, 2))
 
 }

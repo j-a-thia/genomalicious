@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1556799907240.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2109327257",
+    "id" : "9374542D",
+    "lastKnownWriteTime" : 1556801290,
+    "last_content_update" : 1556801290255,
+    "path" : "~/GitHub/genomalicious/R/idip_DTgenos.R",
+    "project_path" : "R/idip_DTgenos.R",
+    "properties" : {
+        "cursorPosition" : "79,33",
+        "scrollLine" : "66"
+    },
+    "relative_order" : 5,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

@@ -9,7 +9,8 @@ idip_DTgenos(snpDat, strucMat, popCol = "POP", locusCol = "LOCUS",
 }
 \arguments{
 \item{snpDat}{Data table: a long-format data table with SNP genotypes
-coded as per VCF specifications, e.g. ('0/0', '0/1', '1/1').
+coded separated by a '/', e.g. ('0/0', '0/1', '1/1'). However, doesn't
+have to be biallelic.
 Three columns are required:
 \enumerate{
    \item (1) The population ID (see param \code{popCol}).
@@ -37,8 +38,14 @@ Calculate diversity statistics with \code{IDIP} from a data table of genotypes
 }
 \examples{
 data(genomalicious_4pops)
-snpDat <- genomalicious_4pops
-strucMat <- matrix(c(rep('metapop', 4)
+
+# Create a population hierarchy
+metapop <- matrix(c(rep('metapop', 4)
                , paste('Group', c(1,1,2,2))
                , paste('Pop', 1:4, sep='')), ncol=4, byrow=TRUE)
+
+# Run IDIP
+idip_DTgenos(snpDat=genomalicious_4pops, strucMat=metapop
+             , popCol='POP', locusCol='LOCUS', genoCol='GT')
+
 }
