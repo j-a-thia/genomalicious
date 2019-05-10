@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1557494894903.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3955877543",
+    "id" : "5E51A1D3",
+    "lastKnownWriteTime" : 1557496378,
+    "last_content_update" : 1557496378841,
+    "path" : "~/GitHub/genomalicious/R/plot_missingBYsamples.R",
+    "project_path" : "R/plot_missingBYsamples.R",
+    "properties" : {
+        "cursorPosition" : "10,0",
+        "scrollLine" : "7",
+        "tempName" : "Untitled2"
+    },
+    "relative_order" : 7,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
