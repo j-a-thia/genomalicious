@@ -12,31 +12,31 @@ plot_missBYsamps(dat, type = "hist", look = "ggplot", sampCol = "SAMPLE",
 \item{dat}{Data table: Contains genetic information and must have
 the following columns,
 \enumerate{
-  \item (1) The sampled individuals (see param \code{sampCOl}).
-  \item (2) The locus ID (see param \code{locusCol}).
-  \item (3) The response column, e.g. a genotype of allele frequency,
+  \item The sampled individuals (see param \code{sampCOl}).
+  \item The locus ID (see param \code{locusCol}).
+  \item The response column, e.g. a genotype of allele frequency,
   (see param \code{respCol}).
 }}
 
 \item{type}{Character: The type of plot to make. A histogram depicting
 the frequency distribution of samples missing information at each
 locus (\code{'hist'}, the default)? Or a heatmap illustrating the
-missing loci for each sample (\code{'heatmap'})?}
+missing loci for each sample (\code{'heatmap'})? See Details.}
 
 \item{look}{Character: The look of the plot. Default = \code{'ggplot'}, the
 typical gray background with gridlines produced by \code{ggplot2}. Alternatively,
 when set to \code{'classic'}, produces a base R style plot.}
 
 \item{sampCol}{Character: The column name with the sampled
-individual information. Default = \code{'SAMPLE'}.}
+individual ID. Default = \code{'SAMPLE'}.}
 
-\item{locusCol}{Character: The column name with the locus information.
+\item{locusCol}{Character: The column name with the locus ID.
 Default = \code{'LOCUS'}.}
 
-\item{respCol}{Character: The column name with the response information.
+\item{respCol}{Character: The column name with the response info.
 Default = \code{'GT'}. Missing data should be represeted by \code{NA}.}
 
-\item{popCol}{Character: The column name with the population information.
+\item{popCol}{Character: The column name with the population ID.
 Optional parameter. Default = \code{NA}.}
 
 \item{plotColours}{Character: Vector of colours to use in plotting.
@@ -47,21 +47,45 @@ Size depends on values specified for parameters \code{type} and
 population plots into. Only takes effect when \code{popCol} is specified.
 Default = 2.}
 }
+\value{
+Displays plot and returns the plot object.
+}
 \description{
 Use to visualise missing data with respect to samples and
 their associated populations.
 }
-\details{
-1) Return a plot, 2) display plot 3) Break down the different
-plot types and population inclusions
-}
 \examples{
-data(genomalicious_4pops)
-dat <- genomalicious_4pops
 
-# Add missing values.
-missIdx <- c(sample(1:nrow(dat), size=0.05*nrow(dat), replace=FALSE)
+####   MISSING GENOTYPE DATA   ####
+data(genomalicious_4pops)
+datGt <- genomalicious_4pops
+
+# Add missing values
+missIdx <- c(sample(1:nrow(datGt), size=0.05*nrow(datGt), replace=FALSE)
              , 100:500, 800:1200, 8000:8888, 200000:200500)
-dat$GT[missIdx] <- NA
+
+datGt$GT[missIdx] <- NA
+
+head(datGt, 10)
+
+# Histograms, ggplot and classic looks
+plot_missBYsamps(datGt, type='hist', look='ggplot')
+plot_missBYsamps(datGt, type='hist', look='classic')
+
+# Histograms, by population, specifying colour
+plot_missBYsamps(datGt, type='hist', look='ggplot'
+                 , popCol='POP' , plotColours='plum2')
+
+# Heatmaps, default and specified colours
+plot_missBYsamps(datGt, type='heatmap')
+plot_missBYsamps(datGt, type='heatmap', plotColours=c('black', 'plum2'))
+
+# Heatmaps, by population
+plot_missBYsamps(datGt, type='heatmap', popCol='POP')
+
+####   MISSING FREQUENCY DATA   ####
+
+
+####   CATCH PLOT OUTPUT FOR LATER USE   ####
 
 }
