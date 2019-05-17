@@ -8,8 +8,8 @@
 #' \enumerate{
 #'   \item The sampled individuals (see param \code{sampCol}).
 #'   \item The locus ID (see param \code{locusCol}).
-#'   \item The response column, e.g. a genotype of allele frequency,
-#'   (see param \code{respCol}).
+#'   \item The genotype column, e.g. a genotype of allele frequency,
+#'   (see param \code{genoCol}).
 #' }
 #'
 #' @param type Character: The type of plot to make. A histogram depicting
@@ -27,7 +27,7 @@
 #' @param locusCol Character: The column name with the locus ID.
 #' Default = \code{'LOCUS'}.
 #'
-#' @param respCol Character: The column name with the response info.
+#' @param genoCol Character: The column name with the genotype info.
 #' Default = \code{'GT'}. Missing data should be represeted by \code{NA}.
 #'
 #' @param popCol Character: The column name with the population ID.
@@ -68,7 +68,6 @@
 #' @return Displays plot and returns the plot object.
 #'
 #' @examples
-#'
 #' ####   MISSING GENOTYPE DATA   ####
 #' data(genomalicious_4pops)
 #' datGt <- genomalicious_4pops
@@ -96,24 +95,16 @@
 #' # Heatmaps, by population
 #' plot_missBYsamps(datGt, type='heatmap', popCol='POP')
 #'
-#' ####   MISSING FREQUENCY DATA   ####
-#' data(genomalicious_FreqsLong)
-#'
-#' # Can plot missing frequencies for populations,
-#' # by setting a population ID column as argument sampCol.
-#' freqDat <- genomalicious_FreqsLong
-#'
-#' # Add in some missing data
-#' missFreqs <- sample(1:nrow(freqDat), size=15, replace=FALSE)
-#' freqDat$FREQ[missFreqs] <- NA
-#'
 #' ####   CATCH PLOT OUTPUT FOR LATER USE   ####
+#' gg4pops <- plot_missBYsamps(datGt, popCol='POP')
+#' plot(gg4pops)
 #'
 #' @export
 plot_missBYsamps <- function(dat, type='hist', look='ggplot'
                              , sampCol='SAMPLE', locusCol='LOCUS'
-                             , respCol='GT', popCol=NA
+                             , genoCol='GT', popCol=NA
                              , plotColours='white', plotNCol=2){
+
   # --------------------------------------------+
   # Libraries, assertions, and setup
   # --------------------------------------------+
@@ -121,8 +112,8 @@ plot_missBYsamps <- function(dat, type='hist', look='ggplot'
 
   # Rename columns
   colnames(dat)[
-    match(c(locusCol, respCol, sampCol), colnames(dat))
-    ] <- c('LOCUS', 'RESP', 'SAMPLE')
+    match(c(locusCol, genoCol, sampCol), colnames(dat))
+    ] <- c('LOCUS', 'GT', 'SAMPLE')
 
   # Rename the population column, if it was specified
   if(is.na(popCol)==FALSE){
@@ -149,18 +140,18 @@ plot_missBYsamps <- function(dat, type='hist', look='ggplot'
     # If
     if(is.na(popCol)){
       # If no population column is specified (NA)
-      stats <- dat[, sum(is.na(RESP)), by=SAMPLE]
+      stats <- dat[, sum(is.na(GT)), by=SAMPLE]
       gg <- (ggplot(stats, aes(x=V1))
              + plotTheme
              + geom_histogram(fill=plotColours[1], colour='black')
-             + labs(x='Missing data', y='Number of samples'))
+             + labs(x='Missing genotypes', y='Number of samples'))
     } else{
       # If population column is specified, facet plot by population
-      stats <- dat[, sum(is.na(RESP)), by=c('SAMPLE', 'POP')]
+      stats <- dat[, sum(is.na(GT)), by=c('SAMPLE', 'POP')]
       gg <- (ggplot(stats, aes(x=V1))
              + plotTheme + theme(strip.text.x=element_text(face='bold'))
              + geom_histogram(fill=plotColours[1], colour='black')
-             + labs(x='Missing data', y='Number of samples')
+             + labs(x='Missing genotypes', y='Number of samples')
              + facet_wrap(~ POP, ncol=plotNCol))
     }
   }
@@ -172,7 +163,7 @@ plot_missBYsamps <- function(dat, type='hist', look='ggplot'
     }
 
     # Assign a new column to record missing data
-    dat[, MISS:=as.integer(!is.na(RESP))]
+    dat[, MISS:=as.integer(!is.na(GT))]
 
     if(is.na(popCol)){
       # If no population column is specified (NA)
