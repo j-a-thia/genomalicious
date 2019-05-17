@@ -5,15 +5,15 @@
     "dirty" : false,
     "encoding" : "UTF-8",
     "folds" : "",
-    "hash" : "2323343010",
+    "hash" : "1014411866",
     "id" : "92583AC2",
-    "lastKnownWriteTime" : 1557871798,
-    "last_content_update" : 1557871798724,
+    "lastKnownWriteTime" : 1558069550,
+    "last_content_update" : 1558069550900,
     "path" : "~/GitHub/genomalicious/R/plot_missBYsamps.R",
     "project_path" : "R/plot_missBYsamps.R",
     "properties" : {
-        "cursorPosition" : "37,30",
-        "scrollLine" : "29"
+        "cursorPosition" : "10,18",
+        "scrollLine" : "0"
     },
     "relative_order" : 2,
     "source_on_save" : false,

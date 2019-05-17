@@ -1,4 +1,4 @@
-#' Plot missing data, by samples
+#' Plot missing genotypes, by samples
 #'
 #' Use to visualise missing data with respect to samples and
 #' their associated populations.
@@ -6,7 +6,7 @@
 #' @param dat Data table: Contains genetic information and must have
 #' the following columns,
 #' \enumerate{
-#'   \item The sampled individuals (see param \code{sampCOl}).
+#'   \item The sampled individuals (see param \code{sampCol}).
 #'   \item The locus ID (see param \code{locusCol}).
 #'   \item The response column, e.g. a genotype of allele frequency,
 #'   (see param \code{respCol}).
@@ -97,7 +97,15 @@
 #' plot_missBYsamps(datGt, type='heatmap', popCol='POP')
 #'
 #' ####   MISSING FREQUENCY DATA   ####
+#' data(genomalicious_FreqsLong)
 #'
+#' # Can plot missing frequencies for populations,
+#' # by setting a population ID column as argument sampCol.
+#' freqDat <- genomalicious_FreqsLong
+#'
+#' # Add in some missing data
+#' missFreqs <- sample(1:nrow(freqDat), size=15, replace=FALSE)
+#' freqDat$FREQ[missFreqs] <- NA
 #'
 #' ####   CATCH PLOT OUTPUT FOR LATER USE   ####
 #'
