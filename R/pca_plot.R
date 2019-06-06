@@ -11,8 +11,8 @@
 #' each individual. If not using a \code{prcomp} object, the tabular data must
 #' be wide-format: rows are indivdiuals, columns are PC axes.
 #' \item \strong{Scree plot} of eigenvalues, or plotting the \strong{cumulative
-#' explained variance}: \code{dat} is simply a numeric vector containing the
-#' eigenvalues of the PCA.
+#' explained variance}: \code{dat} can be a \code{prcomp} object, or simply
+#' a numeric vector containing the eigenvalues of the PCA.
 #' }
 #'
 #' @param type Character: What type of plot to make: scatter (\code{'scatter'})
@@ -28,7 +28,7 @@
 #' If \code{dat} is a \code{prcomp} object, function will search for \code{dat$pops}
 #' to assign to this argument. Only valid when \code{type=='scatter'}.
 #'
-#' @param popCols Character: A vector of colours to use for each unique population
+#' @param popColours Character: A vector of colours to use for each unique population
 #' in \code{pops}, but is an optional argument. Default = \code{NULL}.
 #' The name of each colour must correspond to a population in \code{pops}.
 #' Only valid when \code{type=='scatter'}.
@@ -42,11 +42,11 @@
 #'
 #' @examples
 #' # Data
-#' data(genomalicious4pops)
+#' data(genomalicious_4pops)
 #'
 #' # Conduct the PCA with Patterson et al.'s (2006) normalisation, and
 #' # population specified
-#' pca <- pca_DTinds(dat=genomalicious4pops, scaling='patterson', popCol='POP')
+#' pca <- pca_DTgenos(dat=genomalicious_4pops, scaling='patterson', popCol='POP')
 #'
 #' # Plot PCA scatter
 #' pca_plot(pca)
@@ -55,19 +55,20 @@
 #' pca_plot(pca
 #'             , axisIndex=c(2,3)
 #'             , pops=pca$pops
-#'             , popCols=c(Pop1='gray30', Pop2='royalblue', Pop3='palevioletred3', Pop4='plum2')
+#'             , popColours=c(Pop1='gray30', Pop2='royalblue', Pop3='palevioletred3', Pop4='plum2')
 #'             , look='classic')
 #'
-#' # Plot scree of eigenvalues
+#' # Plot scree of eigenvalues, using prcomp or numeric object
+#' pca_plot(pca, type='scree')
 #' pca_plot(pca$sdev^2, type='scree')
 #'
-#' # Plot cumulative explained variance
+#' # Plot cumulative explained variance, using prcomp or numeric object
+#' pca_plot(pca, type='expvar', look='classic')
 #' pca_plot(pca$sdev^2, type='expvar', look='classic')
 #'
 #' @export
-
 pca_plot <- function(dat, type='scatter', axisIndex=c(1,2)
-                     , pops=NULL, popCols=NULL, look='ggplot'){
+                     , pops=NULL, popColours=NULL, look='ggplot'){
 
   # --------------------------------------------+
   # Libraries and assertions
@@ -81,9 +82,9 @@ pca_plot <- function(dat, type='scatter', axisIndex=c(1,2)
             scatter plots: prcomp, data.table, data.frame, or matrix.')
     }
   } else if(type %in% c('scree', 'expvar')){
-    if(class(dat)!='numeric'){
-      stop('Argument dat must a numeric to make a scree or cumulative
-           explained variance plot.')
+    if(class(dat)!='prcomp' & class(dat)!='numeric'){
+      stop('Argument dat must be prcomp or numeric class object to make a scree
+           or cumulative explained variance plot.')
     }
   }
 
@@ -108,10 +109,10 @@ pca_plot <- function(dat, type='scatter', axisIndex=c(1,2)
     if(is.null(dat$pops)==FALSE){ pops <- dat$pops}
   }
 
-  # Check that specified populations in popCols are all in pops.
-  if(is.null(pops)==FALSE & is.null(popCols)==FALSE &
-     !sum(names(popCols)%in%unique(pops))==length(unique(pops))){
-    stop("Argument popCols misspecified: names of colours must be in argument pops.")
+  # Check that specified populations in popColours are all in pops.
+  if(is.null(pops)==FALSE & is.null(popColours)==FALSE &
+     !sum(names(popColours)%in%unique(pops))==length(unique(pops))){
+    stop("Argument popColours misspecified: names of colours must be in argument pops.")
   }
 
   # Set the plot theme by look
@@ -147,17 +148,22 @@ pca_plot <- function(dat, type='scatter', axisIndex=c(1,2)
 
     # Add points and population colours if specified
     if(is.null(pops)==TRUE){ gg <- gg + geom_point()
-    } else if(is.null(pops)==FALSE & is.null(popCols)==TRUE){
+    } else if(is.null(pops)==FALSE & is.null(popColours)==TRUE){
       gg <- gg + geom_point(aes(colour=POPS)) + labs(colour=NULL)
-    } else if(is.null(pops)==FALSE & is.null(popCols)==FALSE){
-      gg <- gg + geom_point(aes(colour=POPS)) + scale_colour_manual(values=popCols) + labs(colour=NULL)
+    } else if(is.null(pops)==FALSE & is.null(popColours)==FALSE){
+      gg <- gg + geom_point(aes(colour=POPS)) + scale_colour_manual(values=popColours) + labs(colour=NULL)
     }
   }
 
 
   if(type %in% c('scree', 'expvar')){
     # Vector of number PCs for X axis
-    X <- 1:length(dat)
+    if(class(dat)=='prcomp'){
+      dat <- dat$sdev^2
+      X <- 1:length(dat)
+    } else if(class(dat)=='numeric'){
+      X <- 1:length(dat)
+    }
 
     # If explained variance, divide eigenvalues by sum,
     # also create Y axis label

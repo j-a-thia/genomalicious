@@ -8,6 +8,8 @@ roxygenise('./', clean=TRUE)
 
 library(data.table)
 
+library(genomalicious)
+
 genomalicious_PoolInfo <- data.table(POOL=paste0('Pop', 1:4), INDS=30)
 save(genomalicious_PoolInfo, file='data/genomalicious_PoolInfo.RData')
 
@@ -35,6 +37,7 @@ save(genomalicious_FreqsLong, file='data/genomalicious_FreqsLong.RData')
 
 genomalicious_4pops <- readRDS('inst/extdata/genomalicious_FastSimCoal_30Diploids.RDS')
 setnames(genomalicious_4pops, c('IND', 'GENO'), c('SAMPLE', 'GT'))
-goodloci <- filter_maf(genomalicious4pops, 0.01, 'genos')
-genomalicious4pops <- genomalicious4pops[LOCUS %in% goodloci]
+genomalicious_4pops$GT[genomalicious_4pops$GT=='1/0'] <- '0/1'
+goodloci <- filter_maf(genomalicious_4pops, 0.01, 'genos')
+genomalicious_4pops <- genomalicious_4pops[LOCUS %in% goodloci]
 save(genomalicious_4pops, file='data/genomalicious_4pops.RData')

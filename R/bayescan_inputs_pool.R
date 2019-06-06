@@ -28,11 +28,11 @@
 #' estimated at a frequency of, the counts would be Ref=28 and Alt=12.
 #'
 #' @examples
-#' data(genomaliciousPi)
-#' data(genomaliciousInfo)
+#' data(genomalicious_PoolPi)
+#' data(genomalicious_PoolInfo)
 #'
-#' bayescan_inputs_pool(dat=genomaliciousPi
-#'                      , pool.info=genomaliciousInfo
+#' bayescan_inputs_pool(dat=genomalicious_PoolPi
+#'                      , pool.info=genomalicious_PoolInfo
 #'                      , file.bayescan='Bayescan_input.txt'
 #'                      , file.loci='Bayescan_loci.txt'
 #'                      , popCol='POOL', locusCol='LOCUS', freqCol='PI')

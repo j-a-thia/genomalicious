@@ -12,11 +12,6 @@
 #'   (see param \code{genoCol}).
 #' }
 #'
-#' @param type Character: The type of plot to make. A histogram depicting
-#' the frequency distribution of samples missing information at each
-#' locus (\code{'hist'}, the default)? Or a heatmap illustrating the
-#' missing loci for each sample (\code{'heatmap'})? See Details.
-#'
 #' @param look Character: The look of the plot. Default = \code{'ggplot'}, the
 #' typical gray background with gridlines produced by \code{ggplot2}. Alternatively,
 #' when set to \code{'classic'}, produces a base R style plot.
@@ -73,34 +68,38 @@
 #' datGt <- genomalicious_4pops
 #'
 #' # Add missing values
-#' missIdx <- c(sample(1:nrow(datGt), size=0.05*nrow(datGt), replace=FALSE)
-#'              , 100:500, 800:1200, 8000:8888, 200000:200500)
-#'
-#' datGt$GT[missIdx] <- NA
+#' datGt <- do.call('rbind'
+#'                 , lapply(split(datGt, datGt$SAMPLE), function(x){
+#'                   if(x$POP[1]=='Pop1'){ pr <- 0.1
+#'                   } else if(x$POP[1]=='Pop2'){ pr <- 0.2
+#'                   } else{ pr <- 0.05}
+#'                   numMiss <- rnbinom(1, size=8, prob=pr)
+#'                   idxMiss <- sample(1:nrow(x), size=numMiss, replace=FALSE)
+#'                   x$GT[idxMiss] <- NA
+#'                  return(x)
+#'                 }))
 #'
 #' head(datGt, 10)
 #'
+#' ####   PLOT MISSING BY SAMPLES   ####
 #' # Histograms, ggplot and classic looks
-#' plot_missBYsamps(datGt, type='hist', look='ggplot')
-#' plot_missBYsamps(datGt, type='hist', look='classic')
+#' missHist(datGt, plotBy='samples', look='ggplot')
+#' missHist(datGt, plotBy='samples',, look='classic')
 #'
 #' # Histograms, by population, specifying colour
-#' plot_missBYsamps(datGt, type='hist', look='ggplot'
+#' missHist(datGt, plotBy='samples',, look='ggplot'
 #'                  , popCol='POP' , plotColours='plum2')
 #'
-#' # Heatmaps, default and specified colours
-#' plot_missBYsamps(datGt, type='heatmap')
-#' plot_missBYsamps(datGt, type='heatmap', plotColours=c('black', 'plum2'))
-#'
-#' # Heatmaps, by population
-#' plot_missBYsamps(datGt, type='heatmap', popCol='POP')
+#' ####   PLOT MISSING BY LOCI   ####
+#' missHist(datGt, plotBy='loci',, look='classic'
+#'                  , popCol='POP' , plotColours='plum2')
 #'
 #' ####   CATCH PLOT OUTPUT FOR LATER USE   ####
-#' gg4pops <- plot_missBYsamps(datGt, popCol='POP')
+#' gg4pops <- missHist(datGt, plotBy='samples',, popCol='POP')
 #' plot(gg4pops)
 #'
 #' @export
-plot_missBYsamps <- function(dat, type='hist', look='ggplot'
+missHist <- function(dat, plotBy, look='ggplot'
                              , sampCol='SAMPLE', locusCol='LOCUS'
                              , genoCol='GT', popCol=NA
                              , plotColours='white', plotNCol=2){
@@ -109,6 +108,15 @@ plot_missBYsamps <- function(dat, type='hist', look='ggplot'
   # Libraries, assertions, and setup
   # --------------------------------------------+
   for(lib in c('ggplot2', 'data.table','gridExtra')){ require(lib, character.only = TRUE)}
+
+  # Check that plotBy is specified properly
+  if(sum(c('samples', 'loci') %in% plotBy)!=1){
+    stop("Argument plotBy must be of length==1, and be either 'samples' or 'loci'.")
+  }
+
+  # A column specifier to focus data
+  if(plotBy=='samples'){ focus <- 'SAMPLE'
+  } else{ focus <- 'LOCUS' }
 
   # Rename columns
   colnames(dat)[
@@ -135,74 +143,27 @@ plot_missBYsamps <- function(dat, type='hist', look='ggplot'
   # Code
   # --------------------------------------------+
 
-  # Histogram
-  if(type=='hist'){
-    # If
-    if(is.na(popCol)){
-      # If no population column is specified (NA)
-      stats <- dat[, sum(is.na(GT)), by=SAMPLE]
-      gg <- (ggplot(stats, aes(x=V1))
-             + plotTheme
-             + geom_histogram(fill=plotColours[1], colour='black')
-             + labs(x='Missing genotypes', y='Number of samples'))
-    } else{
-      # If population column is specified, facet plot by population
-      stats <- dat[, sum(is.na(GT)), by=c('SAMPLE', 'POP')]
-      gg <- (ggplot(stats, aes(x=V1))
-             + plotTheme + theme(strip.text.x=element_text(face='bold'))
-             + geom_histogram(fill=plotColours[1], colour='black')
-             + labs(x='Missing genotypes', y='Number of samples')
-             + facet_wrap(~ POP, ncol=plotNCol))
-    }
-  }
-  # Heat map
-  if(type=='heatmap'){
-    # Make two colours, if only ine specified
-    if(length(plotColours)<2){
-      plotColours <- c('white', 'royalblue')
-    }
-
-    # Assign a new column to record missing data
-    dat[, MISS:=as.integer(!is.na(GT))]
-
-    if(is.na(popCol)){
-      # If no population column is specified (NA)
-      gg <- (ggplot(dat, aes(x=SAMPLE, y=LOCUS))
-             + theme(
-               axis.text.x = element_blank()
-               ,axis.text.y = element_blank()
-               ,axis.ticks = element_blank()
-               ,panel.border=element_rect(fill=NA, colour='black')
-               ,legend.position='none'
-             )
-             + geom_tile(aes(fill=as.factor(MISS)), colour=NA)
-             + scale_fill_manual(values=c('0'=plotColours[1], '1'=plotColours[2]))
-             + labs(x='Samples', y='Locus')
-      )
-    } else {
-      # If population column is specified, make indiviudal plot
-      # for each population
-      ggLs <- lapply(unique(dat$POP), function(pop){
-        g <- (ggplot(dat[POP==pop], aes(x=SAMPLE, y=LOCUS))
-              + theme(
-                axis.text.x = element_blank()
-                ,axis.text.y = element_blank()
-                ,axis.ticks = element_blank()
-                ,panel.border=element_rect(fill=NA, colour='black')
-                ,plot.title=element_text(hjust=0.5, size=12, face='bold')
-                ,legend.position='none'
-              )
-              + geom_tile(aes(fill=as.factor(MISS)), colour=NA)
-              + scale_fill_manual(values=c('0'=plotColours[1], '1'=plotColours[2]))
-              + labs(x='Samples', y='Locus', title=pop)
-        )
-        return(g)
-      })
-      gg <- do.call('grid.arrange', c(ggLs, ncol=plotNCol))
-    }
+  if(is.na(popCol)){
+    # If no population column is specified (NA)
+    stats <- dat[, sum(is.na(GT)), by=focus]
+    gg <- (ggplot(stats, aes(x=V1))
+           + plotTheme
+           + geom_histogram(fill=plotColours[1], colour='black')
+           + labs(x='Missing genotypes'
+                  , y=paste0('Number of ', plotBy)
+                  ))
+  } else{
+    # If population column is specified, facet plot by population
+    stats <- dat[, sum(is.na(GT)), by=c(focus, 'POP')]
+    gg <- (ggplot(stats, aes(x=V1))
+           + plotTheme + theme(strip.text.x=element_text(face='bold'))
+           + geom_histogram(fill=plotColours[1], colour='black')
+           + labs(x='Missing genotypes'
+                  , y=paste0('Number of ', plotBy))
+           + facet_wrap(~ POP, ncol=plotNCol))
   }
 
-  # FInish up
+  # Finish up
   plot(gg)
   return(gg)
 }

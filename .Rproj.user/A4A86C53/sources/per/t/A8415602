@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1559805644789.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "260107814",
+    "id" : "A8415602",
+    "lastKnownWriteTime" : 1559806394,
+    "last_content_update" : 1559806394674,
+    "path" : "~/GitHub/genomalicious/R/missHist.R",
+    "project_path" : "R/missHist.R",
+    "properties" : {
+        "cursorPosition" : "70,0",
+        "scrollLine" : "63"
+    },
+    "relative_order" : 6,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

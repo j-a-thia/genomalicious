@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1559801736804.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "451972329",
+    "id" : "4276AD63",
+    "lastKnownWriteTime" : 1559801815,
+    "last_content_update" : 1559801815449,
+    "path" : "~/GitHub/genomalicious/R/dadi_inputs_pools.R",
+    "project_path" : "R/dadi_inputs_pools.R",
+    "properties" : {
+        "cursorPosition" : "31,37",
+        "scrollLine" : "18"
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

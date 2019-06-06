@@ -52,11 +52,11 @@ explained vairance plots. See also \code{pca_DTinds()} to perform PCA on SNP gen
 }
 \examples{
 # Data
-data(genomalicious4pops)
+data(genomalicious_4pops)
 
 # Conduct the PCA with Patterson et al.'s (2006) normalisation, and
 # population specified
-pca <- pca_DTinds(dat=genomalicious4pops, scaling='patterson', popCol='POP')
+pca <- pca_DTgenos(dat=genomalicious_4pops, scaling='patterson', popCol='POP')
 
 # Plot PCA scatter
 pca_plot(pca)

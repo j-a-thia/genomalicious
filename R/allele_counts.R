@@ -4,18 +4,23 @@
 #' is \code{'character'}, then assumes alleles are separated
 #' with a '/'. Doesn't have to be biallelic (see param \code{biallelic}).
 #' If the class is \code{'integer'}, then assumes counts of
-#' Ref alleles, in which case, it does assumes biallelic.
+#' Ref alleles, in which case, it assumes data is biallelic.
 #'
-#' @param biallelic Logical: Is the data biallelic? If alleles separated
-#' by '/' (character vector), expect \code{dat} to take form: '0/0', '0/1', or '1/1'.
-#' If alleles coded as counts of Ref allele, expect \code{dat} to take form:
-#' 0, 1, or 2. Default =\code{TRUE}.
+#' @param biallelic Logical: Is the data biallelic? Affects processing and
+#' output (see also "Value" section).
 #'
-#' @return A vector of alleles counts.
+#' @return A vector of alleles counts. If \code{biallelic==TRUE}, returns
+#' vector with names \code{'ref'} and \code{'alt'}. If \code{biallelic==FALSE},
+#' returns a vector with names as alleles.
 #'
 #' @examples
+#' # Genotypes as separated alleles, biallelic
 #' allele_counts(c('1/1', '0/1', '0/1', '0/0', '0/0'))
+#'
+#' # Genotypes as separated alleles, not biallelic
 #' allele_counts(c('1/1', '2/3', '1/3', '0/0', '2/2'), biallelic=FALSE)
+#'
+#' # Genotypes as counts of the Ref allele
 #' allele_counts(c(2, 1, 1, 0, 2))
 #'
 #' @export
@@ -24,23 +29,23 @@ allele_counts <- function(dat, biallelic=TRUE){
   # --------------------------------------------+
   # Libraries and assertins
   # --------------------------------------------+
-  # Get the alleles
-  als <- unlist(strsplit(dat, split='/'))
-  # Get unique allelles
-  uniqAls <- unique(als)
-
-  if(class(dat)=='numeric'){ dat <- as.integer(dat)}
-
-  if(length(uniqAls)==2 & sum(c('1', '0') %in% uniqAls)==1 & biallelic==FALSE){
-    warning('Argument biallelic==FALSE, but argument dat looks biallelic.')
+  if(class(dat)=='character'){
+    # Get the alleles
+    als <- unlist(strsplit(dat, split='/'))
+    # Get unique allelles
+    uniqAls <- unique(als)
+    # Check to see if number of unique alleles matches biallelic spec
+    if(length(uniqAls)==2 & sum(c('1', '0') %in% uniqAls)==1 & biallelic==FALSE){
+      warning('Argument biallelic==FALSE, but argument dat looks biallelic.')
+    }
   }
 
-  if(length(uniqAls)>2){ biallelic <- FALSE }
-
-  if(class(dat)=='integer' & biallelic==FALSE){
-    stop('Argument dat is an integer, and argument biallelic==FALSE.
-    Cannot count alleles in dat if there are >2 alleles.')
-  }
+  if(class(dat)=='numeric' | class(dat)=='integer'){
+    # Make sure it's an integer
+    dat <- as.integer(dat)
+    # Set biallelic to TRUE
+    biallelic <- TRUE
+    }
 
   # --------------------------------------------+
   # Code
