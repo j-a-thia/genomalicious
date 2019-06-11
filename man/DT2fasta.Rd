@@ -12,7 +12,10 @@ and \code{$SEQ} of nucleotide sequences.}
 
 \item{fastaFile}{Character: The path to the output FASTA file.}
 }
+\value{
+Writes FASTA file.
+}
 \description{
-Converts a data table of sequences (e.g. like that produced by 
+Converts a data table of sequences (e.g. like that produced by
 \code{fasta2DT()}) and writes a FASTA file
 }

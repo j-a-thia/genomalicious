@@ -48,10 +48,16 @@ data(genomalicious_4pops)
 datGt <- genomalicious_4pops
 
 # Add missing values
-missIdx <- c(sample(1:nrow(datGt), size=0.05*nrow(datGt), replace=FALSE)
-             , 100:500, 800:1200, 8000:8888, 200000:200500)
-
-datGt$GT[missIdx] <- NA
+datGt <- do.call('rbind'
+                , lapply(split(datGt, datGt$SAMPLE), function(x){
+                  if(x$POP[1]=='Pop1'){ pr <- 0.1
+                  } else if(x$POP[1]=='Pop2'){ pr <- 0.2
+                  } else{ pr <- 0.05}
+                  numMiss <- rnbinom(1, size=8, prob=pr)
+                  idxMiss <- sample(1:nrow(x), size=numMiss, replace=FALSE)
+                  x$GT[idxMiss] <- NA
+                 return(x)
+                }))
 
 head(datGt, 10)
 

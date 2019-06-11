@@ -2,10 +2,10 @@
 % Please edit documentation in R/dadi_inputs_pools.R
 \name{dadi_inputs_pools}
 \alias{dadi_inputs_pools}
-\title{Genertate DADI input from pool-seq data}
+\title{Genertate dadi input from pool-seq data}
 \usage{
 dadi_inputs_pools(dat, poolCol = "POOL", locusCol = "LOCUS",
-  refCol = "REF", altCol = "ALT", freqCol = "FREQ", indsCol = "INDS",
+  refCol = "REF", altCol = "ALT", freqCol = "PI", indsCol = "INDS",
   poolSub = NULL)
 }
 \arguments{
@@ -34,16 +34,27 @@ dadi_inputs_pools(dat, poolCol = "POOL", locusCol = "LOCUS",
 \item{poolSub}{Character: The pools to subset out of \code{poolCol}. Default = \code{NULL}.}
 }
 \value{
-Returns a data tablein the DADI input format.
+Returns a data table in the dadi input format.
 }
 \description{
-Genertate DADI input from pool-seq data
+Creates an input file for the program dadi, described in Gutenkunst et al. (2009).
 }
 \examples{
-data(genomaliciousPi)
-genomaliciousPi
+data(genomalicious_PoolPi)
+genomalicious_PoolPi
 
-dadi_inputs_pools(genomaliciousPi, poolCol='POOL', locusCol='LOCUS', refCol='REF', altCol='ALT', freqCol='P', indsCol='INDS')
+dadi_inputs_pools(dat=genomalicious_PoolPi
+                  , poolCol='POOL'
+                  , locusCol='LOCUS'
+                  , refCol='REF'
+                  , altCol='ALT'
+                  , freqCol='PI'
+                  , indsCol='INDS'
+                  , poolSub=c('Pop1', 'Pop2'))
 
 
+}
+\references{
+Gutenkunst et al. (2009) Inferring the joint demographic history of multiply populations
+from multidimensional SNP frequency data. PLoS Genetics: 10, e1000695.
 }

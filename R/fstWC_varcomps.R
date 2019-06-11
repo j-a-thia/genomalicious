@@ -5,6 +5,7 @@
 #'
 #' @param sampMat Matrix: Number of sampled individuals. Rows = populations,
 #' columns = loci.
+#'
 fstWC_varcomps <- function(freqMat, sampleMat){
   lociNames <- colnames(freqMat)
   numPops <- nrow(freqMat)
@@ -15,20 +16,14 @@ fstWC_varcomps <- function(freqMat, sampleMat){
     ni <- sampMat[,locus]
 
     # Mean weighted allele frequency
-    p.mean <- sum( pi * (ni/sum(ni)) )
-
-    # Sum squared deviations, population
-    ssp <- sum(ni * (pi - p.mean)^2)
-
-    # Variance, gametes
-    varg <- sum(ni * pi * (1-pi))
+    p.mean <- sum(ni * pi)/sum(ni)
 
     # Mean squares variance components
-    msp <- (1/(length(ni)-1)) * ssp
-    msg <- (1/sum(ni-1)) * varg
+    msp <- (1/(numPops-1)) * sum(ni * (pi - p.mean)^2)
+    msg <- (1/sum(ni-1)) * sum(ni * pi * (1-pi))
 
     # Sample size correction factor
-    nc <- (1/(length(ni)-1)) * ( sum(ni) - (sum(ni^2)/sum(ni)) )
+    nc <- (1/(numPops-1)) * ( sum(ni) - (sum(ni^2)/sum(ni)) )
 
     # Return the locus specific parameters
     return(data.table(LOCUS=locus

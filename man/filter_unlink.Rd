@@ -4,11 +4,19 @@
 \alias{filter_unlink}
 \title{Filter for unlinked loci}
 \usage{
-filter_unlink(dat)
+filter_unlink(dat, chromCol = "CHROM", locusCol = "LOCUS")
 }
 \arguments{
 \item{dat}{Data table: The sequencing read information, must contain the columns:
-\code{CHROM} = the chromosome ID, i.e. contigs; and \code{LOCUS} = the locus ID.}
+\code{CHROM} = the chromosome ID, i.e. contigs; and \code{LOCUS} = the locus ID.
+\enumerate{
+   \item The chromosome (or contig) ID (see param \code{chromCol}).
+   \item The locus ID (see param \code{locusCol}).
+}}
+
+\item{chromCol}{Character: The chromosome (or contig) information column. Default = \code{'CHROM'}.}
+
+\item{locusCol}{Character: The locus information column. Default = \code{'LOCUS'}.}
 }
 \value{
 Returns a character vector of locus names in \code{dat$LOCUS} that are not on the same
@@ -17,4 +25,10 @@ contig in \code{dat$CHROM}.
 \description{
 Parses a data table of sequence read information to randomly draw one locus
 per contig.
+}
+\examples{
+data(genomalicious_4pops)
+
+filter_unlink(genomalicious_4pops)
+
 }

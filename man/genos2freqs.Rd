@@ -4,13 +4,26 @@
 \alias{genos2freqs}
 \title{Generate a matrix of allele frequencies from genotypes}
 \usage{
-genos2freqs(dat)
+genos2freqs(dat, popCol = "POP", sampCol = "SAMPLE", locusCol = "LOCUS",
+  genoCol = "GT")
 }
 \arguments{
 \item{dat}{Data table: It is expected that there are only two alleles, and therefore, only three possible genotypes:
 0/0, 0/1 (or 1/0), and 1/1, where the Ref allele is '0'. This data.table needs the following columns:
-\code{POP}, the population ID; \code{SAMPLE}, the individual ID; \code{LOCUS}, the locus ID;
-and \code{GT}, the genotype.}
+\enumerate{
+   \item The population ID (see param \code{popCol}).
+   \item The sample ID (see param \code{sampCol})
+   \item The locus ID (see param \code{locusCol}).
+   \item The genotypes (see param \code{genoCol}).
+}}
+
+\item{popCol}{Character: The column name with the sampled individual information. Default = \code{'POP'}.}
+
+\item{sampCol}{Character: The column name with the sampled individual information. Default = \code{'SAMPLE'}.}
+
+\item{locusCol}{Character: The column name with the locus information. Default = \code{'LOCUS'}.}
+
+\item{genoCol}{Character: The column name with the genotype information. Default = \code{'GT'}.}
 }
 \value{
 Returns a matrix of allele frequencies for the Ref allele (coded as '0' in the genotype)

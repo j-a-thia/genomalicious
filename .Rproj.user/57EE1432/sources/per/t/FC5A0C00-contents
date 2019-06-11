@@ -1,41 +1,51 @@
+# CODE FOR BUILDING PACKAGE #
+
 # Good website:
 #   http://tinyheero.github.io/jekyll/update/2015/07/26/making-your-first-R-package.html
 
-libs <- c('devtools', 'roxygen2', 'testthat', 'knitr')
+# Developer libraries
+libs <- c('devtools', 'roxygen2', 'testthat', 'knitr', 'data.table', 'tidyr')
 for(L in libs){require(L, character.only=T)}
 
+# Make documents
 roxygenise('./', clean=TRUE)
 
-library(data.table)
+# Load currently installed genomalicious
+library(genomalicious)
 
-genomaliciousInfo <- data.table(POOL=paste0('Pop', 1:4), INDS=30)
-save(genomaliciousInfo, file='data/genomaliciousInfo.RData')
+# Make pool info data
+genomalicious_PoolInfo <- data.table(POOL=paste0('Pop', 1:4), INDS=30)
+save(genomalicious_PoolInfo, file='data/genomalicious_PoolInfo.RData')
 
-genomaliciousReads <- fread('inst/extdata/genomaliciousReads.csv')
-save(genomaliciousReads, file='data/genomaliciousReads.RData')
-refalt <- unique(genomaliciousReads[, c('LOCUS', 'REF', 'ALT')])
+# Make pool reads data
+genomalicious_PoolReads <- fread('inst/extdata/genomalicious_PoolReads.csv')
+save(genomalicious_PoolReads, file='data/genomalicious_PoolReads.RData')
+refalt <- unique(genomalicious_PoolReads[, c('LOCUS', 'REF', 'ALT')])
 
-genomaliciousPi <- fread('inst/extdata/genomaliciousPi.csv')
-genomaliciousPi <- cbind(genomaliciousPi, refalt[match(genomaliciousPi$LOCUS, refalt$LOCUS), c('REF', 'ALT')]
-                         , INDS=genomaliciousInfo$INDS[match(genomaliciousPi$POOL, genomaliciousInfo$POOL)]
+# Make pool ref allele (pi) frequency estimate data
+genomalicious_PoolPi <- fread('inst/extdata/genomalicious_PoolPi.csv')
+genomalicious_PoolPi <- cbind(genomalicious_PoolPi, refalt[match(genomalicious_PoolPi$LOCUS, refalt$LOCUS), c('REF', 'ALT')]
+                         , INDS=genomalicious_PoolInfo$INDS[match(genomalicious_PoolPi$POOL, genomalicious_PoolInfo$POOL)]
                          )
-save(genomaliciousPi, file='data/genomaliciousPi.RData')
+save(genomalicious_PoolPi, file='data/genomalicious_PoolPi.RData')
 
+# Make a wide matrix of allele frequencies
+genomalicious_Freqs <- as.data.frame(
+                          spread(fread('inst/extdata/genomalicious_PoolPi.csv')[, c('POOL', 'LOCUS', 'PI')]
+                            , key=LOCUS, value=PI))
+rownames(genomalicious_Freqs) <- genomalicious_Freqs$POOL
+genomalicious_Freqs <- as.matrix(genomalicious_Freqs[, -which(colnames(genomalicious_Freqs)=='POOL')])
+save(genomalicious_Freqs, file='data/genomalicious_Freqs.RData')
 
+# genomalicious_FreqsLong <- as.data.table(genomalicious_Freqs)
+# genomalicious_FreqsLong$POP <- rownames(genomalicious_Freqs)
+# genomalicious_FreqsLong <- melt(genomalicious_FreqsLong, id='POP', variable.name='LOCUS', value.name='FREQ')
+# save(genomalicious_FreqsLong, file='data/genomalicious_FreqsLong.RData')
 
-genomaliciousGenos <- fread('inst/extdata/genomaliciousGenos.csv')
-save(genomaliciousGenos, file='data/genomaliciousGenos.RData')
-
-genomaliciousFreqs <- readRDS('inst/extdata/genomaliciousFreqs.RDS')
-save(genomaliciousFreqs, file='data/genomaliciousFreqs.RData')
-
-genomaliciousFreqsLong <- as.data.table(genomaliciousFreqs)
-genomaliciousFreqsLong$POP <- rownames(genomaliciousFreqs)
-genomaliciousFreqsLong <- melt(genomaliciousFreqsLong, id='POP', variable.name='LOCUS', value.name='FREQ')
-save(genomaliciousFreqsLong, file='data/genomaliciousFreqsLong.RData')
-
-genomalicious4pops <- readRDS('inst/extdata/genomalicious_FastSimCoal_30Diploids.RDS')
-setnames(genomalicious4pops, c('IND', 'GENO'), c('SAMPLE', 'GT'))
-goodloci <- filter_maf(genomalicious4pops, 0.01, 'genos')
-genomalicious4pops <- genomalicious4pops[LOCUS %in% goodloci]
-save(genomalicious4pops, file='data/genomalicious4pops.RData')
+# Make the 4 pop genotype dataset
+genomalicious_4pops <- readRDS('inst/extdata/genomalicious_FastSimCoal_30Diploids.RDS')
+setnames(genomalicious_4pops, c('IND', 'GENO'), c('SAMPLE', 'GT'))
+genomalicious_4pops$GT[genomalicious_4pops$GT=='1/0'] <- '0/1'
+goodloci <- filter_maf(genomalicious_4pops, 0.01, 'genos')
+genomalicious_4pops <- genomalicious_4pops[LOCUS %in% goodloci]
+save(genomalicious_4pops, file='data/genomalicious_4pops.RData')

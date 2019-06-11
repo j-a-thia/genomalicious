@@ -30,15 +30,15 @@
 #'
 #' @examples
 #' # Data as matrix
-#' data(genomaliciousFreqs)
-#' He1 <- He_freqs(genomaliciousFreqs)
+#' data(genomalicious_Freqs)
+#' He1 <- He_freqs(genomalicious_Freqs)
 #'
 #' # Data as long data table
-#' data(genomaliciousFreqsLong)
-#' He2 <- He_freqs(genomaliciousFreqsLong, popCol='POP', locusCol='LOCUS', freqCol='FREQ')
+#' data(genomalicious_PoolPi)
+#' He2 <- He_freqs(genomalicious_PoolPi, popCol='POOL', locusCol='LOCUS', freqCol='PI')
 #'
 #' @export
-He_freqs <- function(dat, popCol=NA, locusCol=NA, freqCol=NA){
+He_freqs <- function(dat, popCol='POP', locusCol='LOCUS', freqCol='FREQ'){
   # BEGIN .............
 
   # --------------------------------------------+
@@ -76,14 +76,15 @@ He_freqs <- function(dat, popCol=NA, locusCol=NA, freqCol=NA){
   # Analysis
   # --------------------------------------------+
   # Get the He for each population x locus combination
-  if(class(dat)=='matrix'){
+  if(class(dat)[1]=='matrix'){
     popXlocus <- as.data.table(apply(dat, 2, FUN_2pq))
     popXlocus$POP <- rownames(dat)
     popXlocus <- melt(popXlocus, id='POP', variable.name='LOCUS', value.name='HE')
   }
 
   if('data.table'%in%class(dat)){
-    setnames(dat, old=c(popCol, locusCol, freqCol), c('POP', 'LOCUS', 'FREQ'))
+    colReass <- match(c(popCol, locusCol, freqCol), colnames(dat))
+    colnames(dat)[colReass] <- c('POP', 'LOCUS', 'FREQ')
     popXlocus <- dat[, FUN_2pq(FREQ), by=c('POP', 'LOCUS')]
     setnames(popXlocus, 'V1', 'HE')
   }

@@ -13,9 +13,9 @@ DT2Mat_genos(dat, sampCol = NA, locusCol = NA, genoCol = NA,
 of the Ref alleles e.g. (0, 1, 2).
 Three columns are required:
 \enumerate{
-   \item (1) The sampled individual ID (see param \code{sampCol}).
-   \item (2) The locus ID (see param \code{locusCol}).
-   \item (3) The genotype (see param \code{genoCol}).
+   \item The sampled individual ID (see param \code{sampCol}).
+   \item The locus ID (see param \code{locusCol}).
+   \item The genotype (see param \code{genoCol}).
 }
 The sampled individual ID column serves as the pivot point to convert the long data table into a wide matrix.
 If converting from a genotypes matrix to a data table, see argument \code{flip}.}
@@ -48,15 +48,17 @@ a matrix in wide format (loci in columns and individuals in rows). The reverse
 can also be done. See also \code{DT2Mat_freqs} for converting matrix of frequencies.
 }
 \examples{
-data(genomaliciousGenos)
+data(genomalicious_4pops)
+datGt <- genomalicious_4pops[LOCUS \%in\% unique(genomalicious_4pops$LOCUS)[1:8]]
 
 # Convert a long data table to a wide matrix
-genoMatSep <- DT2Mat_genos(genomaliciousGenos
+genoMatSep <- DT2Mat_genos(datGt
               , sampCol='SAMPLE'
               , locusCol='LOCUS'
               , genoCol='GT'
               , flip=FALSE)
-genoMatCounts <- DT2Mat_genos(genomaliciousGenos
+
+genoMatCounts <- DT2Mat_genos(datGt
               , sampCol='SAMPLE'
               , locusCol='LOCUS'
               , genoCol='GT'
@@ -64,7 +66,7 @@ genoMatCounts <- DT2Mat_genos(genomaliciousGenos
               , flip=FALSE)
 
 # Convert a wide matrix back to a data table
-genoDTSep <- DT2Mat_genos(genoMat
+genoDTSep <- DT2Mat_genos(genoMatSep
               , sampCol='SAMPLE'
               , locusCol='LOCUS'
               , genoCol='GT'

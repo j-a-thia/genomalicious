@@ -4,7 +4,7 @@
 \alias{He_freqs}
 \title{Calculate expected heterozygosity from allele frequencies}
 \usage{
-He_freqs(dat, popCol = NA, locusCol = NA, freqCol = NA)
+He_freqs(dat, popCol = "POP", locusCol = "LOCUS", freqCol = "FREQ")
 }
 \arguments{
 \item{dat}{Matrix or Data table/frame: Can take a matrix of allele frequencies (row names
@@ -40,11 +40,11 @@ q = the Alt allele frequency.
 }
 \examples{
 # Data as matrix
-data(genomaliciousFreqs)
-He1 <- He_freqs(genomaliciousFreqs)
+data(genomalicious_Freqs)
+He1 <- He_freqs(genomalicious_Freqs)
 
 # Data as long data table
-data(genomaliciousFreqsLong)
-He2 <- He_freqs(genomaliciousFreqsLong, popCol='POP', locusCol='LOCUS', freqCol='FREQ')
+data(genomalicious_PoolPi)
+He2 <- He_freqs(genomalicious_PoolPi, popCol='POOL', locusCol='LOCUS', freqCol='PI')
 
 }

@@ -1,15 +1,15 @@
 #' Generate \code{bayescan} input files
 #'
-#' Generates an input file for Bayescan from pooled allele frequencies. \cr
+#' Generates an input file for Bayescan (Foll & Gaggiotti, 2008) from pooled allele frequencies. \cr
 #' \cr
 #' It assumes that these pooled allele frequencies have been estimated from Gautier et al. (2013)'s
 #' \code{poolne_estim}, and have been imported into \code{R} with \code{genomalicious}.
 #'
-#' @param dat Data.table: The biallelic SNP data. Requires all of the following columns: \cr
+#' @param dat Data table: The biallelic SNP data. Requires all of the following columns: \cr
 #'              \enumerate{
-#'                \item \code{POOL} = The population pool ID. \cr
-#'                \item \code{LOCUS} = The locus ID. \cr
-#'                \item \code{PI} = The population Ref allele frequency. \cr
+#'                \item The population pool ID. \cr
+#'                \item The locus ID. \cr
+#'                \item The population Ref allele frequency. \cr
 #'              }
 #'
 #' @param pool.info Data table: The population pool metadata. Requires all of the following columns: \cr
@@ -23,9 +23,18 @@
 #' @param file.loci Character: A file that contains an information about the locus ID in
 #' the \code{bayescan} input file (i.e., \code{file.bayescan}).
 #'
+#' @param poolCol Character: Population pool ID. Default = \code{'POOL'}
+#'
+#' @param locusCol Character: Locus ID. Default = \code{'LOCUS'}
+#'
+#' @param freqCol Character: The reference allele frequency. Default = \code{'FREQ'}.
+#'
 #' @details The allele counts in the Bayescan input file generated reflect the number of haploid
 #' genomes pooled. E.g. if 20 individuals were pooled, i.e. 40 genomes, and the Ref allele was
-#' estimated at a frequency of, the counts would be Ref=28 and Alt=12.
+#' estimated at a frequency of 0.7, the counts would be Ref=28 and Alt=12.
+#'
+#' @references Foll & Gaggiotti (2008) A genome scan method to identify selected loci appropriate
+#' for both dominant and codominant markers: A Bayesian perspective. Genetics 180: 977-993.
 #'
 #' @examples
 #' data(genomalicious_PoolPi)
@@ -35,10 +44,10 @@
 #'                      , pool.info=genomalicious_PoolInfo
 #'                      , file.bayescan='Bayescan_input.txt'
 #'                      , file.loci='Bayescan_loci.txt'
-#'                      , popCol='POOL', locusCol='LOCUS', freqCol='PI')
+#'                      , poolCol='POOL', locusCol='LOCUS', freqCol='PI')
 #'
 #' @export
-bayescan_inputs_pool <- function(dat, pool.info, file.bayescan, file.loci, popCol, locusCol, freqCol) {
+bayescan_inputs_pool <- function(dat, pool.info, file.bayescan, file.loci, poolCol, locusCol, freqCol) {
 
   # BEGIN ...........
   # --------------------------------------------+
@@ -53,8 +62,8 @@ bayescan_inputs_pool <- function(dat, pool.info, file.bayescan, file.loci, popCo
   if(!'data.table' %in% class(pool.info)){ stop("Argument pool.info isn't a data table") }
 
   # Test for the necessary columns in dat.
-  if(sum(c(popCol, locusCol, freqCol) %in% colnames(dat))!= 3){
-    stop("Argument dat needs the columns specified by the arguments: popCol, locusCol, freqCol")
+  if(sum(c(poolCol, locusCol, freqCol) %in% colnames(dat))!= 3){
+    stop("Argument dat needs the columns specified by the arguments: poolCol, locusCol, freqCol")
   }
 
   # Test for the necessary columns in pool.info.
@@ -65,27 +74,28 @@ bayescan_inputs_pool <- function(dat, pool.info, file.bayescan, file.loci, popCo
   # --------------------------------------------+
   # Code
   # --------------------------------------------+
-  # Rename population, locus, and frequency columns
-  setnames(dat, c(popCol, locusCol, freqCol), c('POOL', 'LOCUS', 'PI'))
+  # Reassign population, locus, and frequency columns
+  colReass <- match(c(poolCol, locusCol, freqCol), colnames(dat))
+  colnames(dat)[colReass] <- c('POOL', 'LOCUS', 'P')
 
   # Create some character objects to insert into input file
   num.loci <- paste0('[loci]=',length(unique(dat$LOCUS)))
   num.pops <- paste0('[populations]=',length(unique(dat$POOL)))
 
   # Reduce data columns then split the data on $POOL.
-  dat.spl <- lapply(split(dat[,c('POOL','LOCUS','PI')], dat$POOL), function(X){
+  dat.spl <- lapply(split(dat[,c('POOL','LOCUS','P')], dat$POOL), function(X){
     setorder(X, LOCUS)
     return(X)
   })
 
   # Iterate through each Xth population and make a Bayescan-friendly data table.
-  # The observed REF and ALT alleles counts are derived from the estimated values in $PI,
+  # The observed REF and ALT alleles counts are derived from the estimated values in $P,
   # with respect to the sampled number of genomes (2*diploid individuals).
   BS.ls <- lapply(dat.spl, function(X){
     pool <- X$POOL[1]
     genomes <- pool.info[POOL==pool]$IND
     pop <- unique(X$POOL)
-    ref <- as.integer(X$PI*genomes)
+    ref <- as.integer(X$P*genomes)
     alt <- genomes - ref
     # BS.dt is a data table for each population in the Bayescan (BS) format.
     # There are 5 columns: 1=the locus number; 2=total sampled genomes (2xdiploid individuals);

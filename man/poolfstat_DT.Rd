@@ -45,8 +45,8 @@ the function \code{poolfstat::computeFST}. Also requires pool size information.
 }
 \examples{
 # Load in the pool metadata and reads
-data(genomaliciousInfo)
-data(genomaliciousReads)
+data(genomalicious_PoolInfo)
+data(genomalicious_PoolReads)
 
 # Subset to keep only Rep1 reads.
 X <- genomaliciousReads[grep(pattern='Rep1', x=genomaliciousReads$SAMPLE)]
@@ -55,7 +55,16 @@ X <- genomaliciousReads[grep(pattern='Rep1', x=genomaliciousReads$SAMPLE)]
 X$POOL <- unlist(lapply(strsplit(X$SAMPLE, '_'), function(X){ return(X[1]) }))
 
 # Calculate FST using poolfstat
-poolfstat_DT(X, genomaliciousInfo)
+Y <- poolfstat_DT(X, genomalicious_PoolInfo)
 
+# Output is a list
+class(Y)
+
+# Outout from poolfstat::computeFST
+Y$Fst
+
+# The pooldata class object, generated from data table of pooled reads
+class(Y$pooldat)
+Y$pooldat
 
 }

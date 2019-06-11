@@ -43,12 +43,13 @@
 #' @examples
 #' # Data
 #' data(genomalicious_4pops)
+#' datGt <- genomalicious_4pops
 #'
 #' # Conduct the PCA with Patterson et al.'s (2006) normalisation, and
 #' # population specified
-#' pca <- pca_DTgenos(dat=genomalicious_4pops, scaling='patterson', popCol='POP')
+#' pca <- pca_DTgenos(dat=datGt, scaling='patterson', popCol='POP')
 #'
-#' # Plot PCA scatter
+#' # Plot the PCA
 #' pca_plot(pca)
 #'
 #' # Get more specific on scatter
@@ -77,12 +78,12 @@ pca_plot <- function(dat, type='scatter', axisIndex=c(1,2)
 
   # Check the dat is the correct data class
   if(type=='scatter'){
-    if(class(dat)!='prcomp' & !class(dat)[1]%in%c('data.table','data.frame','matrix')){
+    if(!class(dat)[1]%in%c('data.table','data.frame','matrix','prcomp')){
       stop('Argument dat must be one of the following object classes for making
             scatter plots: prcomp, data.table, data.frame, or matrix.')
     }
   } else if(type %in% c('scree', 'expvar')){
-    if(class(dat)!='prcomp' & class(dat)!='numeric'){
+    if(!class(dat)[1]%in%c('numeric','prcomp')){
       stop('Argument dat must be prcomp or numeric class object to make a scree
            or cumulative explained variance plot.')
     }

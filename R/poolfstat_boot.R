@@ -5,7 +5,7 @@
 #' pool size information.
 #'
 #' @param dat Pooldata: The main data class object for \code{poolfstat}. Can be created
-#' from a data table of read counts using \code{poolfstat_DT}.
+#' from a data table of read counts using \code{genomalicious::poolfstat_DT}.
 #'
 #' @param num.boots Integer: The number of bootstrap simulations to run. Default = 100.
 #'
@@ -19,9 +19,9 @@
 #' original read count dataset, \code{dat}.
 #'
 #' @examples
-#' #' # Load in the pool metadata and reads
-#' data(genomaliciousReads)
-#' data(genomaliciousInfo)
+#' # Load in the pool metadata and reads
+#' data(genomalicious_PoolInfo)
+#' data(genomalicious_PoolReads)
 #'
 #' # Subset to keep only Rep1 reads.
 #' X <- genomaliciousReads[grep(pattern='Rep1', x=genomaliciousReads$SAMPLE)]
@@ -30,7 +30,7 @@
 #' X$POOL <- unlist(lapply(strsplit(X$SAMPLE, '_'), function(X){ return(X[1]) }))
 #'
 #' # Use poolfstat_DT to compute FST for this dataset and create a pooldata object
-#' poolFst <- poolfstat_DT(X, genomaliciousInfo)
+#' poolFst <- poolfstat_DT(X, genomalicious_PoolInfo)
 #'
 #' # Bootstrap FST, using pooldata object from poolFst
 #' bootFst <- poolfstat_boot(poolFst$pooldat, 100)

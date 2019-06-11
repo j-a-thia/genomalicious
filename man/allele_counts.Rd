@@ -11,22 +11,27 @@ allele_counts(dat, biallelic = TRUE)
 is \code{'character'}, then assumes alleles are separated
 with a '/'. Doesn't have to be biallelic (see param \code{biallelic}).
 If the class is \code{'integer'}, then assumes counts of
-Ref alleles, in which case, it does assumes biallelic.}
+Ref alleles, in which case, it assumes data is biallelic.}
 
-\item{biallelic}{Logical: Is the data biallelic? If alleles separated
-by '/' (character vector), expect \code{dat} to take form: '0/0', '0/1', or '1/1'.
-If alleles coded as counts of Ref allele, expect \code{dat} to take form:
-0, 1, or 2. Default =\code{TRUE}.}
+\item{biallelic}{Logical: Is the data biallelic? Affects processing and
+output (see also "Value" section).}
 }
 \value{
-A vector of alleles counts.
+A vector of alleles counts. If \code{biallelic==TRUE}, returns
+vector with names \code{'ref'} and \code{'alt'}. If \code{biallelic==FALSE},
+returns a vector with names as alleles.
 }
 \description{
 Calculate allele counts
 }
 \examples{
+# Genotypes as separated alleles, biallelic
 allele_counts(c('1/1', '0/1', '0/1', '0/0', '0/0'))
+
+# Genotypes as separated alleles, not biallelic
 allele_counts(c('1/1', '2/3', '1/3', '0/0', '2/2'), biallelic=FALSE)
+
+# Genotypes as counts of the Ref allele
 allele_counts(c(2, 1, 1, 0, 2))
 
 }

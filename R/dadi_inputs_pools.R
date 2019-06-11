@@ -1,4 +1,6 @@
-#' Genertate DADI input from pool-seq data
+#' Genertate dadi input from pool-seq data
+#'
+#' Creates an input file for the program dadi, described in Gutenkunst et al. (2009).
 #'
 #' @param dat Data table: Must contain columns with the following information,
 #' \enumerate{
@@ -17,19 +19,23 @@
 #' @param indsCol Character: The number of individuals per population pool. Default = \code{'INDS'}.
 #' @param poolSub Character: The pools to subset out of \code{poolCol}. Default = \code{NULL}.
 #'
-#' @return Returns a data tablein the DADI input format.
+#' @return Returns a data table in the dadi input format.
+#'
+#' @references Gutenkunst et al. (2009) Inferring the joint demographic history of multiply populations
+#' from multidimensional SNP frequency data. PLoS Genetics: 10, e1000695.
 #'
 #' @examples
 #' data(genomalicious_PoolPi)
 #' genomalicious_PoolPi
 #'
-#' dadi_inputs_pools(genomaliciousPi
+#' dadi_inputs_pools(dat=genomalicious_PoolPi
 #'                   , poolCol='POOL'
 #'                   , locusCol='LOCUS'
 #'                   , refCol='REF'
 #'                   , altCol='ALT'
-#'                   , freqCol='P'
-#'                   , indsCol='INDS')
+#'                   , freqCol='PI'
+#'                   , indsCol='INDS'
+#'                   , poolSub=c('Pop1', 'Pop2'))
 #'
 #'
 #' @export
@@ -38,7 +44,7 @@ dadi_inputs_pools <- function(dat
                              , locusCol='LOCUS'
                              , refCol='REF'
                              , altCol='ALT'
-                             , freqCol='FREQ'
+                             , freqCol='PI'
                              , indsCol='INDS'
                              , poolSub=NULL){
 
@@ -50,8 +56,8 @@ dadi_inputs_pools <- function(dat
   for(lib in c('data.table', 'dplyr')){ require(lib, character.only = TRUE)}
 
   # Reassign names
-  setnames(dat, c(poolCol, locusCol, refCol, altCol, freqCol, indsCol)
-           , c('POOL', 'LOCUS', 'REF', 'ALT', 'P', 'INDS'))
+  colReass <- match(c(poolCol, locusCol, refCol, altCol, freqCol, indsCol), colnames(dat))
+  colnames(dat)[colReass] <- c('POOL', 'LOCUS', 'REF', 'ALT', 'P', 'INDS')
 
   # Sub out the pools if specified
   if(is.null(poolSub)==FALSE){
@@ -69,9 +75,9 @@ dadi_inputs_pools <- function(dat
   dat[, ALT.COUNT:=INDS-REF.COUNT]
 
   # Some manipulations
-  r <- spread(X[,c('LOCUS', 'REF', 'POOL', 'REF.COUNT')], key=POOL, value=REF.COUNT)
+  r <- spread(dat[,c('LOCUS', 'REF', 'POOL', 'REF.COUNT')], key=POOL, value=REF.COUNT)
   setorder(r, 'LOCUS'); setnames(r, 'REF', 'Allele1')
-  a <- spread(X[,c('LOCUS', 'ALT', 'POOL', 'ALT.COUNT')], key=POOL, value=ALT.COUNT)
+  a <- spread(dat[,c('LOCUS', 'ALT', 'POOL', 'ALT.COUNT')], key=POOL, value=ALT.COUNT)
   setorder(a, 'LOCUS'); setnames(a, 'ALT', 'Allele2')
 
   # Mash it all together

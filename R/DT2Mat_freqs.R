@@ -1,18 +1,18 @@
 #' Convert a data table of allele frequencies into a matrix (or vice versa)
 #'
-#' Takes a data table of allele frequencies in long-format and converts it into
-#' a matrix in wide-format (loci in columns and populations in rows). The reverse
+#' Takes a data table of allele frequencies in long format and converts it into
+#' a matrix in wide format (loci in columns and populations in rows). The reverse
 #' can also be done. See also \code{DT2Mat_genos} for converting matrix of genotypes.
 #'
 #' @param dat Data table or Matrix: The object to transform. If this is a long data table
-#' # of allele frequencies, then three columns are required:
+#' of allele frequencies, then three columns are required:
 #' \enumerate{
-#'    \item (1) The population ID (see param \code{popCol}).
-#'    \item (2) The locus ID (see param \code{locusCol}).
-#'    \item (3) The Ref allele frequency (see param \code{freqCol}).
+#'    \item The population ID (see param \code{popCol}).
+#'    \item The locus ID (see param \code{locusCol}).
+#'    \item The Ref allele frequency (see param \code{freqCol}).
 #' }
 #' The population pool column serves as the pivot point to convert the long data table into a wide matrix.
-#' If convertin from a frequency matrix to a data table, see argument \code{flip}.
+#' If converting from a frequency matrix to a data table, see argument \code{flip}.
 #'
 #' @param popCol Character: The column name with the population information.
 #'
@@ -32,11 +32,12 @@
 #' the Ref allele frequency.
 #'
 #' @examples
-#' data(genomalicious_FreqsLong)
-#' datFreq <- genomalicious_FreqsLong
+#' data(genomalicious_PoolPi)
+#' datFreq <- genomalicious_PoolPi
+#' datFreq
 #'
 #' # Convert a long data table to a wide matrix
-#' freqMat <- DT2Mat_freqs(dat=datFreq, popCol='POP', locusCol='LOCUS', freqCol='FREQ', flip=FALSE)
+#' freqMat <- DT2Mat_freqs(dat=datFreq, popCol='POOL', locusCol='LOCUS', freqCol='PI', flip=FALSE)
 #'
 #' # Convert a wide matrix back to a data table
 #' freqDT <- DT2Mat_freqs(freqMat, popCol='POP', locusCol='LOCUS', freqCol='FREQ', flip=TRUE)

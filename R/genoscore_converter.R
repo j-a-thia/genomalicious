@@ -5,14 +5,20 @@
 #'
 #' @param dat Character/Integer: A vector of genotypes. If the class
 #' is \code{'character'}, then assumes separated alleles and converts into
-#' allele counts. The opposite is true if class is \code{'integer'}, will
+#' allele counts. The opposite is true, if class is \code{'integer'}, will
 #' convert into separated alleles.
+#'
+#' @examples
+#' genoscore_converter(c('0/0', '0/1', '1/1'))
+#' genoscore_converter(c(0, 1, 2))
 #'
 #' @export
 genoscore_converter <- function(dat){
-  if(!class(dat) %in% c('character', 'integer')){
+  if(!class(dat) %in% c('character', 'integer', 'numeric')){
     stop('Class of argument dat is wrong.')
   }
+
+  if(class(dat)=='numeric'){ dat <- as.integer(dat)}
 
   if(class(dat)=='character'){
     gt <- lapply(strsplit(dat, split='/', fixed=TRUE)

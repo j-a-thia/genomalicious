@@ -1,5 +1,8 @@
 #' Calculate Weir and Cockerham's FST
 #'
+#' Takes a matrix of biallelic allele frequencies, and a matric of sample sizes,
+#' and calculates Weir and Cockerham's FST, i.e. theta (Weir & Cockerham, 1984)
+#'
 #' @param freqMat Matrix: Ref allele counts. Rows = populations,
 #' columns = loci; make sure both are named. Row names used to label output FST matrix.
 #'
@@ -32,6 +35,7 @@
 #'
 #' fstWC(freqMat, sampMat, pairs=FALSE)
 #' fstWC(freqMat, sampMat, pairs=TRUE)
+#' fstWC(freqMat, sampMat, pairs=TRUE, dist=TRUE)
 #'
 #' @export
 fstWC <- function(freqMat, sampMat, pairs=FALSE, dist=FALSE){
@@ -114,7 +118,7 @@ fstWC <- function(freqMat, sampMat, pairs=FALSE, dist=FALSE){
       for(j in 1:ncol(pairCombos)){
         pop1 <- pairCombos[1,j]
         pop2 <- pairCombos[2,j]
-        fst.dist[pop2, pop1] <- outLs <- fst.mean[POP1==pop1 & POP2==pop2]$FST
+        fst.dist[pop2, pop1] <- outLs$fst.mean[POP1==pop1 & POP2==pop2]$FST
       }
       # Add to the output list
       outLs$fst.dist <- as.dist(fst.dist, diag=TRUE)

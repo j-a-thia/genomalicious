@@ -4,12 +4,12 @@
 #' used in a pool-seq experiment. \cr
 #' \cr
 #' Data of this structure would be used as the \code{dat} parameter in the
-#' function \code{poolne_estim_input}, which prepares pooled replicate sequencing
+#' function \code{genomalicious::poolne_estim_input}, which prepares pooled replicate sequencing
 #' data for analysis by Gautier et al.'s (2013) \code{poolne_estim}.
 #'
-#' @usage data(genomaliciousInfo)
+#' @usage data(genomalicious_PoolInfo)
 #'
-#' @format A data table with 2 columns and 2 rows.
+#' @format A data table with 2 rows and 2 columns.
 #'
 #' @details
 #' \itemize{
@@ -20,9 +20,9 @@
 #'
 #' @references Gautier et al. (2013) Estimation of population allele frequencies from
 #' next-generation sequencing data: pool-versus individual-based genotyping.
-#' Molecular Ecology, 22(14), 3766–3779.
+#' Molecular Ecology: 22(14) 3766–3779.
 #'
 #' @docType data
 #' @keywords datasets
-#' @name genomaliciousInfo
+#' @name genomalicious_PoolInfo
 NULL

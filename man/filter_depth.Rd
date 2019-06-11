@@ -4,11 +4,15 @@
 \alias{filter_depth}
 \title{Filter loci by sequencing depth}
 \usage{
-filter_depth(dat, minDP = 10, maxDP = NA)
+filter_depth(dat, minDP = 10, maxDP = NA, locusCol = "LOCUS",
+  dpCol = "DP")
 }
 \arguments{
 \item{dat}{Data table: The sequencing read information, must contain the columns:
-\code{$LOCUS} = the locus ID; and \code{$DP} = the depth of sequencing reads.}
+\enumerate{
+   \item The locus ID (see param \code{locusCol}).
+   \item The read depth (see param \code{dpCol}).
+}}
 
 \item{minDP}{Integer: The minimum sequencing depth. Loci below this value are flagged
 as 'bad' loci. Default = \code{10}. Must be specified; set \code{minDP = 0} if there is no
@@ -16,6 +20,10 @@ minimum number of reads.}
 
 \item{maxDP}{Integer: The maximum sequencing depth. Loci above this value are flagged
 as 'bad' loci. Default = \code{NA}.}
+
+\item{locusCol}{Character: The column name with the locus information. Default = \code{'LOCUS'}.}
+
+\item{dpCol}{Character: The column with read depth information. Default = \code{'DP'}.}
 }
 \value{
 Returns a character vector of locus names in \code{dat$LOCUS} that conform
@@ -26,23 +34,24 @@ Parses a data table of sequencing read information to determine which loci
 conform to desired sequencing depth values.
 }
 \examples{
-data(genomaliciousReads)
+data(genomalicious_PoolReads)
+datReads <- genomalicious_PoolReads
 
 # Look at the sequencing coverage
-genomaliciousReads
+datReads
 
 # Exclude loci with coverage < 30 reads
-min30 <- filter_depth(genomaliciousReads, minDP=30)
+min30 <- filter_depth(datReads, minDP=30)
 min30
-genomaliciousReads[LOCUS \%in\% min30]
+datReads[LOCUS \%in\% min30]
 
 # Exclude loci with coverage < 30 and > 110 reads
-min30max110 <- filter_depth(genomaliciousReads, minDP=30, maxDP=110)
+min30max110 <- filter_depth(datReads, minDP=30, maxDP=110)
 min30max110
-genomaliciousReads[LOCUS \%in\% min30max110]
+datReads[LOCUS \%in\% min30max110]
 
 # Alternatively, subset data.table to only contain the
 # bad loci with coverage < 30 reads
-genomaliciousReads[!(LOCUS \%in\% min30)]
+datReads[!(LOCUS \%in\% min30)]
 
 }

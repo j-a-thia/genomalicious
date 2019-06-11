@@ -1,29 +1,20 @@
-#' An example of collated data after analysis by \code{poolne_estim}
+#' An example of collating results from \code{poolne_estim}, in R
 #'
-#' \code{genomalicious} allows collation of output files from Gautier et al.'s (2013) programme
+#' \code{genomalicious} allows collation of output files from Gautier et al.'s (2013) program
 #' \code{poolne_estim}. \cr
 #' \cr
-#' Read counts from replicate sequencing events are processed by \code{PoolNeEstim_gen_inputs},
+#' Read counts from replicate sequencing events are processed by \code{genomalicious::poolne_estim_inputs},
 #' which provides the inputs for \code{poolne_estim}. The results of the \code{poolne_estim}
-#' analysis can then be pulled into \code{R} with the function \code{poolne_estim_outputs}. \cr
+#' analysis can then be imported into R with the function \code{genomalicious::poolne_estim_outputs}. \cr
 #' \cr
 #' The product of this workflow is exemplified in this dataset. \cr
-#' \cr
-#' Data of this structure forms one of the key inputs for a number of analysis functions
-#' provided by \code{genomalicious}, e.g.: \cr
-#' \itemize{
-#'   \item \code{sim_freq}
-#'   \item \code{pca_pools}
-#'   \item \code{dapc_pools}
-#'   \item \code{Fst_pools_pairs}
-#'   \item \code{Fst_pools_demes}
-#' }
 #'
-#' @usage data(genomaliciousPi)
+#' @usage data(genomalicious_PoolPi)
 #'
-#' @format A data table with 6 columns and 15 rows.
+#' @format A data table with 32 rows and 10 columns.
 #'
 #' @details
+#' These columns would be created by \code{genomalicious::poolne_estim_outputs}:
 #' \itemize{
 #'   \item \code{MRK} = The marker ID, assigned by \code{poolne_estim}.
 #'   \item \code{PI} = The posterior mean estimate of the population Ref allele frequency,
@@ -34,6 +25,12 @@
 #'   \item \code{CHROM} = The chromosome ID.
 #'   \item \code{LOCUS} = The locus ID.
 #' }
+#' The following columns have been added as metadata:
+#' #' \itemize{
+#'   \item \code{REF} = The reference allele.
+#'   \item \code{ALT} = The alternate allele.
+#'   \item \code{INDS} = The number of diploid individuals pooled.
+#' }
 #'
 #' @references Gautier et al. (2013) Estimation of population allele frequencies from
 #' next-generation sequencing data: pool-versus individual-based genotyping.
@@ -41,5 +38,5 @@
 #'
 #' @docType data
 #' @keywords datasets
-#' @name genomaliciousPi
+#' @name genomalicious_PoolPi
 NULL

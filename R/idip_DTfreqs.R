@@ -26,8 +26,6 @@
 #' contains the allele information, otherwise, Default = \code{NA}. Ideally,
 #' all alleles possible at a locus should recorded for each population.
 #'
-#'
-#'
 #' @return A matrix with columns representing loci, rows are the statistics
 #' from the \code{IDIP} analysis.
 #'

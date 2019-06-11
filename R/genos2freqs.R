@@ -4,8 +4,19 @@
 #'
 #' @param dat Data table: It is expected that there are only two alleles, and therefore, only three possible genotypes:
 #' 0/0, 0/1 (or 1/0), and 1/1, where the Ref allele is '0'. This data.table needs the following columns:
-#' \code{POP}, the population ID; \code{SAMPLE}, the individual ID; \code{LOCUS}, the locus ID;
-#' and \code{GT}, the genotype.
+#' \enumerate{
+#'    \item The population ID (see param \code{popCol}).
+#'    \item The sample ID (see param \code{sampCol})
+#'    \item The locus ID (see param \code{locusCol}).
+#'    \item The genotypes (see param \code{genoCol}).
+#' }
+#' @param popCol Character: The column name with the sampled individual information. Default = \code{'POP'}.
+#'
+#' @param sampCol Character: The column name with the sampled individual information. Default = \code{'SAMPLE'}.
+#'
+#' @param locusCol Character: The column name with the locus information. Default = \code{'LOCUS'}.
+#'
+#' @param genoCol Character: The column name with the genotype information. Default = \code{'GT'}.
 #'
 #' @return Returns a matrix of allele frequencies for the Ref allele (coded as '0' in the genotype)
 #'
@@ -18,7 +29,7 @@
 #' genos2freqs(genomaliciousGenos)
 #'
 #' @export
-genos2freqs <- function(dat){
+genos2freqs <- function(dat, popCol='POP', sampCol='SAMPLE', locusCol='LOCUS', genoCol='GT'){
   # BEGIN ...........
 
   # --------------------------------------------+
@@ -27,14 +38,13 @@ genos2freqs <- function(dat){
   # Check the class of dat
   if(!'data.table' %in% class(dat)){ stop("Argument dat isn't a data table.")}
 
-  # Check that demes has the right columns.
-  if(length(which((c('POP', 'SAMPLE', 'LOCUS', 'GT') %in% colnames(dat))==FALSE)) > 0){
-    stop("Argument dat needs the columns $POP, $SAMPLE, $LOCUS, and $GT.")
-  }
-
   # --------------------------------------------+
   # Code
   # --------------------------------------------+
+  # Reassign column names
+  colReass <- match(c(popCol, sampCol, locusCol, genoCol), colnames(dat))
+  colnames(dat)[colReass] <- c('POP', 'SAMPLE', 'LOCUS', 'GT')
+
   # Split the data based on LOCUS, then iterate through each LOCUS.
   popFreqs <- lapply(split(dat, dat$LOCUS), function(L){
 

@@ -4,15 +4,15 @@
 \alias{bayescan_inputs_pool}
 \title{Generate \code{bayescan} input files}
 \usage{
-bayescan_inputs_pool(dat, pool.info, file.bayescan, file.loci, popCol, locusCol,
-  freqCol)
+bayescan_inputs_pool(dat, pool.info, file.bayescan, file.loci, poolCol,
+  locusCol, freqCol)
 }
 \arguments{
-\item{dat}{Data.table: The biallelic SNP data. Requires all of the following columns: \cr
+\item{dat}{Data table: The biallelic SNP data. Requires all of the following columns: \cr
 \enumerate{
-  \item \code{POOL} = The population pool ID. \cr
-  \item \code{LOCUS} = The locus ID. \cr
-  \item \code{PI} = The population Ref allele frequency. \cr
+  \item The population pool ID. \cr
+  \item The locus ID. \cr
+  \item The population Ref allele frequency. \cr
 }}
 
 \item{pool.info}{Data table: The population pool metadata. Requires all of the following columns: \cr
@@ -25,9 +25,15 @@ bayescan_inputs_pool(dat, pool.info, file.bayescan, file.loci, popCol, locusCol,
 
 \item{file.loci}{Character: A file that contains an information about the locus ID in
 the \code{bayescan} input file (i.e., \code{file.bayescan}).}
+
+\item{poolCol}{Character: Population pool ID. Default = \code{'POOL'}}
+
+\item{locusCol}{Character: Locus ID. Default = \code{'LOCUS'}}
+
+\item{freqCol}{Character: The reference allele frequency. Default = \code{'FREQ'}.}
 }
 \description{
-Generates an input file for Bayescan from pooled allele frequencies. \cr
+Generates an input file for Bayescan (Foll & Gaggiotti, 2008) from pooled allele frequencies. \cr
 \cr
 It assumes that these pooled allele frequencies have been estimated from Gautier et al. (2013)'s
 \code{poolne_estim}, and have been imported into \code{R} with \code{genomalicious}.
@@ -35,16 +41,20 @@ It assumes that these pooled allele frequencies have been estimated from Gautier
 \details{
 The allele counts in the Bayescan input file generated reflect the number of haploid
 genomes pooled. E.g. if 20 individuals were pooled, i.e. 40 genomes, and the Ref allele was
-estimated at a frequency of, the counts would be Ref=28 and Alt=12.
+estimated at a frequency of 0.7, the counts would be Ref=28 and Alt=12.
 }
 \examples{
-data(genomaliciousPi)
-data(genomaliciousInfo)
+data(genomalicious_PoolPi)
+data(genomalicious_PoolInfo)
 
-bayescan_inputs_pool(dat=genomaliciousPi
-                     , pool.info=genomaliciousInfo
+bayescan_inputs_pool(dat=genomalicious_PoolPi
+                     , pool.info=genomalicious_PoolInfo
                      , file.bayescan='Bayescan_input.txt'
                      , file.loci='Bayescan_loci.txt'
-                     , popCol='POOL', locusCol='LOCUS', freqCol='PI')
+                     , poolCol='POOL', locusCol='LOCUS', freqCol='PI')
 
+}
+\references{
+Foll & Gaggiotti (2008) A genome scan method to identify selected loci appropriate
+for both dominant and codominant markers: A Bayesian perspective. Genetics 180: 977-993.
 }

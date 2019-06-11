@@ -28,7 +28,8 @@ was run and a distance matrix requested (\code{pairs==TRUE} and \code{dist==TRUE
 the output can be found in \code{$fst.dist}.
 }
 \description{
-Calculate Weir and Cockerham's FST
+Takes a matrix of biallelic allele frequencies, and a matric of sample sizes,
+and calculates Weir and Cockerham's FST, i.e. theta (Weir & Cockerham, 1984)
 }
 \examples{
 data(genomalicious_Freqs)
@@ -39,6 +40,7 @@ colnames(sampMat) <- colnames(freqMat); rownames(sampMat) <- rownames(freqMat)
 
 fstWC(freqMat, sampMat, pairs=FALSE)
 fstWC(freqMat, sampMat, pairs=TRUE)
+fstWC(freqMat, sampMat, pairs=TRUE, dist=TRUE)
 
 }
 \references{

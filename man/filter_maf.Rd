@@ -4,21 +4,39 @@
 \alias{filter_maf}
 \title{Filter loci by minor allele frequency (MAF)}
 \usage{
-filter_maf(dat, maf = 0.05, type = "freqs")
+filter_maf(dat, maf = 0.05, type = "freqs", popCol = "POP",
+  sampCol = "SAMPLE", locusCol = "LOCUS", genoCol = "GT")
 }
 \arguments{
 \item{dat}{Matrix or data table: Default expectation is that user is supplying a matrix of Ref allele
 frequencies; i.e., loci in columns, populations in rows, and allele frequencies in cells. Alternatively,
 a data table of genotypes can be supplied and allele frequencies will be calculated. It is expected that
 there are only two alleles, and therefore, only three possible genotypes: 0/0, 0/1 (or 1/0), and 1/1, where
-the Ref allele is '0'. This data table needs the following columns: \code{$POP}, the population ID; \code{$IND},
-the individual ID; \code{$LOCUS}, the locus ID; and \code{$GT}, the genotype.}
+the Ref allele is '0'. This data table needs the following columns:
+\enumerate{
+   \item The population ID (see param \code{popCol}).
+   \item The sample ID (see param \code{sampCol})
+   \item The locus ID (see param \code{locusCol}).
+   \item The genotypes (see param \code{genoCol}).
+}}
 
 \item{maf}{Numeric: The minor allele frequency. E.g. 0.05 will filter for 5%, which will remove
 a locus if its frequency is < 0.05 or > 0.95.}
 
 \item{type}{Character: Default = 'freqs', expected that \code{dat} is a matrix of allele frequencies.
 Alternatively, if \code{dat} is a data table of of genotypes, set \code{type} to 'genos'.}
+
+\item{popCol}{Character: The column name with the sampled individual information. Default = \code{'POP'}.
+Only needed when \code{dat} is a long-format data table of genotypes.}
+
+\item{sampCol}{Character: The column name with the sampled individual information. Default = \code{'SAMPLE'}.
+Only needed when \code{dat} is a long-format data table of genotypes.}
+
+\item{locusCol}{Character: The column name with the locus information. Default = \code{'LOCUS'}.
+Only needed when \code{dat} is a long-format data table of genotypes.}
+
+\item{genoCol}{Character: The column name with the genotype information. Default = \code{'GT'}.
+Only needed when \code{dat} is a long-format data table of genotypes.}
 }
 \value{
 Returns an integer vector of column numbers in \code{dat} that conform
@@ -29,20 +47,17 @@ Parses a matrix of allele frequencies to determine which loci conform to the
 desired minor allele frequency.
 }
 \examples{
-####   Matrix of allele frequencies   ####
-data(genomaliciousFreqs)
+# MATRIX OF ALLELE FREQUENCIES
+data(genomalicious_Freqs)
 
-# Filter for MAF=0.05 to remove Chrom_8_64, leaving all other loci
-filter_maf(genomaliciousFreqs, maf=0.05, type='freqs')
+# Filter for MAF=0.20
+filter_maf(genomalicious_Freqs, maf=0.20, type='freqs')
 
-####   Long data table of genotypes   ####
-data(genomaliciousGenos)
+# LONG TABLE OF GENOTYPES
+data(genomalicious_4pops)
 
-# Allele frequencies
-genomalicious::genos2freqs(genomaliciousGenos)
-
-# Filter for MAF=0.05 to remove Locus3, return Locus1 and Locus2
-filter_maf(genomaliciousGenos, maf=0.05, type='genos')
+# Filter for MAF=0.05
+filter_maf(genomalicious_4pops, maf=0.05, type='genos')
 
 
 }

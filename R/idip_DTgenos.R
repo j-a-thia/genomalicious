@@ -5,9 +5,9 @@
 #' have to be biallelic.
 #' Three columns are required:
 #' \enumerate{
-#'    \item (1) The population ID (see param \code{popCol}).
-#'    \item (2) The locus ID (see param \code{locusCol}).
-#'    \item (3) The genotype (see param \code{genoCol}).
+#'    \item The population ID (see param \code{popCol}).
+#'    \item The locus ID (see param \code{locusCol}).
+#'    \item The genotype (see param \code{genoCol}).
 #' }
 #'
 #' @param strucMat Matrix: Hierarchy of "aggregates", minimum of 2 rows and
@@ -28,13 +28,15 @@
 #' data(genomalicious_4pops)
 #'
 #' # Create a population hierarchy
-#' metapop <- matrix(c(rep('metapop', 4)
+#' metaPop <- matrix(c(rep('metapop', 4)
 #'                , paste('Group', c(1,1,2,2))
 #'                , paste('Pop', 1:4, sep='')), ncol=4, byrow=TRUE)
 #'
 #' # Run IDIP
-#' idip_DTgenos(snpDat=genomalicious_4pops, strucMat=metapop
-#'              , popCol='POP', locusCol='LOCUS', genoCol='GT')
+#' idipGenos <- idip_DTgenos(snpDat=genomalicious_4pops, strucMat=metaPop
+#'                 , popCol='POP', locusCol='LOCUS', genoCol='GT')
+#'
+#' idipGenos[, 1:6]
 #'
 #' @export
 idip_DTgenos <- function(snpDat, strucMat, popCol='POP'

@@ -5,7 +5,7 @@
 \title{Plot PCA results}
 \usage{
 pca_plot(dat, type = "scatter", axisIndex = c(1, 2), pops = NULL,
-  popCols = NULL, look = "ggplot")
+  popColours = NULL, look = "ggplot")
 }
 \arguments{
 \item{dat}{Prcomp/Data table/Data frame/Matrix or Numeric: The class of this
@@ -16,8 +16,8 @@ If making a...
 each individual. If not using a \code{prcomp} object, the tabular data must
 be wide-format: rows are indivdiuals, columns are PC axes.
 \item \strong{Scree plot} of eigenvalues, or plotting the \strong{cumulative
-explained variance}: \code{dat} is simply a numeric vector containing the
-eigenvalues of the PCA.
+explained variance}: \code{dat} can be a \code{prcomp} object, or simply
+a numeric vector containing the eigenvalues of the PCA.
 }}
 
 \item{type}{Character: What type of plot to make: scatter (\code{'scatter'})
@@ -33,7 +33,7 @@ rows in \code{dat}, but is an optional argument. Default = \code{NULL}.
 If \code{dat} is a \code{prcomp} object, function will search for \code{dat$pops}
 to assign to this argument. Only valid when \code{type=='scatter'}.}
 
-\item{popCols}{Character: A vector of colours to use for each unique population
+\item{popColours}{Character: A vector of colours to use for each unique population
 in \code{pops}, but is an optional argument. Default = \code{NULL}.
 The name of each colour must correspond to a population in \code{pops}.
 Only valid when \code{type=='scatter'}.}
@@ -53,25 +53,28 @@ explained vairance plots. See also \code{pca_DTinds()} to perform PCA on SNP gen
 \examples{
 # Data
 data(genomalicious_4pops)
+datGt <- genomalicious_4pops
 
 # Conduct the PCA with Patterson et al.'s (2006) normalisation, and
 # population specified
-pca <- pca_DTgenos(dat=genomalicious_4pops, scaling='patterson', popCol='POP')
+pca <- pca_DTgenos(dat=datGt, scaling='patterson', popCol='POP')
 
-# Plot PCA scatter
+# Plot the PCA
 pca_plot(pca)
 
 # Get more specific on scatter
 pca_plot(pca
             , axisIndex=c(2,3)
             , pops=pca$pops
-            , popCols=c(Pop1='gray30', Pop2='royalblue', Pop3='palevioletred3', Pop4='plum2')
+            , popColours=c(Pop1='gray30', Pop2='royalblue', Pop3='palevioletred3', Pop4='plum2')
             , look='classic')
 
-# Plot scree of eigenvalues
+# Plot scree of eigenvalues, using prcomp or numeric object
+pca_plot(pca, type='scree')
 pca_plot(pca$sdev^2, type='scree')
 
-# Plot cumulative explained variance
+# Plot cumulative explained variance, using prcomp or numeric object
+pca_plot(pca, type='expvar', look='classic')
 pca_plot(pca$sdev^2, type='expvar', look='classic')
 
 }

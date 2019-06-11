@@ -33,14 +33,15 @@
 #'
 #' @examples
 #' # Data
-#' data(genomalicious4pops)
+#' data(genomalicious_4pops)
+#' datGt <- genomalicious_4pops
 #'
 #' # Conduct the PCA with Patterson et al.'s (2006) normalisation, and
 #' # population specified
-#' pca <- pca_DTgenos(dat=genomalicious4pops, scaling='patterson', popCol='POP')
+#' pca <- pca_DTgenos(dat=datGt, scaling='patterson', popCol='POP')
 #'
 #' # Plot the PCA
-#' pca_scatter(pca)
+#' pca_plot(pca)
 #'
 #' @export
 

@@ -9,10 +9,15 @@ genoscore_converter(dat)
 \arguments{
 \item{dat}{Character/Integer: A vector of genotypes. If the class
 is \code{'character'}, then assumes separated alleles and converts into
-allele counts. The opposite is true if class is \code{'integer'}, will
+allele counts. The opposite is true, if class is \code{'integer'}, will
 convert into separated alleles.}
 }
 \description{
 Assumes biallelic genotypes and can interchange between separated
 alleles ('0/0', '0/1', '1/1') or Ref allele counts (0, 1, 2).
+}
+\examples{
+genoscore_converter(c('0/0', '0/1', '1/1'))
+genoscore_converter(c(0, 1, 2))
+
 }

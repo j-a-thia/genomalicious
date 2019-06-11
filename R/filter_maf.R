@@ -7,8 +7,13 @@
 #' frequencies; i.e., loci in columns, populations in rows, and allele frequencies in cells. Alternatively,
 #' a data table of genotypes can be supplied and allele frequencies will be calculated. It is expected that
 #' there are only two alleles, and therefore, only three possible genotypes: 0/0, 0/1 (or 1/0), and 1/1, where
-#' the Ref allele is '0'. This data table needs the following columns: \code{$POP}, the population ID; \code{$IND},
-#' the individual ID; \code{$LOCUS}, the locus ID; and \code{$GT}, the genotype.
+#' the Ref allele is '0'. This data table needs the following columns:
+#' \enumerate{
+#'    \item The population ID (see param \code{popCol}).
+#'    \item The sample ID (see param \code{sampCol})
+#'    \item The locus ID (see param \code{locusCol}).
+#'    \item The genotypes (see param \code{genoCol}).
+#' }
 #'
 #' @param maf Numeric: The minor allele frequency. E.g. 0.05 will filter for 5%, which will remove
 #' a locus if its frequency is < 0.05 or > 0.95.
@@ -16,28 +21,37 @@
 #' @param type Character: Default = 'freqs', expected that \code{dat} is a matrix of allele frequencies.
 #' Alternatively, if \code{dat} is a data table of of genotypes, set \code{type} to 'genos'.
 #'
+#' @param popCol Character: The column name with the sampled individual information. Default = \code{'POP'}.
+#' Only needed when \code{dat} is a long-format data table of genotypes.
+#'
+#' @param sampCol Character: The column name with the sampled individual information. Default = \code{'SAMPLE'}.
+#' Only needed when \code{dat} is a long-format data table of genotypes.
+#'
+#' @param locusCol Character: The column name with the locus information. Default = \code{'LOCUS'}.
+#' Only needed when \code{dat} is a long-format data table of genotypes.
+#'
+#' @param genoCol Character: The column name with the genotype information. Default = \code{'GT'}.
+#' Only needed when \code{dat} is a long-format data table of genotypes.
+#'
 #' @return Returns an integer vector of column numbers in \code{dat} that conform
 #' to the MAF value specified. These values can then be used to filter the allele frequency matrix.
 #'
 #' @examples
-#' ####   Matrix of allele frequencies   ####
-#' data(genomaliciousFreqs)
+#' # MATRIX OF ALLELE FREQUENCIES
+#' data(genomalicious_Freqs)
 #'
-#' # Filter for MAF=0.05 to remove Chrom_8_64, leaving all other loci
-#' filter_maf(genomaliciousFreqs, maf=0.05, type='freqs')
+#' # Filter for MAF=0.20
+#' filter_maf(genomalicious_Freqs, maf=0.20, type='freqs')
 #'
-#' ####   Long data table of genotypes   ####
-#' data(genomaliciousGenos)
+#' # LONG TABLE OF GENOTYPES
+#' data(genomalicious_4pops)
 #'
-#' # Allele frequencies
-#' genomalicious::genos2freqs(genomaliciousGenos)
-#'
-#' # Filter for MAF=0.05 to remove Locus3, return Locus1 and Locus2
-#' filter_maf(genomaliciousGenos, maf=0.05, type='genos')
+#' # Filter for MAF=0.05
+#' filter_maf(genomalicious_4pops, maf=0.05, type='genos')
 #'
 #'
 #' @export
-filter_maf <- function(dat, maf=0.05, type='freqs'){
+filter_maf <- function(dat, maf=0.05, type='freqs', popCol='POP', sampCol='SAMPLE', locusCol='LOCUS', genoCol='GT'){
 
   # BEGIN ...........
 
@@ -62,13 +76,6 @@ filter_maf <- function(dat, maf=0.05, type='freqs'){
     stop("Argument maf needs to be a numeric between 0 and 1.")
   }
 
-  # Check that all the correct columns are in dat.
-  if(class(dat)[1]=='data.table'){
-    if(length(which((c('POP', 'SAMPLE', 'LOCUS', 'GT') %in% colnames(dat))==FALSE)) > 0){
-      stop("Argument dat needs the columns $POP, $SAMPLE, $LOCUS, and $GT.")
-    }
-  }
-
   # --------------------------------------------+
   # Code
   # --------------------------------------------+
@@ -88,10 +95,15 @@ filter_maf <- function(dat, maf=0.05, type='freqs'){
   }
 
   # If the input if a data.table of indiviudals and genotypes.
-  # Needs a column $POP (pop info), $IND (individual ID), $LOCUS
   if(type=='genos'){
+    # Reassign column names
+    colReass <- match(c(popCol, sampCol, locusCol, genoCol), colnames(dat))
+    colnames(dat)[colReass] <- c('POP', 'SAMPLE', 'LOCUS', 'GT')
+
+    # Frequencies
     freqs <- genos2freqs(dat)
 
+    # Test for MAF
     test <- apply(freqs, 2, function(f){
       if(min(f) >= minF & max(f) <= maxF){ return('Yes')
       } else {

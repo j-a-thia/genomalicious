@@ -5,12 +5,25 @@
 #'
 #' @param dat Data table: The sequencing read information, must contain the columns:
 #' \code{CHROM} = the chromosome ID, i.e. contigs; and \code{LOCUS} = the locus ID.
+#' \enumerate{
+#'    \item The chromosome (or contig) ID (see param \code{chromCol}).
+#'    \item The locus ID (see param \code{locusCol}).
+#' }
+#'
+#' @param chromCol Character: The chromosome (or contig) information column. Default = \code{'CHROM'}.
+#'
+#' @param locusCol Character: The locus information column. Default = \code{'LOCUS'}.
 #'
 #' @return Returns a character vector of locus names in \code{dat$LOCUS} that are not on the same
 #' contig in \code{dat$CHROM}.
 #'
+#' @examples
+#' data(genomalicious_4pops)
+#'
+#' filter_unlink(genomalicious_4pops)
+#'
 #' @export
-filter_unlink <- function(dat){
+filter_unlink <- function(dat, chromCol='CHROM', locusCol='LOCUS'){
 
   # BEGIN ............
 
@@ -31,6 +44,10 @@ filter_unlink <- function(dat){
   # --------------------------------------------+
   # Code
   # --------------------------------------------+
+  # Reassign column names
+  colReass <- match(c(chromCol, locusCol), colnames(dat))
+  colnames(dat)[colReass] <- c('CHROM', 'LOCUS')
+
   # Split the data based on contigs, i.e. CHROM.
   dat.spl <- split(dat[,c('CHROM','LOCUS')], dat$CHROM)
 
