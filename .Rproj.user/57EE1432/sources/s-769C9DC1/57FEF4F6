@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1560230287068.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "57FEF4F6",
+    "lastKnownWriteTime" : 1560230401,
+    "last_content_update" : 1560230401678,
+    "path" : "~/GitHub/genomalicious/R/missHeatmap.R",
+    "project_path" : "R/missHeatmap.R",
+    "properties" : {
+        "cursorPosition" : "56,35",
+        "scrollLine" : "116"
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
