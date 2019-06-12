@@ -2,7 +2,7 @@
 
 _Genomalicious_ is live!
 
-The current available version is my devlopper's code.
+The current available version is my devloper's code.
 
 **Reach out:** Any questions, feedback, or suggestions are greatly appreciated to make _genomalicious_ the best it can be.
 
