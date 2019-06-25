@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1561419269709.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1998522329",
+    "id" : "B26CB9DE",
+    "lastKnownWriteTime" : 1561420456,
+    "last_content_update" : 1561420456893,
+    "path" : "~/GitHub/genomalicious/R/pca_DTgenos.R",
+    "project_path" : "R/pca_DTgenos.R",
+    "properties" : {
+        "cursorPosition" : "8,2",
+        "scrollLine" : "0"
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

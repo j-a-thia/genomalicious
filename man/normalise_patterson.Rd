@@ -7,12 +7,12 @@
 normalise_patterson(dat)
 }
 \arguments{
-\item{dat}{Matrix: Counts of Ref allele per individual, e.g. the C(i,j) table described
-in Patterson et al. (2006).}
+\item{dat}{Matrix: Counts of Ref allele per individual (0, 1, or 2)
+, e.g. the C(i,j) table described in Patterson et al. (2006).}
 }
 \value{
 Returns a matrix with the same deminsions as \code{dat}, but with
-genotypes normalised
+genotypes normalised.
 }
 \description{
 Perform the Patterson et al. (2006) normalisation to a genotype matrix

@@ -99,6 +99,9 @@ missHeatmap <- function(dat
   if(is.na(popCol)){
     # If no population column is specified (NA)
     gg <- (ggplot(dat, aes(x=SAMPLE, y=LOCUS))
+           + geom_tile(aes(fill=as.factor(MISS)), colour=NA)
+           + scale_fill_manual(values=c('0'=plotColours[1], '1'=plotColours[2]))
+           + labs(x='Samples', y='Locus')
            + theme(
              axis.text.x = element_blank()
              ,axis.text.y = element_blank()
@@ -108,15 +111,15 @@ missHeatmap <- function(dat
              ,panel.grid=element_blank()
              ,legend.position='none'
            )
-           + geom_tile(aes(fill=as.factor(MISS)), colour=NA)
-           + scale_fill_manual(values=c('0'=plotColours[1], '1'=plotColours[2]))
-           + labs(x='Samples', y='Locus')
     )
   } else {
     # If population column is specified, make indiviudal plot
     # for each population
     ggLs <- lapply(unique(dat$POP), function(pop){
       g <- (ggplot(dat[POP==pop], aes(x=SAMPLE, y=LOCUS))
+            + geom_tile(aes(fill=as.factor(MISS)), colour=NA)
+            + scale_fill_manual(values=c('0'=plotColours[1], '1'=plotColours[2]))
+            + labs(x='Samples', y='Locus', title=pop)
             + theme(
               axis.text.x = element_blank()
               ,axis.text.y = element_blank()
@@ -125,9 +128,6 @@ missHeatmap <- function(dat
               ,plot.title=element_text(hjust=0.5, size=12, face='bold')
               ,legend.position='none'
             )
-            + geom_tile(aes(fill=as.factor(MISS)), colour=NA)
-            + scale_fill_manual(values=c('0'=plotColours[1], '1'=plotColours[2]))
-            + labs(x='Samples', y='Locus', title=pop)
       )
       return(g)
     })

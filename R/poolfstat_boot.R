@@ -24,16 +24,18 @@
 #' data(genomalicious_PoolReads)
 #'
 #' # Subset to keep only Rep1 reads.
-#' X <- genomaliciousReads[grep(pattern='Rep1', x=genomaliciousReads$SAMPLE)]
+#' X <- genomalicious_PoolReads[grep(pattern='Rep1', x=genomalicious_PoolReads$SAMPLE)]
 #'
 #' # Need to add pool ID.
 #' X$POOL <- unlist(lapply(strsplit(X$SAMPLE, '_'), function(X){ return(X[1]) }))
 #'
 #' # Use poolfstat_DT to compute FST for this dataset and create a pooldata object
-#' poolFst <- poolfstat_DT(X, genomalicious_PoolInfo)
+#' Y <- poolfstat_DT(X, genomalicious_PoolInfo)
 #'
 #' # Bootstrap FST, using pooldata object from poolFst
-#' bootFst <- poolfstat_boot(poolFst$pooldat, 100)
+#' Yboot <- poolfstat_boot(Y$pooldat, 100)
+#' Yboot
+#' quantile(Yboot, c(0.025, 0.975))
 #'
 #' @export
 poolfstat_boot <- function(dat, num.boots=100, method='Anova', snp.index=NA){

@@ -4,17 +4,20 @@
 \alias{pca_DTgenos}
 \title{Conduct a PCA on individual genotypes stored in a (long) data table}
 \usage{
-pca_DTgenos(dat, scaling = "center", sampCol = "SAMPLE",
+pca_DTgenos(dat, scaling = "covar", sampCol = "SAMPLE",
   locusCol = "LOCUS", genoCol = "GT", popCol = NULL)
 }
 \arguments{
 \item{dat}{Data table: A long data table, e.g. like that imported from
 \code{vcf2DT}.}
 
-\item{scaling}{Character: How should the data (loci) be scaled? Set to
-\code{'center'} (default) to scale to mean = 0 and variance = 1. Set to
-\code{'patterson'} to use the Patteron et al. (2006) normalisation.
-Set to \code{'none'} if you don't want to do any scaling pre-PCA.}
+\item{scaling}{Character: How should the data (loci) be scaled?
+Set to \code{'covar'} to scale to mean = 0, but variance is not
+adjusted, i.e. PCA on a covariance matrix. Set to \code{'corr'}
+to scale to mean = 0 and variance = 1, i.e. PCA on a
+correlation matrix. Set to \code{'patterson'} to use the
+Patteron et al. (2006) normalisation. Set to \code{'none'} to
+if you do not want to do any scaling before PCA.}
 
 \item{sampCol}{Character: The column name with the sampled individual information.
 Default is \code{'SAMPLE'}.}

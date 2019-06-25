@@ -1,10 +1,10 @@
 #' Perform the Patterson et al. (2006) normalisation to a genotype matrix
 
-#' @param dat Matrix: Counts of Ref allele per individual, e.g. the C(i,j) table described
-#' in Patterson et al. (2006).
+#' @param dat Matrix: Counts of Ref allele per individual (0, 1, or 2)
+#' , e.g. the C(i,j) table described in Patterson et al. (2006).
 #'
 #' @return Returns a matrix with the same deminsions as \code{dat}, but with
-#' genotypes normalised
+#' genotypes normalised.
 #'
 #' @references
 #' Patterson et al. (2006) Population structure and eigenanalysis. PLOS Genetics.

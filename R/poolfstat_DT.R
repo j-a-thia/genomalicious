@@ -40,7 +40,7 @@
 #' data(genomalicious_PoolReads)
 #'
 #' # Subset to keep only Rep1 reads.
-#' X <- genomaliciousReads[grep(pattern='Rep1', x=genomaliciousReads$SAMPLE)]
+#' X <- genomalicious_PoolReads[grep(pattern='Rep1', x=genomalicious_PoolReads$SAMPLE)]
 #'
 #' # Need to add pool ID.
 #' X$POOL <- unlist(lapply(strsplit(X$SAMPLE, '_'), function(X){ return(X[1]) }))
