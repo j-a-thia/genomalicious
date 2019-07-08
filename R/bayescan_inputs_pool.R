@@ -32,8 +32,8 @@
 #' @details The allele counts in the Bayescan input file generated reflect the number of haploid
 #' genomes pooled. E.g. if 20 individuals were pooled, i.e. 40 genomes, and the Ref allele was
 #' estimated at a frequency of 0.7, the counts would be Ref=28 and Alt=12. NOTE: The estimated number
-#' of indivdiuals carrying an allele is rounded up (e.g. 1.5 = 2, and 1.4 = 1), with the exception
-#' when the number of individauls is < 1 but > 0, in which it is always rounded to 1.
+#' of indivdiuals carrying an allele is rounded to nearest integer (e.g. 1.5 = 2, and 1.4 = 1),
+#' with the exception when the number of individauls is < 1 but > 0, in which it is always rounded to 1.
 #'
 #' @references Foll & Gaggiotti (2008) A genome scan method to identify selected loci appropriate
 #' for both dominant and codominant markers: A Bayesian perspective. Genetics 180: 977-993.
@@ -108,7 +108,7 @@ bayescan_inputs_pool <- function(dat, pool.info, file.bayescan, file.loci
                     return(ref.count)
                   })
 
-    X[, ALT.COUNT:=INDS-REF.COUNT]
+    X[, ALT.COUNT:=(INDS*2)-REF.COUNT]
 
     # BS.dt is a data table for each population in the Bayescan (BS) format.
     # There are 5 columns: 1=the locus number; 2=total sampled genomes (2xdiploid individuals);
