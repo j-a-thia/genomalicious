@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1562545749026.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1737865407",
+    "id" : "C7A3436A",
+    "lastKnownWriteTime" : 1562547150,
+    "last_content_update" : 1562547150839,
+    "path" : "~/GitHub/genomalicious/R/bayescan_inputs_pool.R",
+    "project_path" : "R/bayescan_inputs_pool.R",
+    "properties" : {
+        "cursorPosition" : "32,43",
+        "scrollLine" : "25"
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

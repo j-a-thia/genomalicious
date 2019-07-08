@@ -36,8 +36,8 @@ data(genomalicious_4pops)
 
 genomalicious_4pops
 
-DT2genind(genomalicious_4pops)
-DT2genind(genomalicious_4pops, popCol='POP')
+adegenet_DT2genind(genomalicious_4pops)
+adegenet_DT2genind(genomalicious_4pops, popCol='POP')
 
 }
 \references{

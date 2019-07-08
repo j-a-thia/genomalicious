@@ -34,7 +34,9 @@ dadi_inputs_pools(dat, poolCol = "POOL", locusCol = "LOCUS",
 \item{poolSub}{Character: The pools to subset out of \code{poolCol}. Default = \code{NULL}.}
 }
 \value{
-Returns a data table in the dadi input format.
+Returns a data table in the dadi input format. NOTE: The estimated number
+of indivdiuals carrying an allele is rounded up (e.g. 1.5 = 2, and 1.4 = 1), with the exception
+when the number of individauls is < 1 but > 0, in which it is always rounded to 1.
 }
 \description{
 Creates an input file for the program dadi, described in Gutenkunst et al. (2009).
