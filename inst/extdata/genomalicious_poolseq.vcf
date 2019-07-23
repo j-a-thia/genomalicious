@@ -1,4 +1,4 @@
-##This is a toy dataset for the R package pgposer; it emulates a VCF file
+##This is a toy dataset for the R package genomalicious - it emulates a VCF file
 ##INFO=<ID=DP,Number=1,Type=Integer,Description='The total depth across samples'>
 ##FORMAT=<ID=DP,Number=1,Type=Integer,Description='The total depth in a sample'>
 ##FORMAT=<ID=RO,Number=1,Type=Integer,Description='The reference allele counts in a sample'>
