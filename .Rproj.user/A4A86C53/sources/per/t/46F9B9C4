@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1563888703561.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2399465065",
+    "id" : "46F9B9C4",
+    "lastKnownWriteTime" : 1550785387,
+    "last_content_update" : 1550785387,
+    "path" : "~/GitHub/genomalicious/R/genomalicious.R",
+    "project_path" : "R/genomalicious.R",
+    "properties" : {
+        "cursorPosition" : "9,22",
+        "scrollLine" : "0"
+    },
+    "relative_order" : 10,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

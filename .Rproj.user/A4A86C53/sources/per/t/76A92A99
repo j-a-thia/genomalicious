@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1563888738206.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2664928021",
+    "id" : "76A92A99",
+    "lastKnownWriteTime" : 1563888958,
+    "last_content_update" : 1563888958566,
+    "path" : "~/GitHub/genomalicious/R/genomalicious_PoolInfo.R",
+    "project_path" : "R/genomalicious_PoolInfo.R",
+    "properties" : {
+        "cursorPosition" : "26,31",
+        "scrollLine" : "8"
+    },
+    "relative_order" : 11,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

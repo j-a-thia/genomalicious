@@ -1,21 +1,19 @@
 {
     "collab_server" : "",
     "contents" : "",
-    "created" : 1550785498201.000,
+    "created" : 1563888963215.000,
     "dirty" : false,
     "encoding" : "UTF-8",
     "folds" : "",
-    "hash" : "1526299184",
-    "id" : "1FFB5FA6",
+    "hash" : "649047265",
+    "id" : "661F0C5A",
     "lastKnownWriteTime" : 1563882295,
     "last_content_update" : 1563882295,
-    "path" : "~/GitHub/genomalicious/DEV.R",
-    "project_path" : "DEV.R",
+    "path" : "~/GitHub/genomalicious/R/genomalicious_PoolPi.R",
+    "project_path" : "R/genomalicious_PoolPi.R",
     "properties" : {
-        "cursorPosition" : "11,0",
-        "scrollLine" : "0"
     },
-    "relative_order" : 1,
+    "relative_order" : 6,
     "source_on_save" : false,
     "source_window" : "",
     "type" : "r_source"

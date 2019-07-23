@@ -1,21 +1,21 @@
 {
     "collab_server" : "",
     "contents" : "",
-    "created" : 1550785498201.000,
+    "created" : 1563888975142.000,
     "dirty" : false,
     "encoding" : "UTF-8",
     "folds" : "",
-    "hash" : "1526299184",
-    "id" : "1FFB5FA6",
+    "hash" : "428085956",
+    "id" : "6C005BE",
     "lastKnownWriteTime" : 1563882295,
     "last_content_update" : 1563882295,
-    "path" : "~/GitHub/genomalicious/DEV.R",
-    "project_path" : "DEV.R",
+    "path" : "~/GitHub/genomalicious/R/genomalicious_PoolReads.R",
+    "project_path" : "R/genomalicious_PoolReads.R",
     "properties" : {
-        "cursorPosition" : "11,0",
+        "cursorPosition" : "3,26",
         "scrollLine" : "0"
     },
-    "relative_order" : 1,
+    "relative_order" : 7,
     "source_on_save" : false,
     "source_window" : "",
     "type" : "r_source"

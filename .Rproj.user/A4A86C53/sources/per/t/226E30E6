@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1563888939472.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1852303350",
+    "id" : "226E30E6",
+    "lastKnownWriteTime" : 1563888943,
+    "last_content_update" : 1563888943672,
+    "path" : "~/GitHub/genomalicious/R/genomalicious_Freqs.R",
+    "project_path" : "R/genomalicious_Freqs.R",
+    "properties" : {
+        "cursorPosition" : "14,28",
+        "scrollLine" : "0"
+    },
+    "relative_order" : 5,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

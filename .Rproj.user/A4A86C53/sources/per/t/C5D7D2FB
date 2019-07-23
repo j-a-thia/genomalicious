@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1563888924812.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1290990417",
+    "id" : "C5D7D2FB",
+    "lastKnownWriteTime" : 1563888755,
+    "last_content_update" : 1563888755,
+    "path" : "~/GitHub/genomalicious/R/genomalicious_4pops.R",
+    "project_path" : "R/genomalicious_4pops.R",
+    "properties" : {
+        "cursorPosition" : "22,9",
+        "scrollLine" : "6"
+    },
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
