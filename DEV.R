@@ -5,7 +5,7 @@
 
 # Developer libraries
 libs <- c('devtools', 'roxygen2', 'testthat', 'knitr', 'data.table', 'tidyr')
-for(L in libs){require(L, character.only=T)}
+for(L in libs){require(L, character.only=TRUE)}
 
 # Make documents
 roxygenise('./', clean=TRUE)
