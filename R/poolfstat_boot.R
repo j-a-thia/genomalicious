@@ -9,11 +9,11 @@
 #'
 #' @param num.boots Integer: The number of bootstrap simulations to run. Default = 100.
 #'
-#' @param method Character: Either 'Anova' (default) or 'Identity'. Passed to \{method} argument
+#' @param method Character: Either 'Anova' (default) or 'Identity'. Passed to \code{method} argument
 #' in \code{poolfstat::computeFST()}.
 #'
 #' @param snp.index List: A list of SNPs to consider. Default = \code{NA}.
-#' Passed to \{snp.index} argument in \code{poolfstat::computeFST()}.
+#' Passed to \code{snp.index} argument in \code{poolfstat::computeFST()}.
 #'
 #' @return Returns a vector of FST values produced by bootstrapping loci in the
 #' original read count dataset, \code{dat}.

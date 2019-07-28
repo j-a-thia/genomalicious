@@ -11,6 +11,12 @@ poolfstat_boot(dat, num.boots = 100, method = "Anova", snp.index = NA)
 from a data table of read counts using \code{genomalicious::poolfstat_DT}.}
 
 \item{num.boots}{Integer: The number of bootstrap simulations to run. Default = 100.}
+
+\item{method}{Character: Either 'Anova' (default) or 'Identity'. Passed to \code{method} argument
+in \code{poolfstat::computeFST()}.}
+
+\item{snp.index}{List: A list of SNPs to consider. Default = \code{NA}.
+Passed to \code{snp.index} argument in \code{poolfstat::computeFST()}.}
 }
 \value{
 Returns a vector of FST values produced by bootstrapping loci in the

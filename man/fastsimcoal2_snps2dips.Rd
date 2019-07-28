@@ -15,7 +15,7 @@ Returns a data table with the following columns:
 \enumerate{
    \item \code{$POP} Population ID (simualted samples, "Sample" 1 -> n;
    takes form \code{pop_[ID]}).
-   \item \code{$SAMPLE} Individual ID (the diploid individual from each 
+   \item \code{$SAMPLE} Individual ID (the diploid individual from each
    population; takes form \code{ind_[pop]_[ID]}).
    \item \code{$LOCUS} The locus ID (takes form \code{locus_[chrom]_[ID]}).
    \item \code{$CHROM} The chromosome ID (takes form \code{chrom_[ID]})
@@ -24,7 +24,7 @@ Returns a data table with the following columns:
 }
 }
 \description{
-Takes in a \code{.arp} file produced from a \code{fastsimcoal2} (<<CITE>>)
+Takes in a \code{.arp} file produced from a \code{fastsimcoal2} (Excoffier et al. 2013)
 simulation of SNP data and produces diploid genotypes from the sampled haploid genomes.
 NOTE: This function was developed for even sample sizes (i.e. total number
 of haploid genomes per population is divisible by 2) and for simulations where
@@ -34,4 +34,7 @@ does not fit these specifications.
 \details{
 Diploid genotypes are created by combining pairs of haploid genomes
 from each population (i.e. "Sample" 1 -> n in \code{fastsimcoal2}).
+}
+\references{
+Excoffier et al. (2013) Robust demographic inference from genomic and SNP data. PLoS Genetics.
 }

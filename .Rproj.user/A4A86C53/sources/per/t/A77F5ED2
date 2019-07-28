@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1564314229354.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1325338629",
+    "id" : "A77F5ED2",
+    "lastKnownWriteTime" : 1564314297,
+    "last_content_update" : 1564314297775,
+    "path" : "~/GitHub/genomalicious/R/fastsimcoal2_snps2dips.R",
+    "project_path" : "R/fastsimcoal2_snps2dips.R",
+    "properties" : {
+        "cursorPosition" : "38,50",
+        "scrollLine" : "26"
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
