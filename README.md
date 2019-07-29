@@ -17,4 +17,4 @@ library(devtools)
 install_github('j-a-thia/genomalicious')
 ```
 
-**Coming soon:** Tutorial manual for implementing _genomalicious_ in your population genomics pipelines!
+**Tutorials:** Take a look in the tutorials folder! More to come. :)
