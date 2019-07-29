@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="author" content="J.A. Thia" />
+
+<meta name="date" content="2019-07-29" />
+
+<title>Genomalicious Tutorial – 1 – Basic ingredients</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' || rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+<link href="data:text/css;charset=utf-8,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23header%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%20code%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" rel="stylesheet" type="text/css" />
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore"><em>Genomalicious</em> Tutorial – 1 – Basic ingredients</h1>
+<h4 class="author">J.A. Thia</h4>
+<h4 class="date">29 July 2019</h4>
+
+
+
+<div id="preamble" class="section level3">
+<h3>Preamble</h3>
+<p>Every good recipe is built around simple ingredients. Likewise, bioinformatic pipelines, while complex, require some fundamental methods and data types that are the bare neccessities to any study implementing population genomic approaches.</p>
+<p>In this tutorial, you will:</p>
+<ol style="list-style-type: decimal">
+<li>Become familiar with some basic features of <em>genomalicious</em>.</li>
+<li>Develop familiarity with SNP data structures.</li>
+<li>Learn to use <em>genomalicious</em> functions to import and manipulate SNP data structures.</li>
+</ol>
+</div>
+<div id="getting-to-know-genomalicious" class="section level3">
+<h3>Getting to know <em>genomalicious</em></h3>
+<p>Let’s start by loading the <em>genomalicious</em> library into your R session.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(genomalicious)</code></pre></div>
+<p><em>Genomalicious</em> contains a number of demonstrative toy datasets that you can experiment on. These need to be loaded in with the <code>data()</code> function and follow the naming convention, <code>genomalicious_[data name]</code>, where <code>[data name]</code> is a unique identifier.</p>
+<p>For example, let’s take a look at a toy dataset of allele frequencies:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(<span class="st">&quot;genomalicious_Freqs&quot;</span>)
+
+<span class="co"># Take a look at the structure of this data, the dim() function reports the dimensons.</span>
+<span class="kw">dim</span>(genomalicious_Freqs)</code></pre></div>
+<pre><code>## [1] 4 8</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Print the data to screen.</span>
+genomalicious_Freqs</code></pre></div>
+<pre><code>##      Chrom_1_8 Chrom_2_16 Chrom_3_24 Chrom_4_32 Chrom_5_40 Chrom_6_48
+## Pop1 0.5882639  0.6985712  0.9281353  0.7154336  0.2783644  0.5004546
+## Pop2 0.5143548  0.6962864  0.9250919  0.3973361  0.3866906  0.4006825
+## Pop3 0.7224595  0.6567121  0.8721565  0.2434911  0.6373447  0.9227758
+## Pop4 0.6771910  0.5523064  0.9278697  0.4081590  0.6456204  0.8862767
+##      Chrom_7_56 Chrom_8_64
+## Pop1  0.4777536 0.06605165
+## Pop2  0.3632988 0.06384908
+## Pop3  0.2049917 0.19425487
+## Pop4  0.2442950 0.15228191</code></pre>
+<p>You will notice that <code>genomalicious_Freqs</code> is a matrix with 4 rows and 8 columns. The rows contain the populations, whereas the columns contain the loci, and the cells contain allele frequencies. This data is in <strong>wide format</strong>, but we will dig into what this means a little later.</p>
+<p>You can learn more about a dataset by using <code>?</code> and the data object name, e.g. <code>?genomalicious_Freqs</code>. We will look at other datasets in later tutorials, but you can peruse the various datasets by typing <code>genomalicious_</code> and hitting the TAB key to get a list of options.</p>
+</div>
+<div id="loading-vcfs-into-r" class="section level3">
+<h3>Loading VCFs into R</h3>
+<p>Variant call files (VCFs) are one of the typical end products from read assembly/variant calling pipelines. These files contain information about genotypes attributed to each sample and associated mapping and genotype calling statistics.</p>
+<p><em>Genomalicious</em> offers a very simple way to import VCFs into R as <strong>long format</strong> data tables, whereby loci and and populations are both in rows. C.f. with the wide format data described above.</p>
+<p>We will now import a demo VCF into R using the <code>vcf2DT()</code> function. First, we need to find where <em>genomalicious</em> is installed and make a path to the demo file.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Create a link to raw external datasets in genomalicious</span>
+genomaliciousExtData &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="kw">find.package</span>(<span class="st">'genomalicious'</span>), <span class="st">'/extdata'</span>)
+
+<span class="co"># This command here shows you the VCF file that comes with genomalicious</span>
+<span class="kw">list.files</span>(genomaliciousExtData, <span class="dt">pattern=</span><span class="st">'_poolseq.vcf'</span>)</code></pre></div>
+<pre><code>## [1] &quot;genomalicious_poolseq.vcf&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Use this to create a path to that file</span>
+vcfPath &lt;-<span class="st"> </span><span class="kw">paste0</span>(genomaliciousExtData, <span class="st">'/genomalicious_poolseq.vcf'</span>)
+
+<span class="co"># The value of vcfPath with depend on your system</span>
+vcfPath</code></pre></div>
+<pre><code>## [1] &quot;C:/Users/Josh/Documents/R/win-library/3.4/genomalicious/extdata/genomalicious_poolseq.vcf&quot;</code></pre>
+<p>You can naviagte yourself to the path stored in <code>vcfPath</code> and open the VCF using a text editor. However, we can simply read the lines of the file and print them to screen:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Read in and print the first 10 lines of the demo VCF</span>
+<span class="kw">head</span>(<span class="kw">readLines</span>(vcfPath), <span class="dv">10</span>)</code></pre></div>
+<pre><code>##  [1] &quot;##This is a toy dataset for the R package genomalicious - it emulates a VCF file&quot;                                                                                     
+##  [2] &quot;##INFO=&lt;ID=DP,Number=1,Type=Integer,Description='The total depth across samples'&gt;&quot;                                                                                    
+##  [3] &quot;##FORMAT=&lt;ID=DP,Number=1,Type=Integer,Description='The total depth in a sample'&gt;&quot;                                                                                     
+##  [4] &quot;##FORMAT=&lt;ID=RO,Number=1,Type=Integer,Description='The reference allele counts in a sample'&gt;&quot;                                                                         
+##  [5] &quot;##FORMAT=&lt;ID=AO,Number=1,Type=Integer,Description='The alternate allele counts in a sample'&gt;&quot;                                                                         
+##  [6] &quot;#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\tPop1_Rep1\tPop1_Rep2\tPop1_Rep3\tPop2_Rep1\tPop2_Rep2\tPop2_Rep3\tPop3_Rep1\tPop3_Rep2\tPop3_Rep3\tPop4_Rep1\tPop4_Rep2\tPop4_Rep3&quot;
+##  [7] &quot;Chrom_1\t8\t.\tA\tT\t50\tPASS\tDP=854\tDP:RO:AO\t113:63:50\t48:32:16\t46:26:20\t119:63:56\t55:28:27\t44:22:22\t86:66:20\t64:46:18\t46:31:15\t120:82:38\t51:34:17\t62:42:20&quot;               
+##  [8] &quot;Chrom_2\t16\t.\tC\tG\t40\tPASS\tDP=785\tDP:RO:AO\t82:60:22\t47:38:09\t48:26:22\t85:61:24\t58:41:17\t49:32:17\t65:44:21\t83:60:23\t29:16:13\t99:57:42\t70:36:34\t70:38:32&quot;                 
+##  [9] &quot;Chrom_3\t24\t.\tG\tA\t45\tPASS\tDP=864\tDP:RO:AO\t101:90:11\t52:50:02\t48:47:01\t85:75:10\t52:50:02\t68:65:3\t102:95:7\t80:66:14\t36:31:05\t108:100:8\t48:46:02\t84:77:7&quot;                 
+## [10] &quot;Chrom_4\t32\t.\tT\tC\t43\tPASS\tDP=792\tDP:RO:AO\t101:73:28\t55:41:14\t55:37:18\t98:41:57\t39:15:24\t41:15:26\t66:11:55\t79:28:51\t32:06:26\t102:41:61\t58:29:29\t66:22:44&quot;</code></pre>
+<p>This demo VCF was constructed more simply for the purpose of this tutorial, but follows the same basic structure of that produced from variant calling software. You will see that the text is interspersed with <code>\t</code>: these indicate tabs that separate the various columns in the file.</p>
+<p>A VCF has the following components:</p>
+<ol style="list-style-type: decimal">
+<li>A <strong>comments section</strong> marked with double hashtags, <code>##</code>. These typically contain details about the contents of the VCF or how the reads were called.</li>
+<li>A <strong>heading section</strong> marked with a single hashtag, <code>#</code>. This is effectively the column names for the wide format SNP data.</li>
+<li>All lines proceeding contain SNP data.</li>
+</ol>
+<p>VCFs can be a bit tricky to interpret when you first see them. All columns <strong>before</strong> <code>FORMAT</code> contain information about the SNP (i.e. the chromosome, its position, the alleles). <code>FORMAT</code> <strong>itself</strong> contains a text string detailing the contents of the sample columns. Note, the contents of <code>FORMAT</code> are typically described in the comments section. We therefore know that <code>DP:RO:AO</code> represent the total read depth (<code>DP</code>), and the counts of the referece (<code>RO</code>) and alternate (<code>AO</code>) allele. Also note the difference in <code>DP</code> stored in the <code>INFO</code> column (read depth across all samples) and that in <code>FORMAT</code> (read depth within each sample).</p>
+<p>All sample columns occur <strong>after</strong> <code>FORMAT</code> (e.g. <code>Pop1_Rep1</code>, <code>Pop1_Rep2</code>) and continue to the end of the line. Within each sample column, the values described in <code>FORMAT</code> are stored, with each value separated by a <code>:</code>. This demo VCF contains read data from a replicated pool-seq experiment. Individuals from four populations were pooled into a single library, and three replicate libraries were sequenced. The reads associated with each population replicate, for each SNP, are detailed in the <em>i</em>-by-<em>j</em> row-column coordinates.</p>
+<p>For more in depth descriptions of VCFs, you should check out the resources provided by the developers of <em>samtools</em>, <a href="https://samtools.github.io/hts-specs/">here</a>.</p>
+<p>Now that we understand the data we are working with, let’s import it into R.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Import VCF into R using the path name</span>
+poolSnps &lt;-<span class="st"> </span><span class="kw">vcf2DT</span>(vcfPath)
+
+<span class="co"># First 8 rows of the imported SNP data</span>
+<span class="kw">head</span>(poolSnps, <span class="dv">8</span>)</code></pre></div>
+<pre><code>##      CHROM POS ID REF ALT QUAL FILTER   INFO    SAMPLE      LOCUS  DP RO
+## 1: Chrom_1   8  .   A   T   50   PASS DP=854 Pop1_Rep1  Chrom_1_8 113 63
+## 2: Chrom_2  16  .   C   G   40   PASS DP=785 Pop1_Rep1 Chrom_2_16  82 60
+## 3: Chrom_3  24  .   G   A   45   PASS DP=864 Pop1_Rep1 Chrom_3_24 101 90
+## 4: Chrom_4  32  .   T   C   43   PASS DP=792 Pop1_Rep1 Chrom_4_32 101 73
+## 5: Chrom_5  40  .   A   C   30   PASS DP=825 Pop1_Rep1 Chrom_5_40 100 22
+## 6: Chrom_6  48  .   T   G   37   PASS DP=854 Pop1_Rep1 Chrom_6_48 101 51
+## 7: Chrom_7  56  .   C   G   38   PASS DP=820 Pop1_Rep1 Chrom_7_56 109 50
+## 8: Chrom_8  64  .   T   A   52   PASS DP=838 Pop1_Rep1 Chrom_8_64 101  3
+##    AO
+## 1: 50
+## 2: 22
+## 3: 11
+## 4: 28
+## 5: 78
+## 6: 50
+## 7: 59
+## 8: 98</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># The imported data is stored as a data.table object</span>
+<span class="kw">class</span>(poolSnps)</code></pre></div>
+<pre><code>## [1] &quot;data.table&quot; &quot;data.frame&quot;</code></pre>
+<p>As you can see, the function <code>vcf2DT()</code> converts the wide format VCF data into a long format data table. Instead of a single column for each sample (and loci in rows), all possible sample-by-locus combinations are stored in the rows of <code>poolSnps</code>, with a single column each for samples and loci. Using the <code>$</code> notation, you can access these columns as vecotrs.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Column vector for sample and loci</span>
+<span class="kw">head</span>(poolSnps<span class="op">$</span>SAMPLE)</code></pre></div>
+<pre><code>## [1] &quot;Pop1_Rep1&quot; &quot;Pop1_Rep1&quot; &quot;Pop1_Rep1&quot; &quot;Pop1_Rep1&quot; &quot;Pop1_Rep1&quot; &quot;Pop1_Rep1&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(poolSnps<span class="op">$</span>LOCUS)</code></pre></div>
+<pre><code>## [1] &quot;Chrom_1_8&quot;  &quot;Chrom_2_16&quot; &quot;Chrom_3_24&quot; &quot;Chrom_4_32&quot; &quot;Chrom_5_40&quot;
+## [6] &quot;Chrom_6_48&quot;</code></pre>
+<p>Typically in these tutorials, and throughout the documentation for <em>genomalicious</em>, I will use <code>$</code> to indicate nested vectors of R objects (e.g. columns, list items).</p>
+</div>
+<div id="data-tables-for-storing-snp-data" class="section level3">
+<h3>Data tables for storing SNP data</h3>
+<p><em>Genomalicious</em> is largely built around <code>data.table</code> classed objects. Data tables feel and more-or-less function as per standard R <code>data.frame</code> objects, but they differ in two major ways. Firstly, they are much more efficient at storing large volumes of data. Secondly, they have some nifty features that facilitate easy data manipualtions. Though the purpose of this tutorial is not to provide a detailed demonstration of <code>data.table</code> object features (you can find that, <a href="https://cran.r-project.org/web/packages/data.table/vignettes/">here</a>), let’s just take a quick look at how you can harness the power of data tables:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Subset rows by depth.</span>
+poolSnps[DP <span class="op">&gt;</span><span class="st"> </span><span class="dv">110</span>,]</code></pre></div>
+<pre><code>##      CHROM POS ID REF ALT QUAL FILTER   INFO    SAMPLE      LOCUS  DP RO
+## 1: Chrom_1   8  .   A   T   50   PASS DP=854 Pop1_Rep1  Chrom_1_8 113 63
+## 2: Chrom_1   8  .   A   T   50   PASS DP=854 Pop2_Rep1  Chrom_1_8 119 63
+## 3: Chrom_6  48  .   T   G   37   PASS DP=854 Pop2_Rep1 Chrom_6_48 116 43
+## 4: Chrom_1   8  .   A   T   50   PASS DP=854 Pop4_Rep1  Chrom_1_8 120 82
+## 5: Chrom_5  40  .   A   C   30   PASS DP=825 Pop4_Rep1 Chrom_5_40 113 71
+##    AO
+## 1: 50
+## 2: 56
+## 3: 73
+## 4: 38
+## 5: 42</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># You can apply functions to columns, for example,</span>
+<span class="co"># take the mean depth.</span>
+poolSnps[, <span class="kw">mean</span>(DP)]</code></pre></div>
+<pre><code>## [1] 69.08333</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># You can even specify subsets of the data that you want to</span>
+<span class="co"># apply the function to, for example, take the mean depth</span>
+<span class="co"># for each locus.</span>
+poolSnps[, <span class="kw">mean</span>(DP), by=LOCUS]</code></pre></div>
+<pre><code>##         LOCUS       V1
+## 1:  Chrom_1_8 71.16667
+## 2: Chrom_2_16 65.41667
+## 3: Chrom_3_24 72.00000
+## 4: Chrom_4_32 66.00000
+## 5: Chrom_5_40 68.75000
+## 6: Chrom_6_48 71.16667
+## 7: Chrom_7_56 68.33333
+## 8: Chrom_8_64 69.83333</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># You can also use this feature of column manipulation to</span>
+<span class="co"># apply a function to the data and create a new column using</span>
+<span class="co"># the ':=' notation. For example, add a new column</span>
+<span class="co"># containting the frequency of reads that contain the</span>
+<span class="co"># reference allele.</span>
+poolSnps[, R.FREQ<span class="op">:</span><span class="er">=</span>RO<span class="op">/</span>DP]
+<span class="kw">head</span>(poolSnps, <span class="dv">4</span>)</code></pre></div>
+<pre><code>##      CHROM POS ID REF ALT QUAL FILTER   INFO    SAMPLE      LOCUS  DP RO
+## 1: Chrom_1   8  .   A   T   50   PASS DP=854 Pop1_Rep1  Chrom_1_8 113 63
+## 2: Chrom_2  16  .   C   G   40   PASS DP=785 Pop1_Rep1 Chrom_2_16  82 60
+## 3: Chrom_3  24  .   G   A   45   PASS DP=864 Pop1_Rep1 Chrom_3_24 101 90
+## 4: Chrom_4  32  .   T   C   43   PASS DP=792 Pop1_Rep1 Chrom_4_32 101 73
+##    AO    R.FREQ
+## 1: 50 0.5575221
+## 2: 22 0.7317073
+## 3: 11 0.8910891
+## 4: 28 0.7227723</code></pre>
+<p>Many functions in <em>genomalicious</em> take long format <code>data.table</code> objects as their direct input. From personal experience, I find data tables from 100s of individuals, and 1,000s to 10,000s of SNP loci are very manageable, though they may take a moment to load into R (especially when importing from a VCF). However, I believe the ease, simplicity, and versatility of working with data tables makes them an excellent object class for reduced representation SNPs.</p>
+<p>Data tables are also easily transformed into matrices and pure data frames:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Converting to a matrix</span>
+matDat &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(poolSnps)
+<span class="kw">class</span>(matDat)</code></pre></div>
+<pre><code>## [1] &quot;matrix&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(matDat, <span class="dv">4</span>)</code></pre></div>
+<pre><code>##      CHROM     POS  ID  REF ALT QUAL FILTER INFO     SAMPLE     
+## [1,] &quot;Chrom_1&quot; &quot; 8&quot; &quot;.&quot; &quot;A&quot; &quot;T&quot; &quot;50&quot; &quot;PASS&quot; &quot;DP=854&quot; &quot;Pop1_Rep1&quot;
+## [2,] &quot;Chrom_2&quot; &quot;16&quot; &quot;.&quot; &quot;C&quot; &quot;G&quot; &quot;40&quot; &quot;PASS&quot; &quot;DP=785&quot; &quot;Pop1_Rep1&quot;
+## [3,] &quot;Chrom_3&quot; &quot;24&quot; &quot;.&quot; &quot;G&quot; &quot;A&quot; &quot;45&quot; &quot;PASS&quot; &quot;DP=864&quot; &quot;Pop1_Rep1&quot;
+## [4,] &quot;Chrom_4&quot; &quot;32&quot; &quot;.&quot; &quot;T&quot; &quot;C&quot; &quot;43&quot; &quot;PASS&quot; &quot;DP=792&quot; &quot;Pop1_Rep1&quot;
+##      LOCUS        DP    RO    AO   R.FREQ      
+## [1,] &quot;Chrom_1_8&quot;  &quot;113&quot; &quot; 63&quot; &quot;50&quot; &quot;0.55752212&quot;
+## [2,] &quot;Chrom_2_16&quot; &quot; 82&quot; &quot; 60&quot; &quot;22&quot; &quot;0.73170732&quot;
+## [3,] &quot;Chrom_3_24&quot; &quot;101&quot; &quot; 90&quot; &quot;11&quot; &quot;0.89108911&quot;
+## [4,] &quot;Chrom_4_32&quot; &quot;101&quot; &quot; 73&quot; &quot;28&quot; &quot;0.72277228&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Converting to a data frame</span>
+dfDat &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(poolSnps)
+<span class="kw">class</span>(dfDat)</code></pre></div>
+<pre><code>## [1] &quot;data.frame&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(dfDat, <span class="dv">4</span>)</code></pre></div>
+<pre><code>##     CHROM POS ID REF ALT QUAL FILTER   INFO    SAMPLE      LOCUS  DP RO AO
+## 1 Chrom_1   8  .   A   T   50   PASS DP=854 Pop1_Rep1  Chrom_1_8 113 63 50
+## 2 Chrom_2  16  .   C   G   40   PASS DP=785 Pop1_Rep1 Chrom_2_16  82 60 22
+## 3 Chrom_3  24  .   G   A   45   PASS DP=864 Pop1_Rep1 Chrom_3_24 101 90 11
+## 4 Chrom_4  32  .   T   C   43   PASS DP=792 Pop1_Rep1 Chrom_4_32 101 73 28
+##      R.FREQ
+## 1 0.5575221
+## 2 0.7317073
+## 3 0.8910891
+## 4 0.7227723</code></pre>
+</div>
+<div id="data-structures-long-to-wide-format-and-genotype-values" class="section level3">
+<h3>Data structures: Long-to-wide format and genotype values</h3>
+<p>Though many functions in R expect data structured in long format, there are lots of others that require data to be wide format, especially many population genetics/genomics packages. Remember, in long form, loci-by-sample combinations are all in rows, whereas in wide format, samples are in rows and loci are in columns.</p>
+<p>There are two functions in <em>genomalicious</em> for long-to-wide conversions: <code>DT2Mat_freqs()</code> for <strong>allele frequencies</strong>, and <code>DT2Mat_genos()</code> for <strong>individual genotypes</strong>. Both return an R <code>matrix</code> object.</p>
+<p>Let’s first try with the pooled SNP data we imported at the start of this lesson. Earlier, you made a column in <code>poolSnps</code>, <code>$R.FREQ</code>, that contained the frequnecy of reads per sample of the reference allele. We will treat column <code>$R.FREQ</code> as an estimate of the sample allele frequency.</p>
+<p><code>DT2Mat_freqs()</code> requires specification of the sample, locus, and allele frequency columns in the long format data table as the arguments, <code>popCol</code>, <code>locusCol</code>, and <code>freqCol</code>, respectively:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Convert long format data table of allele frequencies to a matrix</span>
+freqMat &lt;-<span class="st"> </span><span class="kw">DT2Mat_freqs</span>(poolSnps, <span class="dt">popCol=</span><span class="st">'SAMPLE'</span>, <span class="dt">locusCol=</span><span class="st">'LOCUS'</span>, <span class="dt">freqCol=</span><span class="st">'R.FREQ'</span>)
+freqMat</code></pre></div>
+<pre><code>##           Chrom_1_8 Chrom_2_16 Chrom_3_24 Chrom_4_32 Chrom_5_40 Chrom_6_48
+## Pop1_Rep1 0.5575221  0.7317073  0.8910891  0.7227723  0.2200000  0.5049505
+## Pop1_Rep2 0.6666667  0.8085106  0.9615385  0.7454545  0.3703704  0.5098039
+## Pop1_Rep3 0.5652174  0.5416667  0.9791667  0.6727273  0.2558140  0.4800000
+## Pop2_Rep1 0.5294118  0.7176471  0.8823529  0.4183673  0.4204545  0.3706897
+## Pop2_Rep2 0.5090909  0.7068966  0.9615385  0.3846154  0.4375000  0.3650794
+## Pop2_Rep3 0.5000000  0.6530612  0.9558824  0.3658537  0.2641509  0.5128205
+## Pop3_Rep1 0.7674419  0.6769231  0.9313725  0.1666667  0.6739130  0.9176471
+## Pop3_Rep2 0.7187500  0.7228916  0.8250000  0.3544304  0.6627907  0.9310345
+## Pop3_Rep3 0.6739130  0.5517241  0.8611111  0.1875000  0.5588235  0.9393939
+## Pop4_Rep1 0.6833333  0.5757576  0.9259259  0.4019608  0.6283186  0.9090909
+## Pop4_Rep2 0.6666667  0.5142857  0.9583333  0.5000000  0.6290323  0.8620690
+## Pop4_Rep3 0.6774194  0.5428571  0.9166667  0.3333333  0.7115385  0.8888889
+##           Chrom_7_56 Chrom_8_64
+## Pop1_Rep1  0.4587156 0.02970297
+## Pop1_Rep2  0.4375000 0.08196721
+## Pop1_Rep3  0.5476190 0.09090909
+## Pop2_Rep1  0.2755102 0.06315789
+## Pop2_Rep2  0.3770492 0.04838710
+## Pop2_Rep3  0.4883721 0.08695652
+## Pop3_Rep1  0.2048193 0.17500000
+## Pop3_Rep2  0.2000000 0.21794872
+## Pop3_Rep3  0.2142857 0.18918919
+## Pop4_Rep1  0.2688172 0.20000000
+## Pop4_Rep2  0.2166667 0.12698413
+## Pop4_Rep3  0.2424242 0.09859155</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Check the class</span>
+<span class="kw">class</span>(freqMat)</code></pre></div>
+<pre><code>## [1] &quot;matrix&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Sample names are stored in the rows of the matrix</span>
+<span class="kw">rownames</span>(freqMat)</code></pre></div>
+<pre><code>##  [1] &quot;Pop1_Rep1&quot; &quot;Pop1_Rep2&quot; &quot;Pop1_Rep3&quot; &quot;Pop2_Rep1&quot; &quot;Pop2_Rep2&quot;
+##  [6] &quot;Pop2_Rep3&quot; &quot;Pop3_Rep1&quot; &quot;Pop3_Rep2&quot; &quot;Pop3_Rep3&quot; &quot;Pop4_Rep1&quot;
+## [11] &quot;Pop4_Rep2&quot; &quot;Pop4_Rep3&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Loci names are stored in the columns of the matrix</span>
+<span class="kw">colnames</span>(freqMat)</code></pre></div>
+<pre><code>## [1] &quot;Chrom_1_8&quot;  &quot;Chrom_2_16&quot; &quot;Chrom_3_24&quot; &quot;Chrom_4_32&quot; &quot;Chrom_5_40&quot;
+## [6] &quot;Chrom_6_48&quot; &quot;Chrom_7_56&quot; &quot;Chrom_8_64&quot;</code></pre>
+<p>There is also a way to go in reverse — that is, convert the wide format matrix back into a long format data frame. This is done by specifying the argument <code>flip=TRUE</code> (default vlaue is set to <code>FALSE</code>). Doing so requires the input to be a wide format matrix, and specifying <code>popCol</code>, <code>locusCol</code>, and <code>freqCol</code> is required to determine the names of these columns in the new output long format data table.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">freqDT &lt;-<span class="st"> </span><span class="kw">DT2Mat_freqs</span>(freqMat, <span class="dt">popCol=</span><span class="st">'SAMPLE'</span>, <span class="dt">locusCol=</span><span class="st">'LOCUS'</span>, <span class="dt">freqCol=</span><span class="st">'R.FREQ'</span>, <span class="dt">flip=</span><span class="ot">TRUE</span>)
+<span class="kw">head</span>(freqDT, <span class="dv">8</span>)</code></pre></div>
+<pre><code>##       SAMPLE     LOCUS    R.FREQ
+## 1: Pop1_Rep1 Chrom_1_8 0.5575221
+## 2: Pop1_Rep2 Chrom_1_8 0.6666667
+## 3: Pop1_Rep3 Chrom_1_8 0.5652174
+## 4: Pop2_Rep1 Chrom_1_8 0.5294118
+## 5: Pop2_Rep2 Chrom_1_8 0.5090909
+## 6: Pop2_Rep3 Chrom_1_8 0.5000000
+## 7: Pop3_Rep1 Chrom_1_8 0.7674419
+## 8: Pop3_Rep2 Chrom_1_8 0.7187500</code></pre>
+<p>Up to this point, we have worked with pooled sequence data and allele frequencies. Let’s now take a look at individually genotyped data. We will import a <em>genomalicious</em> dataset of four populations:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Import the dataset</span>
+<span class="kw">data</span>(genomalicious_4pops)
+indSnps &lt;-<span class="st"> </span>genomalicious_4pops
+
+<span class="co"># Have a look at its structure</span>
+<span class="kw">head</span>(indSnps)</code></pre></div>
+<pre><code>##     POP   SAMPLE    CHROM      LOCUS  GT
+## 1: Pop1 Ind1.115  Chrom_3  Chrom_3_4 0/0
+## 2: Pop1 Ind1.115  Chrom_5  Chrom_5_1 0/0
+## 3: Pop1 Ind1.115  Chrom_7  Chrom_7_5 0/1
+## 4: Pop1 Ind1.115  Chrom_8  Chrom_8_4 0/0
+## 5: Pop1 Ind1.115 Chrom_12 Chrom_12_5 0/1
+## 6: Pop1 Ind1.115 Chrom_15 Chrom_15_3 0/1</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># The number of unique samples, per population</span>
+indSnps[, <span class="kw">length</span>(<span class="kw">unique</span>(SAMPLE)), by=POP]</code></pre></div>
+<pre><code>##     POP V1
+## 1: Pop1 30
+## 2: Pop2 30
+## 3: Pop3 30
+## 4: Pop4 30</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># The number of unique loci</span>
+<span class="kw">length</span>(<span class="kw">unique</span>(indSnps<span class="op">$</span>LOCUS))</code></pre></div>
+<pre><code>## [1] 1205</code></pre>
+<p>You would have noticed a column in <code>indSnps</code> called <code>$GT</code>: this column contains information on each sample’s genotype at a particular locus. ‘0’ is the reference allele and ‘1’ is the alternate allele; each allele is separated by a ‘/’. This is a <strong>separated</strong> format of genotype values. However, another way of representing genotypes is via <strong>counts</strong> of one of the alleles, e.g. ‘0’, ‘1’, or ‘2’.</p>
+<p>Typically when genotypes are represented as allele counts, we assume biallelic data. If a diploid individual possess two alleles per locus, then it is only possible to keep track of a maximum of two unique alleles. In reality, there are other ways to work around this, but many population genomic analyses are constrained to be on biallelic SNPs.</p>
+<p>The function <code>genoscore_converter()</code> can be used to convert between the different ways of scoaring genotype values. The input into this function is simply a vector of genotypes. If inputting the separated format, the vector must be a <code>character</code> class object. If inputting allele count format, the vector is ideally <code>integer</code> class object. The function bases its counts of the reference allele, hence a genotype of ‘0/0’ is equivalent to ‘2’.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Practise run with simple vectors</span>
+<span class="kw">genoscore_converter</span>(<span class="kw">c</span>(<span class="st">'0/0'</span>, <span class="st">'0/1'</span>, <span class="st">'1/1'</span>))</code></pre></div>
+<pre><code>## [1] 2 1 0</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">genoscore_converter</span>(<span class="kw">c</span>(0L, <span class="dv">1</span>, <span class="dv">2</span>))</code></pre></div>
+<pre><code>## [1] &quot;1/1&quot; &quot;0/1&quot; &quot;0/0&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Now manipulate the data table of genotypes</span>
+indSnps[, GT<span class="op">:</span><span class="er">=</span><span class="kw">genoscore_converter</span>(GT)]
+
+<span class="kw">head</span>(indSnps, <span class="dv">8</span>)</code></pre></div>
+<pre><code>##     POP   SAMPLE    CHROM      LOCUS GT
+## 1: Pop1 Ind1.115  Chrom_3  Chrom_3_4  2
+## 2: Pop1 Ind1.115  Chrom_5  Chrom_5_1  2
+## 3: Pop1 Ind1.115  Chrom_7  Chrom_7_5  1
+## 4: Pop1 Ind1.115  Chrom_8  Chrom_8_4  2
+## 5: Pop1 Ind1.115 Chrom_12 Chrom_12_5  1
+## 6: Pop1 Ind1.115 Chrom_15 Chrom_15_3  1
+## 7: Pop1 Ind1.115 Chrom_16 Chrom_16_2  2
+## 8: Pop1 Ind1.115 Chrom_17 Chrom_17_3  0</code></pre>
+<p>Finally, let’s practise converting a long data table of genotypes into a genotype matrix, using <code>DT2Mat_genos()</code>. The arguments are the same as <code>DT2Mat_freqs()</code>, with addtion of the <code>genoScore</code> argument, which specifies whether the genotypes should be returned in the separated or count format.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Make a matrix of genotypes in separated format</span>
+genoMat.sep &lt;-<span class="st"> </span><span class="kw">DT2Mat_genos</span>(indSnps, <span class="dt">sampCol=</span><span class="st">'SAMPLE'</span>, <span class="dt">locusCol=</span><span class="st">'LOCUS'</span>, <span class="dt">genoCol=</span><span class="st">'GT'</span>, <span class="dt">genoScore=</span><span class="st">'sep'</span>)
+
+genoMat.sep[<span class="dv">1</span><span class="op">:</span><span class="dv">8</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">4</span>]</code></pre></div>
+<pre><code>##           Chrom_1001_4 Chrom_1003_2 Chrom_1004_1 Chrom_1006_3
+## Ind1.1040 &quot;1/1&quot;        &quot;0/0&quot;        &quot;0/0&quot;        &quot;1/1&quot;       
+## Ind1.1116 &quot;1/1&quot;        &quot;1/1&quot;        &quot;0/0&quot;        &quot;1/1&quot;       
+## Ind1.115  &quot;1/1&quot;        &quot;1/1&quot;        &quot;0/0&quot;        &quot;1/1&quot;       
+## Ind1.1153 &quot;1/1&quot;        &quot;0/1&quot;        &quot;0/0&quot;        &quot;1/1&quot;       
+## Ind1.1161 &quot;1/1&quot;        &quot;0/0&quot;        &quot;0/0&quot;        &quot;1/1&quot;       
+## Ind1.1184 &quot;1/1&quot;        &quot;0/1&quot;        &quot;0/0&quot;        &quot;0/1&quot;       
+## Ind1.1240 &quot;1/1&quot;        &quot;0/0&quot;        &quot;0/0&quot;        &quot;1/1&quot;       
+## Ind1.1315 &quot;0/0&quot;        &quot;1/1&quot;        &quot;0/0&quot;        &quot;1/1&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Make a matrix of genotypes in counts format</span>
+genoMat.counts &lt;-<span class="st"> </span><span class="kw">DT2Mat_genos</span>(indSnps, <span class="dt">sampCol=</span><span class="st">'SAMPLE'</span>, <span class="dt">locusCol=</span><span class="st">'LOCUS'</span>, <span class="dt">genoCol=</span><span class="st">'GT'</span>, <span class="dt">genoScore=</span><span class="st">'counts'</span>)
+
+genoMat.counts[<span class="dv">1</span><span class="op">:</span><span class="dv">8</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">4</span>]</code></pre></div>
+<pre><code>##           Chrom_1001_4 Chrom_1003_2 Chrom_1004_1 Chrom_1006_3
+## Ind1.1040            0            2            2            0
+## Ind1.1116            0            0            2            0
+## Ind1.115             0            0            2            0
+## Ind1.1153            0            1            2            0
+## Ind1.1161            0            2            2            0
+## Ind1.1184            0            1            2            1
+## Ind1.1240            0            2            2            0
+## Ind1.1315            2            0            2            0</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Convert counts genotype matrix into long format data table</span>
+<span class="co"># of separated alleles</span>
+genoDT.sep &lt;-<span class="st"> </span><span class="kw">DT2Mat_genos</span>(genoMat.counts, <span class="dt">sampCol=</span><span class="st">'SAMPLE'</span>, <span class="dt">locusCol=</span><span class="st">'LOCUS'</span>, <span class="dt">genoCol=</span><span class="st">'GT'</span>, <span class="dt">genoScore=</span><span class="st">'sep'</span>, <span class="dt">flip=</span><span class="ot">TRUE</span>)
+
+<span class="kw">head</span>(genoDT.sep, <span class="dv">8</span>)</code></pre></div>
+<pre><code>##       SAMPLE        LOCUS  GT
+## 1: Ind1.1040 Chrom_1001_4 1/1
+## 2: Ind1.1116 Chrom_1001_4 1/1
+## 3:  Ind1.115 Chrom_1001_4 1/1
+## 4: Ind1.1153 Chrom_1001_4 1/1
+## 5: Ind1.1161 Chrom_1001_4 1/1
+## 6: Ind1.1184 Chrom_1001_4 1/1
+## 7: Ind1.1240 Chrom_1001_4 1/1
+## 8: Ind1.1315 Chrom_1001_4 0/0</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Convert separated genotype matrix in long format data table</span>
+<span class="co"># of reference allele counts</span>
+genoDT.counts &lt;-<span class="st"> </span><span class="kw">DT2Mat_genos</span>(genoMat.counts, <span class="dt">sampCol=</span><span class="st">'SAMPLE'</span>, <span class="dt">locusCol=</span><span class="st">'LOCUS'</span>, <span class="dt">genoCol=</span><span class="st">'GT'</span>, <span class="dt">genoScore=</span><span class="st">'counts'</span>, <span class="dt">flip=</span><span class="ot">TRUE</span>)
+
+<span class="kw">head</span>(genoDT.counts, <span class="dv">8</span>)</code></pre></div>
+<pre><code>##       SAMPLE        LOCUS GT
+## 1: Ind1.1040 Chrom_1001_4  0
+## 2: Ind1.1116 Chrom_1001_4  0
+## 3:  Ind1.115 Chrom_1001_4  0
+## 4: Ind1.1153 Chrom_1001_4  0
+## 5: Ind1.1161 Chrom_1001_4  0
+## 6: Ind1.1184 Chrom_1001_4  0
+## 7: Ind1.1240 Chrom_1001_4  0
+## 8: Ind1.1315 Chrom_1001_4  2</code></pre>
+</div>
+<div id="postamble" class="section level3">
+<h3>Postamble</h3>
+<p>This concludes the ‘Basic Ingredients’ tutorial. You should now be comfortable with the basic functionality of <em>genomalicious</em> for importing SNP data into R. You have also familiarised yourself with SNP data structures and learnt how <em>genomalicious</em> can be used to do some basic manipulations that are common in population genetic/genomic analyses.</p>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

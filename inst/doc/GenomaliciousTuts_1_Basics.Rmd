@@ -2,8 +2,11 @@
 title: _Genomalicious_ Tutorial – 1 – Basic ingredients
 author: "J.A. Thia"
 date: "29 July 2019"
-output: html_document
-
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{_Genomalicious_ Tutorial – 1 – Basic ingredients}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
 ---
 
 ```{r setup, include=FALSE}

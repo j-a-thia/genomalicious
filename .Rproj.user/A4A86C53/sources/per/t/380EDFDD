@@ -13,10 +13,10 @@
     "project_path" : "R/DT2Mat_genos.R",
     "properties" : {
         "cursorPosition" : "130,50",
-        "scrollLine" : "124",
+        "scrollLine" : "0",
         "tempName" : "Untitled1"
     },
-    "relative_order" : 5,
+    "relative_order" : 6,
     "source_on_save" : false,
     "source_window" : "",
     "type" : "r_source"
