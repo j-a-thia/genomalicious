@@ -1,0 +1,248 @@
+---
+title: _Genomalicious_ Tutorial – 1 – Basic ingredients
+author: "J.A. Thia"
+date: "29 July 2019"
+output: html_document
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Preamble ###
+
+Every good recipe is built around simple ingredients. Likewise, bioinformatic pipelines, while complex, require some fundamental methods and data types that are the bare neccessities to any study implementing population genomic approaches.
+
+In this tutorial, you will:
+
+1. Become familiar with some basic features of _genomalicious_.
+2. Develop familiarity with SNP data structures.
+3. Learn to use _genomalicious_ functions to import and manipulate SNP data structures.
+
+### Getting to know _genomalicious_ ###
+Let's start by loading the _genomalicious_ library into your R session.
+
+```{r message=FALSE, warning=FALSE}
+library(genomalicious)
+```
+
+_Genomalicious_ contains a number of demonstrative toy datasets that you can experiment on. These need to be loaded in with the `data()` function and follow the naming convention, `genomalicious_[data name]`, where `[data name]` is a unique identifier.
+
+For example, let's take a look at a toy dataset of allele frequencies:
+
+```{r eval=TRUE}
+data("genomalicious_Freqs")
+
+# Take a look at the structure of this data, the dim() function reports the dimensons.
+dim(genomalicious_Freqs)
+
+# Print the data to screen.
+genomalicious_Freqs
+```
+
+You will notice that `genomalicious_Freqs` is a matrix with 4 rows and 8 columns. The rows contain the populations, whereas the columns contain the loci, and the cells contain allele frequencies. This data is in **wide format**, but we will dig into what this means a little later.
+
+You can learn more about a dataset by using `?` and the data object name, e.g. `?genomalicious_Freqs`. We will look at other datasets in later tutorials, but you can peruse the various datasets by typing `genomalicious_` and hitting the TAB key to get a list of options.
+
+### Loading VCFs into R ###
+Variant call files (VCFs) are one of the typical end products from read assembly/variant calling pipelines. These files contain information about genotypes attributed to each sample and associated mapping and genotype calling statistics.
+
+_Genomalicious_ offers a very simple way to import VCFs into R as **long format** data tables, whereby loci and and populations are both in rows. C.f. with the wide format data described above.
+
+We will now import a demo VCF into R using the `vcf2DT()` function. First, we need to find where _genomalicious_ is installed
+and make a path to the demo file.
+
+```{r}
+# Create a link to raw external datasets in genomalicious
+genomaliciousExtData <- paste0(find.package('genomalicious'), '/extdata')
+
+# This command here shows you the VCF file that comes with genomalicious
+list.files(genomaliciousExtData, pattern='_poolseq.vcf')
+
+# Use this to create a path to that file
+vcfPath <- paste0(genomaliciousExtData, '/genomalicious_poolseq.vcf')
+
+# The value of vcfPath with depend on your system
+vcfPath
+```
+
+You can naviagte yourself to the path stored in `vcfPath` and open the VCF using a text editor. However, we can simply read the lines of the file and print them to screen:
+
+```{r}
+# Read in and print the first 10 lines of the demo VCF
+head(readLines(vcfPath), 10)
+```
+
+This demo VCF was constructed more simply for the purpose of this tutorial, but follows the same basic structure of that produced from variant calling software. You will see that the text is interspersed with `\t`: these indicate tabs that separate the various columns in the file. 
+
+A VCF has the following components:
+
+1. A **comments section** marked with double hashtags, `##`. These typically contain details about the contents of the VCF or how the reads were called.
+2. A **heading section** marked with a single hashtag, `#`. This is effectively the column names for the wide format SNP data.
+3. All lines proceeding contain SNP data.
+
+VCFs can be a bit tricky to interpret when you first see them. All columns **before** `FORMAT` contain information about the SNP (i.e. the chromosome, its position, the alleles). `FORMAT` **itself** contains a text string detailing the contents of the sample columns. Note, the contents of `FORMAT` are typically described in the comments section. We therefore know that `DP:RO:AO` represent the total read depth (`DP`), and the counts of the referece (`RO`) and alternate (`AO`) allele. Also note the difference in `DP` stored in the `INFO` column (read depth across all samples) and that in `FORMAT` (read depth within each sample).
+
+All sample columns occur **after** `FORMAT` (e.g. `Pop1_Rep1`, `Pop1_Rep2`) and continue to the end of the line. Within each sample column, the values described in `FORMAT` are stored, with each value separated by a `:`. This demo VCF contains read data from a replicated pool-seq experiment. Individuals from four populations were pooled into a single library, and three replicate libraries were sequenced. The reads associated with each population replicate, for each SNP, are detailed in the _i_-by-_j_ row-column coordinates. 
+
+For more in depth descriptions of VCFs, you should check out the resources provided by the developers of _samtools_, [here](https://samtools.github.io/hts-specs/).
+
+Now that we understand the data we are working with, let's import it into R.
+
+```{r}
+# Import VCF into R using the path name
+poolSnps <- vcf2DT(vcfPath)
+
+# First 8 rows of the imported SNP data
+head(poolSnps, 8)
+
+# The imported data is stored as a data.table object
+class(poolSnps)
+```
+
+As you can see, the function `vcf2DT()` converts the wide format VCF data into a long format data table. Instead of a single column for each sample (and loci in rows), all possible sample-by-locus combinations are stored in the rows of `poolSnps`, with a single column each for samples and loci. Using the `$` notation, you can access these columns as vecotrs.
+
+```{r}
+# Column vector for sample and loci
+head(poolSnps$SAMPLE)
+
+head(poolSnps$LOCUS)
+```
+
+Typically in these tutorials, and throughout the documentation for _genomalicious_, I will use `$` to indicate nested vectors of R objects (e.g. columns, list items).
+
+### Data tables for storing SNP data ###
+_Genomalicious_ is largely built around `data.table` classed objects. Data tables feel and more-or-less function as per standard R `data.frame` objects, but they differ in two major ways. Firstly, they are much more efficient at storing large volumes of data. Secondly, they have some nifty features that facilitate easy data manipualtions. Though the purpose of this tutorial is not to provide a detailed demonstration of `data.table` object features (you can find that, [here](https://cran.r-project.org/web/packages/data.table/vignettes/)), let's just take a quick look at how you can harness the power of data tables:
+
+```{r, warning=FALSE}
+# Subset rows by depth.
+poolSnps[DP > 110,]
+
+# You can apply functions to columns, for example,
+# take the mean depth.
+poolSnps[, mean(DP)]
+
+# You can even specify subsets of the data that you want to
+# apply the function to, for example, take the mean depth
+# for each locus.
+poolSnps[, mean(DP), by=LOCUS]
+
+# You can also use this feature of column manipulation to
+# apply a function to the data and create a new column using
+# the ':=' notation. For example, add a new column
+# containting the frequency of reads that contain the
+# reference allele.
+poolSnps[, R.FREQ:=RO/DP]
+head(poolSnps, 4)
+```
+Many functions in _genomalicious_ take long format `data.table` objects as their direct input. From personal experience, I find data tables from 100s of individuals, and 1,000s to 10,000s of SNP loci are very manageable, though they may take a moment to load into R (especially when importing from a VCF). However, I believe the ease, simplicity, and versatility of working with data tables makes them an excellent object class for reduced representation SNPs.
+
+Data tables are also easily transformed into matrices and pure data frames:
+
+```{r}
+# Converting to a matrix
+matDat <- as.matrix(poolSnps)
+class(matDat)
+head(matDat, 4)
+
+# Converting to a data frame
+dfDat <- as.data.frame(poolSnps)
+class(dfDat)
+head(dfDat, 4)
+```
+
+### Data structures: Long-to-wide format and genotype values ###
+Though many functions in R expect data structured in long format, there are lots of others that require data to be wide format, especially many population genetics/genomics packages. Remember, in long form, loci-by-sample combinations are all in rows, whereas in wide format, samples are in rows and loci are in columns.
+
+There are two functions in _genomalicious_ for long-to-wide conversions: `DT2Mat_freqs()` for **allele frequencies**, and `DT2Mat_genos()` for **individual genotypes**. Both return an R `matrix` object.
+
+Let's first try with the pooled SNP data we imported at the start of this lesson. Earlier, you made a column in `poolSnps`, `$R.FREQ`, that contained the frequnecy of reads per sample of the reference allele. We will treat column `$R.FREQ` as an estimate of the sample allele frequency.
+
+`DT2Mat_freqs()` requires specification of the sample, locus, and allele frequency columns in the long format data table as the arguments, `popCol`, `locusCol`, and `freqCol`, respectively:
+
+```{r}
+# Convert long format data table of allele frequencies to a matrix
+freqMat <- DT2Mat_freqs(poolSnps, popCol='SAMPLE', locusCol='LOCUS', freqCol='R.FREQ')
+freqMat
+
+# Check the class
+class(freqMat)
+
+# Sample names are stored in the rows of the matrix
+rownames(freqMat)
+
+# Loci names are stored in the columns of the matrix
+colnames(freqMat)
+```
+
+There is also a way to go in reverse — that is, convert the wide format matrix back into a long format data frame. This is done by specifying the argument `flip=TRUE` (default vlaue is set to `FALSE`). Doing so requires the input to be a wide format matrix, and specifying `popCol`, `locusCol`, and `freqCol` is required to determine the names of these columns in the new output long format data table.
+
+```{r}
+freqDT <- DT2Mat_freqs(freqMat, popCol='SAMPLE', locusCol='LOCUS', freqCol='R.FREQ', flip=TRUE)
+head(freqDT, 8)
+```
+
+Up to this point, we have worked with pooled sequence data and allele frequencies. Let's now take a look at individually genotyped data. We will import a _genomalicious_ dataset of four populations:
+
+```{r}
+# Import the dataset
+data(genomalicious_4pops)
+indSnps <- genomalicious_4pops
+
+# Have a look at its structure
+head(indSnps)
+
+# The number of unique samples, per population
+indSnps[, length(unique(SAMPLE)), by=POP]
+
+# The number of unique loci
+length(unique(indSnps$LOCUS))
+```
+
+You would have noticed a column in `indSnps` called `$GT`: this column contains information on each sample's genotype at a particular locus. '0' is the reference allele and '1' is the alternate allele; each allele is separated by a '/'. This is a **separated** format of genotype values. However, another way of representing genotypes is via **counts** of one of the alleles, e.g. '0', '1', or '2'.
+
+Typically when genotypes are represented as allele counts, we assume biallelic data. If a diploid individual possess two alleles per locus, then it is only possible to keep track of a maximum of two unique alleles. In reality, there are other ways to work around this, but many population genomic analyses are constrained to be on biallelic SNPs.
+
+The function `genoscore_converter()` can be used to convert between the different ways of scoaring genotype values. The input into this function is simply a vector of genotypes. If inputting the separated format, the vector must be a `character` class object. If inputting allele count format, the vector is ideally `integer` class object. The function bases its counts of the reference allele, hence a genotype of '0/0' is equivalent to '2'.
+
+```{r}
+# Practise run with simple vectors
+genoscore_converter(c('0/0', '0/1', '1/1'))
+
+genoscore_converter(c(0L, 1, 2))
+
+# Now manipulate the data table of genotypes
+indSnps[, GT:=genoscore_converter(GT)]
+
+head(indSnps, 8)
+```
+
+Finally, let's practise converting a long data table of genotypes into a genotype matrix, using `DT2Mat_genos()`. The arguments are the same as `DT2Mat_freqs()`, with  addtion of the `genoScore` argument, which specifies whether the genotypes should be returned in the separated or count format.
+
+```{r}
+# Make a matrix of genotypes in separated format
+genoMat.sep <- DT2Mat_genos(indSnps, sampCol='SAMPLE', locusCol='LOCUS', genoCol='GT', genoScore='sep')
+
+genoMat.sep[1:8, 1:4]
+
+# Make a matrix of genotypes in counts format
+genoMat.counts <- DT2Mat_genos(indSnps, sampCol='SAMPLE', locusCol='LOCUS', genoCol='GT', genoScore='counts')
+
+genoMat.counts[1:8, 1:4]
+
+# Convert counts genotype matrix into long format data table
+# of separated alleles
+genoDT.sep <- DT2Mat_genos(genoMat.counts, sampCol='SAMPLE', locusCol='LOCUS', genoCol='GT', genoScore='sep', flip=TRUE)
+
+head(genoDT.sep, 8)
+
+# Convert separated genotype matrix in long format data table
+# of reference allele counts
+genoDT.counts <- DT2Mat_genos(genoMat.counts, sampCol='SAMPLE', locusCol='LOCUS', genoCol='GT', genoScore='counts', flip=TRUE)
+
+head(genoDT.counts, 8)
+```
+
+### Postamble ###
+This concludes the 'Basic Ingredients' tutorial. You should now be comfortable with the basic functionality of _genomalicious_ for importing SNP data into R. You have also familiarised yourself with SNP data structures and learnt how _genomalicious_ can be used to do some basic manipulations that are common in population genetic/genomic analyses.
