@@ -17,4 +17,4 @@ library(devtools)
 install_github('j-a-thia/genomalicious')
 ```
 
-**Tutorials:** Take a look in the `vignettes` folder! More to come. :)
+**Tutorials:** Take a look in the `vignettes` folder! More to come. :) You can download the HTML files, or copy-paste the code, into a local directory, or preivew them online using the functions provided at https://htmlpreview.github.io/ and the file URL.
