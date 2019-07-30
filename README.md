@@ -17,4 +17,4 @@ library(devtools)
 install_github('j-a-thia/genomalicious')
 ```
 
-**Tutorials:** Take a look in the tutorials folder! More to come. :)
+**Tutorials:** Take a look in the `vignettes` folder! More to come. :)
