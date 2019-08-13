@@ -151,9 +151,11 @@ DT2Mat_genos <- function(dat, sampCol=NA, locusCol=NA, genoCol=NA, genoScore='se
       return(genoMat)
     } else if(genoScore=='counts' & genoInitClass=='character'){
       genoMat <- apply(genoMat, 2, genoscore_converter)
+      row.names(genoMat) <- sampVals
       return(genoMat)
     } else if(genoScore=='sep' & genoInitClass=='integer'){
       genoMat <- apply(genoMat, 2, genoscore_converter)
+      row.names(genoMat) <- sampVals
       return(genoMat)
     }
 
