@@ -45,8 +45,8 @@
 #' @export
 locus_overlap <- function(lociList, lociSig, perms=1000){
   # Groups are not named
-  if(is.null(names(lociList))){ names(lociList) <- paste0('group', length(lociList)) }
-  if(is.null(names(lociSig))){ names(lociSig) <- paste0('group', length(lociSig)) }
+  if(is.null(names(lociList))){ names(lociList) <- paste0('group', 1:length(lociList)) }
+  if(is.null(names(lociSig))){ names(lociSig) <- paste0('group', :length(lociSig)) }
 
   # Number of gorups
   numGrps <- length(lociSig)
