@@ -2,7 +2,7 @@
 % Please edit documentation in R/locus_overlap.R
 \name{locus_overlap}
 \alias{locus_overlap}
-\title{Proability of locus overlap between two groups}
+\title{Proability of random null overlap among groups for outlier loci}
 \usage{
 locus_overlap(lociList, lociSig, perms = 1000)
 }
@@ -16,17 +16,21 @@ containing a vector of loci names.}
 \item{perms}{Integer: The number of permutations to run for significance testing. Default = 1000}
 }
 \value{
-The value returned is the proportion of null permutations that were greater or
-equal to the observed value (i.e. the empirical number of significant loci shared between groups).
+The value returned is the proportion of null permutations that were greater
+than the observed value (i.e. the empirical number of significant loci shared between groups).
 }
 \description{
-This test returns a probability that sets of "significant" loci
-identified in 2+ groups do not overlap by chance. For example,
-if outlier tests are carried out in two different groups, the overlap
-between these groups can be assessed to determine if the number of outliers
-shared is greater than what might be expected from random chance.
+This functions calculates the null probability of observing
+overlap in outlier loci between 2+ groups with respect to a scenario
+whereby loci are drawn at random from a set of loci.
 }
 \details{
+This non-parametric sytle test is not a strict population genetic statistical
+method per se, but provides an informal way to compare parameters of an
+outlier analysis (number of groups, number of analysed loci,
+and the number of observed outlier loci) to random chance.
+
+
 It is very important that the order of indices in \code{lociList} and \code{lociSig}
 are in the same, because each index is expected to correpond to a group.
 
@@ -42,9 +46,10 @@ to that deemed statistically significant in empircal tests. In other words, if a
 determined 2 loci out of 100 were significant, a null draw would randomly sample 2 loci from the set of 100.
 }
 \examples{
-grps <- list(A=c(1:101), B=c(20:100, 101:120), C=c(1:50, 70:120))
+grps <- list(A=c(1:101), B=c(20:100), C=c(1:50, 70:120))
 
 sig <- list(A=c(1,8,88), B=c(88, 101), C=c(88, 102, 118, 120))
-locus_overlap_2groups(sigA=c(1,5), sigB=5, lociA=1:100, lociB=1:100, perms=1000)
+
+locus_overlap(lociList=grps, lociSig=sig, perms=1000)
 
 }

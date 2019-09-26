@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1569505335115.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2270426031",
+    "id" : "1FAA3182",
+    "lastKnownWriteTime" : 1569505514,
+    "last_content_update" : 1569505514583,
+    "path" : "~/GitHub/genomalicious/R/locus_overlap.R",
+    "project_path" : "R/locus_overlap.R",
+    "properties" : {
+        "cursorPosition" : "30,31",
+        "scrollLine" : "18"
+    },
+    "relative_order" : 9,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
