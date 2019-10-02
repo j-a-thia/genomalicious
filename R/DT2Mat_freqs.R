@@ -53,38 +53,38 @@ DT2Mat_freqs <- function(dat, popCol=NA, locusCol=NA, freqCol=NA, flip=FALSE){
 
   # If going from long data table to wide matrix, make sure dat is a data table.
   if(flip==FALSE & !'data.table' %in% class(dat)){
-    stop("Argument flip==FALSE, but class(dat) isn't 'data.table'.")
+    stop("Argument flip==FALSE, but class(dat) isn't 'data.table': see ?DT2Mat_freqs")
   }
 
   # If going from a wide matrix to long data table, make sure dat is a matrix.
   if(flip==TRUE & !'matrix' %in% class(dat)){
-    stop("Argument flip==TRUE, but class(dat) isn't 'matrix'.")
+    stop("Argument flip==TRUE, but class(dat) isn't 'matrix': see ?DT2Mat_freqs")
   }
 
   # If providing a matrix, check that their are row names.
   if(class(dat)[1]=='matrix' & is.null(rownames(dat))==TRUE){
-    stop("Argument dat is frequency matrix, but has no population IDs in the row names.")
+    stop("Argument dat is frequency matrix, but has no population IDs in the row names: see ?DT2Mat_freqs")
   }
 
   # If providing a data table, check that popCol, locusCol, and freqCol are in dat.
   if(class(dat)[1]=='data.table'){
     if(length(which((c(popCol, locusCol, freqCol) %in% colnames(dat))==FALSE)) > 0){
-      stop("Argument dat does not have columns specified in arguments popCol, locusCol, or freqCol.")
+      stop("Argument dat does not have columns specified in arguments popCol, locusCol, or freqCol: see ?DT2Mat_freqs")
     }
   }
 
   # Check the column arguments are specified
   if(flip==FALSE){
     if(is.na(popCol)){
-      stop("Argument popCol unspecified.")
+      stop("Argument popCol unspecified: see ?DT2Mat_freqs")
     }
 
     if(is.na(locusCol)){
-      stop("Argument locusCol unspecified.")
+      stop("Argument locusCol unspecified: see ?DT2Mat_freqs")
     }
 
     if(is.na(freqCol)){
-      stop("Argument freqCol unspecified.")
+      stop("Argument freqCol unspecified: see ?DT2Mat_freqs")
     }
   }
 

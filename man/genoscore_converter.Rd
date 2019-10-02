@@ -16,6 +16,11 @@ convert into separated alleles.}
 Assumes biallelic genotypes and can interchange between separated
 alleles ('0/0', '0/1', '1/1') or Ref allele counts (0, 1, 2).
 }
+\details{
+If \code{dat} is a vector of characters, then missing values should
+take the form of './.'. Otherwise, if \code{dat} is a vector of integers,
+missing values should take the form of \code{NA}.
+}
 \examples{
 genoscore_converter(c('0/0', '0/1', '1/1'))
 genoscore_converter(c(0, 1, 2))

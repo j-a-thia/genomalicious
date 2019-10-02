@@ -73,43 +73,43 @@ DT2Mat_genos <- function(dat, sampCol=NA, locusCol=NA, genoCol=NA, genoScore='se
 
   # If going from long data table to wide matrix, make sure dat is a data table.
   if(flip==FALSE & !'data.table' %in% class(dat)){
-    stop("Argument flip==FALSE, but class(dat) isn't 'data.table'.")
+    stop("Argument flip==FALSE, but class(dat) isn't 'data.table': see ?DT2Mat_genos")
   }
 
   # If going from a wide matrix to long data table, make sure dat is a matrix.
   if(flip==TRUE & !'matrix' %in% class(dat)){
-    stop("Argument flip==TRUE, but class(dat) isn't 'matrix'.")
+    stop("Argument flip==TRUE, but class(dat) isn't 'matrix': see ?DT2Mat_genos")
   }
 
   # If providing a matrix, check that their are row names.
   if(class(dat)[1]=='matrix' & is.null(rownames(dat))==TRUE){
-    stop("Argument dat is a genotype matrix, but has no individual IDs in the row names.")
+    stop("Argument dat is a genotype matrix, but has no individual IDs in the row names: see ?DT2Mat_genos")
   }
 
   # If providing a data table, check that sampCol, locusCol, and genoCol are in dat.
   if(class(dat)[1]=='data.table'){
     if(length(which((c(sampCol, locusCol, genoCol) %in% colnames(dat))==FALSE)) > 0){
-      stop("Argument dat does not have columns specified in arguments sampCol, locusCol, or genoCol.")
+      stop("Argument dat does not have columns specified in arguments sampCol, locusCol, or genoCol: see ?DT2Mat_genos")
     }
   }
 
   # Check that genoScore option specified properly
   if(!genoScore %in% c('counts', 'sep')){
-    stop("Argument genoScore must take the values of either 'counts' or 'sep'.")
+    stop("Argument genoScore must take the values of either 'counts' or 'sep': see ?DT2Mat_genos")
   }
 
   # Check the column arguments are specified
   if(flip==FALSE){
     if(is.na(sampCol)){
-      stop("Argument sampCol unspecified.")
+      stop("Argument sampCol unspecified: see ?DT2Mat_genos")
     }
 
     if(is.na(locusCol)){
-      stop("Argument locusCol unspecified.")
+      stop("Argument locusCol unspecified: see ?DT2Mat_genos")
     }
 
     if(is.na(genoCol)){
-      stop("Argument genoCol unspecified.")
+      stop("Argument genoCol unspecified: see ?DT2Mat_genos")
     }
   }
 
@@ -122,7 +122,7 @@ DT2Mat_genos <- function(dat, sampCol=NA, locusCol=NA, genoCol=NA, genoScore='se
   }
 
   if(!genoInitClass %in% c('character', 'integer', 'numeric')){
-    stop('Genotypes must be either a character or integer class.')
+    stop('Genotypes must be either a character or integer class: see ?DT2Mat_genos')
   }
 
   # If genotypes counts are numerics, convert to integers.
