@@ -36,9 +36,9 @@
 #' than the observed value (i.e. the empirical number of significant loci shared between groups).
 #'
 #' @examples
-#' grps <- list(A=c(1:101), B=c(20:100), C=c(1:50, 70:120))
+#' grps <- list(A=c(1:100), B=c(20:100), C=c(20:100))
 #'
-#' sig <- list(A=c(1,8,88), B=c(88, 101), C=c(88, 102, 118, 120))
+#' sig <- list(A=c(8, 10, 16, 67, 68, 69, 88, 89, 90), B=c(22, 50, 51, 56, 57, 88, 95, 96), C=c(20, 21, 23, 44, 60, 70, 75, 88, 100))
 #'
 #' locus_overlap(lociList=grps, lociSig=sig, perms=1000)
 #'
@@ -46,7 +46,7 @@
 locus_overlap <- function(lociList, lociSig, perms=1000){
   # Groups are not named
   if(is.null(names(lociList))){ names(lociList) <- paste0('group', 1:length(lociList)) }
-  if(is.null(names(lociSig))){ names(lociSig) <- paste0('group', :length(lociSig)) }
+  if(is.null(names(lociSig))){ names(lociSig) <- paste0('group', 1:length(lociSig)) }
 
   # Number of gorups
   numGrps <- length(lociSig)
