@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1569991964587.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3784959542",
+    "id" : "2A91BE0",
+    "lastKnownWriteTime" : 1569195047,
+    "last_content_update" : 1569195047,
+    "path" : "~/GitHub/genomalicious/R/allele_counts.R",
+    "project_path" : "R/allele_counts.R",
+    "properties" : {
+        "cursorPosition" : "18,2",
+        "scrollLine" : "0"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 6,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

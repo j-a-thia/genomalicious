@@ -10,7 +10,8 @@ adegenet_DT2genlight(dat, sampCol = "SAMPLE", locusCol = "LOCUS",
 \arguments{
 \item{dat}{Data.table: Contains samples and loci in rows, with a
 separate column endcoding genotypes, where each allele is separated
-by a '/', or as a count of ref alleles (0, 1 or 2). Assumes biallelic loci.}
+by a '/', or as a count of ref alleles (0, 1 or 2). Assumes biallelic loci.
+Code missing data as './.' for characters, and \code{NA} for Ref allele counts.}
 
 \item{sampCol}{Character: Column with sample information. Default = \code{'SAMPLE'}.}
 

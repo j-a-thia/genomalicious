@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1569990061402.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1423102392",
+    "id" : "2E06ED05",
+    "lastKnownWriteTime" : 1569992172,
+    "last_content_update" : 1569992172562,
+    "path" : "~/GitHub/genomalicious/R/DT2Mat_genos.R",
+    "project_path" : "R/DT2Mat_genos.R",
+    "properties" : {
+        "cursorPosition" : "108,42",
+        "scrollLine" : "0"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

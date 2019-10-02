@@ -9,8 +9,8 @@ DT2Mat_genos(dat, sampCol = NA, locusCol = NA, genoCol = NA,
 }
 \arguments{
 \item{dat}{Data table or Matrix: The object to transform. If this is a long data table
-# of genotypes coded as per VCF specifications, e.g. ('0/0', '0/1', '1/1'), or counts
-of the Ref alleles e.g. (0, 1, 2).
+# of genotypes coded as per VCF specifications ('0/0', '0/1', '1/1'), or counts
+of the Ref alleles (2, 1, 0, repsectively).
 Three columns are required:
 \enumerate{
    \item The sampled individual ID (see param \code{sampCol}).
@@ -25,10 +25,6 @@ If converting from a genotypes matrix to a data table, see argument \code{flip}.
 \item{locusCol}{Character: The column name with the locus information.}
 
 \item{genoCol}{Character: The column name with the genotype information.}
-
-\item{genoScore}{Character: Should the returned genotypes by represented as
-\code{'counts'} of the Ref allele (integer from 0 -> 2), or separated alleles,
-\code{'sep'} (character, '0/0', '0/1', or '1/1')? Default = \code{'sep'}.}
 
 \item{flip}{Logical: Instead of converting a (long) data table to a (wide) matrix,
 should a (wide) matrix be converted into a (long) data table? Default = \code{FALSE}.
@@ -56,13 +52,6 @@ genoMatSep <- DT2Mat_genos(datGt
               , sampCol='SAMPLE'
               , locusCol='LOCUS'
               , genoCol='GT'
-              , flip=FALSE)
-
-genoMatCounts <- DT2Mat_genos(datGt
-              , sampCol='SAMPLE'
-              , locusCol='LOCUS'
-              , genoCol='GT'
-              , genoScore='counts'
               , flip=FALSE)
 
 # Convert a wide matrix back to a data table

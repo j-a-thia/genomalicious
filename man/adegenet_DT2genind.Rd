@@ -10,7 +10,7 @@ adegenet_DT2genind(dat, sampCol = "SAMPLE", locusCol = "LOCUS",
 \arguments{
 \item{dat}{Data.table: Contains samples and loci in rows, with a
 separate column endcoding genotypes, where each allele is separated
-by a '/'.}
+by a '/'. Assumes missing genotyes are coded as './.'.}
 
 \item{sampCol}{Character: Column with sample information. Default = \code{'SAMPLE'}.}
 

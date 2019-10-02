@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1569991189407.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "458815713",
+    "id" : "75AEB466",
+    "lastKnownWriteTime" : 1569991442,
+    "last_content_update" : 1569991442525,
+    "path" : "~/GitHub/genomalicious/R/adegenet_DT2genind.R",
+    "project_path" : "R/adegenet_DT2genind.R",
+    "properties" : {
+        "cursorPosition" : "38,0",
+        "scrollLine" : "0"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

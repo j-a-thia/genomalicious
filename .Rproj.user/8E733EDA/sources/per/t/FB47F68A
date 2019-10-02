@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1569989871726.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3625588929",
+    "id" : "FB47F68A",
+    "lastKnownWriteTime" : 1569990989,
+    "last_content_update" : 1569990989025,
+    "path" : "~/GitHub/genomalicious/R/genoscore_converter.R",
+    "project_path" : "R/genoscore_converter.R",
+    "properties" : {
+        "cursorPosition" : "38,27",
+        "scrollLine" : "0"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
