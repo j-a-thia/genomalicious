@@ -65,12 +65,17 @@ locus_overlap <- function(lociList, lociSig, perms=1000){
 
   # Permutations
   permDat <- lapply(1:perms, function(i){
+    # Iterate through groups, sample loci randomly from
+    # each group's loci set at a size equal to the number
+    # of significant outlier loci detected in that group
     sharePerm <- unlist(lapply(grpNames, function(n){
       sample(x=lociList[[n]], size=numSigs[[n]], replace=FALSE)
     }))
 
+    # Tabulate the number of overlapping loci.
     sharePerm <- table(sharePerm)
 
+    # How many loci overlap among all groups?
     return(sum(sharePerm==numGrps))
   })
 
