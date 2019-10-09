@@ -30,7 +30,7 @@
 #'
 #' @return When \code{flip=FALSE}, converts a data table into a genotype matrix. When
 #' \code{flip=TRUE}, converts a matrix into a data table with three columns: (1) \code{$SAMPLE},
-#' the sample ID; (2) \code{$LOCUS}, the locus ID; and (3) \code{GT},
+#' the sample ID; (2) \code{$LOCUS}, the locus ID; and (3) \code{$GT},
 #' the Ref allele frequency.
 #'
 #' @examples

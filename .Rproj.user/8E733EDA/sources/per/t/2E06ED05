@@ -5,15 +5,15 @@
     "dirty" : false,
     "encoding" : "UTF-8",
     "folds" : "",
-    "hash" : "1423102392",
+    "hash" : "2838629205",
     "id" : "2E06ED05",
-    "lastKnownWriteTime" : 1569992172,
-    "last_content_update" : 1569992172562,
+    "lastKnownWriteTime" : 1570582696,
+    "last_content_update" : 1570582696263,
     "path" : "~/GitHub/genomalicious/R/DT2Mat_genos.R",
     "project_path" : "R/DT2Mat_genos.R",
     "properties" : {
-        "cursorPosition" : "108,42",
-        "scrollLine" : "0"
+        "cursorPosition" : "28,24",
+        "scrollLine" : "23"
     },
     "read_only" : false,
     "read_only_alternatives" : [
