@@ -6,7 +6,7 @@
 #' @param sampMat Matrix: Number of sampled individuals. Rows = populations,
 #' columns = loci.
 #'
-fstWC_varcomps <- function(freqMat, sampleMat){
+fstWC_varcomps <- function(freqMat, sampMat){
   lociNames <- colnames(freqMat)
   numPops <- nrow(freqMat)
 

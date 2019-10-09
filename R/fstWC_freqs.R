@@ -1,4 +1,4 @@
-#' Calculate Weir and Cockerham's FST
+#' Calculate Weir and Cockerham's FST from allele frequencies
 #'
 #' Takes a matrix of biallelic allele frequencies, and a matric of sample sizes,
 #' and calculates Weir and Cockerham's FST, i.e. theta (Weir & Cockerham, 1984)
@@ -15,7 +15,10 @@
 #' @param dist Logical: Should a a distance matrix of FST be returned as well?
 #' Will only run if \code{pairs==TRUE}.
 #'
-#' @return A list with two indices. \code{$fst.mean} contains the mean FST. In pairwise analyses,
+#' @param perLocus Logical: Should the per locus FST be returned? Default is FALSE.
+#'
+#' @return A list with up to three different indices.
+#' \code{$fst.mean} contains the mean FST. In pairwise analyses,
 #' this is a data table with population pairs. \code{$fst.locus} contains the locus-specific
 #' FST values. If analysis was not pairwise, this is a vector, but for pairwise analyses,
 #' this is a data table with population pairs. Additionally, if a pairwise analysis
@@ -33,12 +36,12 @@
 #' rownames(sampMat) <- paste0('Pop', 1:4)
 #' colnames(sampMat) <- colnames(freqMat); rownames(sampMat) <- rownames(freqMat)
 #'
-#' fstWC(freqMat, sampMat, pairs=FALSE)
-#' fstWC(freqMat, sampMat, pairs=TRUE)
-#' fstWC(freqMat, sampMat, pairs=TRUE, dist=TRUE)
+#' fstWC_freqs(freqMat, sampMat, pairs=FALSE)
+#' fstWC_freqs(freqMat, sampMat, pairs=TRUE)
+#' fstWC_freqs(freqMat, sampMat, pairs=TRUE, dist=TRUE)
 #'
 #' @export
-fstWC <- function(freqMat, sampMat, pairs=FALSE, dist=FALSE){
+fstWC_freqs <- function(freqMat, sampMat, pairs=FALSE, dist=FALSE){
   # --------------------------------------------+
   # Libraries and assertions
   # --------------------------------------------+
@@ -75,9 +78,9 @@ fstWC <- function(freqMat, sampMat, pairs=FALSE, dist=FALSE){
   # --------------------------------------------+
   if(pairs==FALSE){
     # Calculate variance per locus
-    lociVar <- fstWC_varcomps(freqMat, sampleMat)
+    lociVar <- fstWC_varcomps(freqMat, sampMat)
     # Theta across loci
-    fst.mean <- sum(lociVar$NUMER) / sum(lociVar$DENOM)
+    fst.mean <- data.table(FST=sum(lociVar$NUMER) / sum(lociVar$DENOM))
     # Theta per locus
     fst.locus <- lociVar$NUMER / lociVar$DENOM
     names(fst.locus) <- lociVar$LOCUS
@@ -91,7 +94,7 @@ fstWC <- function(freqMat, sampMat, pairs=FALSE, dist=FALSE){
     # For the Xth pair
     pairLs <- apply(pairCombos, 2, function(X){
       # Calculate variance per locus
-      lociVar <- fstWC_varcomps(freqMat[X,], sampleMat[X,])
+      lociVar <- fstWC_varcomps(freqMat[X,], sampMat[X,])
       # Theta across loci
       thetaMean <- data.table(POP1=X[1], POP2=X[2]
                     , FST=sum(lociVar$NUMER) / sum(lociVar$DENOM))
