@@ -4,7 +4,7 @@
 \alias{fstWC_varcomps}
 \title{Calculate the variance components of Weir & Cockerham's FST}
 \usage{
-fstWC_varcomps(freqMat, sampleMat)
+fstWC_varcomps(freqMat, sampMat)
 }
 \arguments{
 \item{freqMat}{Matrix: Ref allele counts. Rows = populations,

@@ -4,8 +4,8 @@
 \alias{poolne_estim_input}
 \title{Generate input files for \code{poolne_estim}}
 \usage{
-poolne_estim_input(dat, pool.info, runID, mcmc.sampling = c(1000, 25,
-  5000, 20, 50, sample(as.integer(1000:9999), 1)))
+poolne_estim_input(dat, pool.info, runID, mcmc.sampling = c(1000, 25, 5000,
+  20, 50, sample(as.integer(1000:9999), 1)))
 }
 \arguments{
 \item{dat}{Data table: The biallelic SNP data. Requires all of the following columns: \cr
