@@ -118,12 +118,13 @@ pca_plot <- function(dat, type='scatter', axisIndex=c(1,2)
 
   # Set the plot theme by look
   if(look=='ggplot'){
-    plotTheme <- theme_gray() + theme(legend.position='top')
+    plotTheme <- theme_gray() + theme(legend.position='top', axis.ticks.length = unit(0.2, 'cm'))
   } else if(look=='classic'){
     plotTheme <- theme_bw() + theme(panel.grid.major=element_blank()
                                      , panel.grid.minor=element_blank()
                                      , text=element_text(colour='black')
-                                     , legend.position='top')
+                                     , legend.position='top'
+                                     , axis.ticks.length=unit(0.2, 'cm'))
   }
 
   # Make dat a data table of PC scores

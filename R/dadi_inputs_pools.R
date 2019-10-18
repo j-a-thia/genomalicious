@@ -46,7 +46,7 @@ dadi_inputs_pools <- function(dat
                               , locusCol='LOCUS'
                               , refCol='REF'
                               , altCol='ALT'
-                              , freqCol='PI'
+                              , freqCol='P'
                               , indsCol='INDS'
                               , poolSub=NULL){
 

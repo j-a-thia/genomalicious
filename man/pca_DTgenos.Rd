@@ -9,7 +9,14 @@ pca_DTgenos(dat, scaling = "covar", sampCol = "SAMPLE",
 }
 \arguments{
 \item{dat}{Data table: A long data table, e.g. like that imported from
-\code{vcf2DT}.}
+\code{vcf2DT}. Genotypes can be coded as '/' separated characters
+(e.g. '0/0', '0/1', '1/1'), or integers as Alt allele counts (e.g. 0, 1, 2).
+Must contain the following columns,
+\enumerate{
+  \item The sampled individuals (see param \code{sampCol}).
+  \item The locus ID (see param \code{locusCol}).
+  \item The genotype column (see param \code{genoCol}).
+}}
 
 \item{scaling}{Character: How should the data (loci) be scaled?
 Set to \code{'covar'} to scale to mean = 0, but variance is not

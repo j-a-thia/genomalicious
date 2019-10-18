@@ -5,7 +5,14 @@
 #' pre-PCA are available.
 #'
 #' @param dat Data table: A long data table, e.g. like that imported from
-#' \code{vcf2DT}.
+#' \code{vcf2DT}. Genotypes can be coded as '/' separated characters
+#' (e.g. '0/0', '0/1', '1/1'), or integers as Alt allele counts (e.g. 0, 1, 2).
+#' Must contain the following columns,
+#' \enumerate{
+#'   \item The sampled individuals (see param \code{sampCol}).
+#'   \item The locus ID (see param \code{locusCol}).
+#'   \item The genotype column (see param \code{genoCol}).
+#' }
 #'
 #' @param scaling Character: How should the data (loci) be scaled?
 #' Set to \code{'covar'} to scale to mean = 0, but variance is not
@@ -58,8 +65,28 @@ pca_DTgenos <- function(dat, scaling='covar', sampCol='SAMPLE'
   # --------------------------------------------+
   for(lib in c('data.table', 'dplyr')){ require(lib, character.only = TRUE)}
 
+  # Check that scaling is specified
   if(!scaling %in% c('covar', 'corr', 'patterson', 'none')){
     stop('Argument scaling is invalid')
+  }
+
+  # Get the class of the genotypes
+  gtClass <- class(dat[[genoCol]])
+
+  # Check that genotypes are characters or counts
+  if(!gtClass %in% c('character', 'numeric', 'integer')){
+    stop("Check that genotypes are coded as '/' separated characters or as
+         counts of the Alt allele.")
+  }
+
+  # Convert characters of separated alleles to counts
+  if(gtClass=='character'){
+    dat[[genoCol]] <- genoscore_converter(dat[[genoCol]])
+  }
+
+  # Convert numeric allele counts to integers
+  if(gtClass=='numeric'){
+    dat[[genoCol]] <- as.integer(dat[[genoCol]])
   }
 
   # --------------------------------------------+
@@ -69,8 +96,7 @@ pca_DTgenos <- function(dat, scaling='covar', sampCol='SAMPLE'
   genoMat <- DT2Mat_genos(dat
                           , sampCol=sampCol
                           , locusCol=locusCol
-                          , genoCol=genoCol
-                          , genoScore='counts')
+                          , genoCol=genoCol)
 
   # Get individuals in rows
   sampRows <- rownames(genoMat)

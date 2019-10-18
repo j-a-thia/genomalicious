@@ -14,7 +14,7 @@ convert into separated alleles.}
 }
 \description{
 Assumes biallelic genotypes and can interchange between separated
-alleles ('0/0', '0/1', '1/1') or Ref allele counts (2, 1, 0).
+alleles ('0/0', '0/1', '1/1') or Alt allele counts (0, 1, 2).
 }
 \details{
 If \code{dat} is a vector of characters, then missing values should

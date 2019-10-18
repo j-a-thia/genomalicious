@@ -4,7 +4,7 @@
 #' is \code{'character'}, then assumes alleles are separated
 #' with a '/'. Doesn't have to be biallelic (see param \code{biallelic}).
 #' If the class is \code{'integer'}, then assumes counts of
-#' Ref alleles, in which case, it assumes data is biallelic.
+#' Alt alleles, in which case, it assumes data is biallelic.
 #'
 #' @param biallelic Logical: Is the data biallelic? Affects processing and
 #' output (see also "Value" section).
@@ -20,8 +20,8 @@
 #' # Genotypes as separated alleles, not biallelic
 #' allele_counts(c('1/1', '2/3', '1/3', '0/0', '2/2'), biallelic=FALSE)
 #'
-#' # Genotypes as counts of the Ref allele
-#' allele_counts(c(2, 1, 1, 0, 2))
+#' # Genotypes as counts of the Alt allele
+#' allele_counts(c(2, 1, 1, 0, 0))
 #'
 #' @export
 allele_counts <- function(dat, biallelic=TRUE){
@@ -57,8 +57,8 @@ allele_counts <- function(dat, biallelic=TRUE){
   if(class(dat)=='character'){
     # If data is biallelic
     if(biallelic==TRUE){
-      ref <- sum(genoscore_converter(dat))
-      alt <- n - ref
+      alt <- sum(genoscore_converter(dat))
+      ref <- n - alt
       return(c(ref=ref, alt=alt))
     # Else, if >2 alleles
     } else{
@@ -69,8 +69,8 @@ allele_counts <- function(dat, biallelic=TRUE){
     }
   # If given counts of bialleles
   } else if(class(dat)=='integer'){
-    ref <- sum(dat)
-    alt <- n - ref
+    alt <- sum(dat)
+    ref <- n - alt
     return(c(ref=ref, alt=alt))
   }
 

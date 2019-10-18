@@ -11,7 +11,7 @@ allele_counts(dat, biallelic = TRUE)
 is \code{'character'}, then assumes alleles are separated
 with a '/'. Doesn't have to be biallelic (see param \code{biallelic}).
 If the class is \code{'integer'}, then assumes counts of
-Ref alleles, in which case, it assumes data is biallelic.}
+Alt alleles, in which case, it assumes data is biallelic.}
 
 \item{biallelic}{Logical: Is the data biallelic? Affects processing and
 output (see also "Value" section).}
@@ -31,7 +31,7 @@ allele_counts(c('1/1', '0/1', '0/1', '0/0', '0/0'))
 # Genotypes as separated alleles, not biallelic
 allele_counts(c('1/1', '2/3', '1/3', '0/0', '2/2'), biallelic=FALSE)
 
-# Genotypes as counts of the Ref allele
-allele_counts(c(2, 1, 1, 0, 2))
+# Genotypes as counts of the Alt allele
+allele_counts(c(2, 1, 1, 0, 0))
 
 }
