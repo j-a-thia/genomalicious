@@ -4,7 +4,8 @@
 \alias{fstWC_freqs}
 \title{Calculate Weir and Cockerham's FST from allele frequencies}
 \usage{
-fstWC_freqs(freqMat, sampMat, pairs = FALSE, dist = FALSE)
+fstWC_freqs(freqMat, sampMat, doPairs = FALSE, doDist = FALSE,
+  perLocus = FALSE)
 }
 \arguments{
 \item{freqMat}{Matrix: Ref allele counts. Rows = populations,
@@ -13,26 +14,17 @@ columns = loci; make sure both are named. Row names used to label output FST mat
 \item{sampMat}{Matrix: Number of sampled individuals. Rows = populations,
 columns = loci.}
 
-\item{pairs}{Logical: Should pairwise FSTwc be calculated (TRUE) or the
+\item{doPairs}{Logical: Should pairwise FSTwc be calculated (TRUE) or the
 among population FSTwc (FALSE)?}
 
-\item{dist}{Logical: Should a a distance matrix of FST be returned as well?
-Will only run if \code{pairs==TRUE}.}
+\item{doDist}{Logical: Should a a distance matrix of FST be returned as well?
+Will only run if \code{doPairs==TRUE}.}
 
 \item{perLocus}{Logical: Should the per locus FST be returned? Default is FALSE.}
 }
-\value{
-A list with up to three different indices.
-\code{$fst.mean} contains the mean FST. In pairwise analyses,
-this is a data table with population pairs. \code{$fst.locus} contains the locus-specific
-FST values. If analysis was not pairwise, this is a vector, but for pairwise analyses,
-this is a data table with population pairs. Additionally, if a pairwise analysis
-was run and a distance matrix requested (\code{pairs==TRUE} and \code{dist==TRUE}),
-the output can be found in \code{$fst.dist}.
-}
 \description{
-Takes a matrix of biallelic allele frequencies, and a matric of sample sizes,
-and calculates Weir and Cockerham's FST, i.e. theta (Weir & Cockerham, 1984)
+Takes a matrix of biallelic allele frequencies, and a matrix of sample sizes,
+and calculates Weir and Cockerham's FST, i.e. theta (Weir & Cockerham, 1984).
 }
 \examples{
 data(genomalicious_Freqs)
@@ -41,9 +33,9 @@ sampMat <- matrix(rep(30, 32), nrow=4, ncol=8)
 rownames(sampMat) <- paste0('Pop', 1:4)
 colnames(sampMat) <- colnames(freqMat); rownames(sampMat) <- rownames(freqMat)
 
-fstWC_freqs(freqMat, sampMat, pairs=FALSE)
-fstWC_freqs(freqMat, sampMat, pairs=TRUE)
-fstWC_freqs(freqMat, sampMat, pairs=TRUE, dist=TRUE)
+fstWC_freqs(freqMat, sampMat, doPairs=FALSE)
+fstWC_freqs(freqMat, sampMat, doPairs=TRUE)
+fstWC_freqs(freqMat, sampMat, doPairs=TRUE, doDist=TRUE)
 
 }
 \references{

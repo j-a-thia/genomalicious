@@ -1,0 +1,213 @@
+#' Calculate Weir and Cockerham's FST from genotypes
+#'
+#' Takes a long format data table of biallelic genotypes and calculates
+#' Weir and Cockerham's FST, i.e. theta (Weir & Cockerham, 1984).
+#'
+#' @param dat Data table: A long format data table of biallelic genotypes,
+#' coded as '/' separated alleles ('0/0', '0/1', '1/1'), or counts
+#' of the Alt alleles (0, 1, 2, repsectively).
+#' Three columns are required:
+#' \enumerate{
+#'    \item The population ID (see param \code{popCol}).
+#'    \item The sampled individual ID (see param \code{sampCol}).
+#'    \item The locus ID (see param \code{locusCol}).
+#'    \item The genotype (see param \code{genoCol}).
+#' }
+#'
+#' @param popCol Character: The column name with the population information.
+#' Default = \code{'POP'}.
+#'
+#' @param sampCol Character: The column name with the sampled individual information.
+#' Default = \code{'SAMPLE'}.
+#'
+#' @param locusCol Character: The column name with the locus information.
+#' Default = \code{'LOCUS'}.
+#'
+#' @param genoCol Character: The column name with the genotype information.
+#' Default = \code{'GT'}.
+#'
+#' @param permTest Logical: Should a permutation test for significance be
+#' conducted? Default = \code{FALSE}, see Details.
+#'
+#' @param bootCI Logical: Should bootstrap resampling be conducted to estimate
+#' the 2.5% and 97.5% confidence intervals? Default = \code{FALSE}, see Details.
+#'
+#' @param iters Integer: The number of permutations or bootstraps to conduct.
+#'
+#' @param doPairs Logical: Should pairwise FSTwc be calculated (TRUE) or the
+#' among population FSTwc (FALSE)?
+#'
+#' @param doDist Logical: Should a a distance matrix of FST be returned as well?
+#' Will only run if \code{doPairs==TRUE}.
+#'
+#' @param perLocus Logical: Should the per locus FST be returned? Default is FALSE.
+#'
+#' @details Significance testing using permutations (\code{permTest==TRUE})
+#' randomly assigns individuals to populations before calculating FST.
+#' The p-value from this test reflects the proportion of
+#' permuted FST values that were greater than the observed FST. NOTE: when
+#' observed FST > 0, this tends to always give a significant result because
+#' Weir & Cockerham's FST always returns negative FST values when individuals
+#' are fully randomised among populations (based on personal trails). Sometimes
+#' observed FST < 0 can also be significant, but this is because randomisation
+#' can create less negative FST values. \cr
+#'
+#' Estimating confidence intervals using bootstrap resampling
+#' (\code{bootCI==TRUE}) can provide insight into how likely the FST
+#' estimate overlaps with zero, and might be a more conservative test
+#' for testing statistical significance.
+#'
+#' @return A list, contents depend on whether analysis is among populations
+#' or pairwise. \cr
+#' For among populations:
+#' \enumerate{
+#'    \item \code{$fst.mean}: Numeric, the mean FST across loci
+#'    \item \code{$fst.locus}: Numeric, the locus-specific FST values
+#'    \item \code{$fst.perm.pval}: Numeric, the p-value from permutation tests,
+#'    the number of permutations that produced FST > observed FST.
+#'    \item \code{$fst.boot.ci}: Numeric, the bootstrap 2.5% and 97.5% percentiles.
+#' }
+#' For pairiwse populations:
+#' \enumerate{
+#'    \item \code{$fst.mean}: Data table, contains the columns \code{$POP1},
+#'    \code{$POP2}, \code{$FST}. Will also contain \code{$PVAL} for
+#'    permutation tests, and \code{$CI.025} and \code{$CI.975} for
+#'    bootstrap confidence intervals.
+#'    \item \code{$fst.locus}: Data table, contains the columns \code{$POP1},
+#'    \code{$POP2}, \code{$LOCUS},and \code{$FST}.
+#'    \item \code{$fst.dist}: Dist, a distance matrix of mean FST values.
+#' }
+#'
+#' @examples
+#' data(genomalicious_4pops)
+#'
+#' # Among popuation FST, with permutation tests
+#' # and bootstrap confidence intervals.
+#' fst_among <- fstWC_genos(genomalicious_4pops, permTest=TRUE
+#'              , bootCI=TRUE, iters=50)
+#'
+#' # Pairwise FST, with per locus estimates
+#' # and a distance matrix
+#' fst_pairs <- fstWC_genos(genomalicious_4pops, doPairs=TRUE
+#'              , doDist=TRUE, perLocus=TRUE)
+#'
+#' @export
+#'
+fstWC_genos <- function(dat, popCol='POP', sampCol='SAMPLE', locusCol='LOCUS'
+                        , genoCol='GT', permTest=FALSE, bootCI=FALSE, iters=100
+                        , doPairs=FALSE, doDist=FALSE, perLocus=FALSE){
+  # BEGIN ...........
+
+  # --------------------------------------------+
+  # Libraries and assertions
+  # --------------------------------------------+
+  # Check the class of dat
+  if(!'data.table' %in% class(dat)){ stop("Argument dat isn't a data table.")}
+
+  # Check that all columns are specified correctly
+  if(sum(c(popCol, sampCol, locusCol, genoCol) %in% colnames(dat)) != 4){
+    stop('Arguments popCol, sampCol, locusCol, and genoCol must be
+         columns in dat. See ?genos2freqs.')
+  }
+
+  # Rename columns
+  colnames(dat)[
+    match(c(sampCol, popCol, locusCol, genoCol), colnames(dat))
+    ] <- c('SAMPLE', 'POP', 'LOCUS', 'GT')
+
+  # Get genotype class
+  genoClass <- class(dat$GT)
+
+  # Convert to integer
+  if(genoClass=='character'){
+    dat[, GT:=genoscore_converter(GT)]
+  } else if(genoClass=='numeric'){
+    dat[, GT:=as.integer(GT)]
+  }
+
+  # --------------------------------------------+
+  # Code
+  # --------------------------------------------+
+  # Frequency matrix
+  freqMat <- genos2freqs(dat, popCol='POP', sampCol='SAMPLE'
+                         , locusCol='LOCUS', genoCol='GT', returnMat=TRUE)
+
+  # Sample size matrix
+  sampMat <- as.matrix(spread(dat[, length(SAMPLE), by=c('POP', 'LOCUS')]
+                              , key=LOCUS, value=V1)
+                       , rownames='POP')
+
+  # If pairwise FST is not desired:
+  if(doPairs==FALSE){
+    # START NORMAL
+
+    # The observed FST
+    fst_obs <- fstWC_freqs(freqMat=freqMat, sampMat=sampMat[, colnames(freqMat)]
+                           , perLocus=perLocus)
+
+    if(permTest==TRUE){
+      fst_perm <- fstWC_permgenos(dat, popCol='POP', sampCol='SAMPLE'
+                                  , locusCol='LOCUS', genoCol='GT', perms=iters)
+
+      # p-value for permutations
+      fst_obs$fst.perm.pval <- sum(fst_perm > fst_obs$fst.mean) / iters
+    }
+
+    if(bootCI==TRUE){
+      fst_boot <- fstWC_boot(freqMat, sampMat, boots=iters)
+
+      # Percentiles
+      fst_obs$fst.boot.ci <- quantile(fst_boot, c(0.025, 0.975))
+    }
+
+    return(fst_obs)
+    # END NORMAL
+  }
+
+  # If pairwise FST is desired
+  if(doPairs==TRUE){
+    # START PAIRWISE
+    fst_obs <- fstWC_freqs(freqMat=freqMat, sampMat=sampMat
+                           , doPairs=TRUE, doDist=doDist, perLocus=perLocus)
+
+
+    # If either permutaton testing is desired:
+    if(permTest==TRUE){
+      fst_obs$fst.mean$PVAL <- 0
+
+      # Iterate through each ith population pair
+      for(i in 1:nrow(fst_obs$fst.mean)){
+        pop_pair <- unlist(fst_obs$fst.mean[i, c('POP1', 'POP2')])
+        perm_pair <- fstWC_permgenos(dat=dat[POP %in% pop_pair]
+                                     , popCol='POP', sampCol='SAMPLE'
+                                     , locusCol='LOCUS', genoCol='GT', perms=iters)
+        fst_obs$fst.mean$PVAL[i] <- sum(perm_pair > fst_obs$fst.mean$FST[i]) / iters
+        rm(pop_pair, perm_pair, i)
+      }
+    }
+
+    # If bootstrap confidence intervals are desired:
+    if(bootCI==TRUE){
+      fst_obs$fst.mean$CI.025 <- 0
+      fst_obs$fst.mean$CI.975 <- 0
+
+      # Iterate through each ith population pair
+      for(i in 1:nrow(fst_obs$fst.mean)){
+        pop_pair <- unlist(fst_obs$fst.mean[i, c('POP1', 'POP2')])
+        boot_pair <- fstWC_boot(freqMat[pop_pair,], sampMat[pop_pair,], boots=iters)
+
+        # Percentiles
+        boot_perc <- quantile(boot_pair, c(0.025, 0.975))
+        fst_obs$fst.mean$CI.025[i] <- boot_perc['2.5%']
+        fst_obs$fst.mean$CI.975[i] <- boot_perc['97.5%']
+
+        rm(pop_pair, boot_pair, i)
+      }
+    }
+
+    return(fst_obs)
+    # END PAIRWISE
+  }
+
+  # ............ END
+}

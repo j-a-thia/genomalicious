@@ -18,18 +18,28 @@
 #'
 #' @param genoCol Character: The column name with the genotype information. Default = \code{'GT'}.
 #'
-#' @return Returns a matrix of allele frequencies for the Ref allele (coded as '0' in the genotype)
+#' @param returnMat Logical: Should an allele frequency matrix be returned?
+#' Default = \code{TRUE}, but if \code{FALSE}, will return a data table.
+#'
+#' @return Returns a matrix of allele frequencies for the Alt allele, or
+#' a data table with the columns \code{$POP}, \code{$SAMPLE}, \code{$LOCUS}
+#' and \code{$ALT.FREQ}.
 #'
 #' @examples
 #' # Import genotype data
-#' data(genomaliciousGenos)
-#' genomaliciousGenos
+#' data(genomalicious_4pops)
+#' genomalicious_4pops
 #'
 #' # Convert to frequency matrix
-#' genos2freqs(genomaliciousGenos)
+#' genos2freqs(genomalicious_4pops)
 #'
 #' @export
-genos2freqs <- function(dat, popCol='POP', sampCol='SAMPLE', locusCol='LOCUS', genoCol='GT'){
+genos2freqs <- function(dat
+                        , popCol='POP'
+                        , sampCol='SAMPLE'
+                        , locusCol='LOCUS'
+                        , genoCol='GT'
+                        , returnMat=TRUE){
   # BEGIN ...........
 
   # --------------------------------------------+
@@ -38,39 +48,37 @@ genos2freqs <- function(dat, popCol='POP', sampCol='SAMPLE', locusCol='LOCUS', g
   # Check the class of dat
   if(!'data.table' %in% class(dat)){ stop("Argument dat isn't a data table.")}
 
-  # --------------------------------------------+
-  # Code
-  # --------------------------------------------+
+  # Check that all columns are specified correctly
+  if(sum(c(popCol, sampCol, locusCol, genoCol) %in% colnames(dat)) != 4){
+    stop('Arguments popCol, sampCol, locusCol, and genoCol must be
+         columns in dat. See ?genos2freqs.')
+  }
+
   # Reassign column names
   colReass <- match(c(popCol, sampCol, locusCol, genoCol), colnames(dat))
   colnames(dat)[colReass] <- c('POP', 'SAMPLE', 'LOCUS', 'GT')
 
-  # Split the data based on LOCUS, then iterate through each LOCUS.
-  popFreqs <- lapply(split(dat, dat$LOCUS), function(L){
+  # Convert to integer counts
+  genoClass <- class(dat$GT)
+  if(genoClass=='character'){
+    dat[, GT:=genoscore_converter(GT)]
+  } else if(genoClass=='numeric'){
+    dat[, GT:=as.integer(GT)]
+  }
 
-    # An empty matrix that will store the population frequencies
-    # for the Ref allele at the Lth LOCUS.
-    locusFreqs <- matrix(NA, 0, 1)
-    colnames(locusFreqs) <- L$LOCUS[1]
+  # --------------------------------------------+
+  # Code
+  # --------------------------------------------+
+  # Get the Alt allele frequency
+  freqDt <- dat[, sum(GT)/(length(GT)*2), by=c('POP', 'LOCUS')]
+  setnames(freqDt, 'V1', 'ALT.FREQ')
 
-    # Iterate through each Pth population
-    for(P in unique(L$POP)){
-      # Subset the data by POP, obtain all alleles
-      pop.als <- unlist(strsplit(L[POP==P]$GT, '/'))
-      # What frequency are the Ref allele?
-      pop.ref.freq <- length(which(pop.als=='0')) / length(pop.als)
-      # Adjust the object's structure
-      pop.ref.freq <- as.matrix(pop.ref.freq)
-      colnames(pop.ref.freq) <- L$LOCUS[1]
-      rownames(pop.ref.freq) <- P
-      # Row bind the population data to the LOCUS matrix.
-      locusFreqs <- rbind(locusFreqs, pop.ref.freq)
-    }
-    return(locusFreqs)
-  })
-
-  # Column bind the loci.
-  return(do.call('cbind', popFreqs))
+  # If a matrix of allele frequencies desired?
+  if(returnMat==TRUE){
+    freqMat <- as.matrix(spread(freqDt, key=LOCUS, value=ALT.FREQ)
+                  , rownames='POP')
+    return(freqMat)
+  } else{ return(freqDt) }
 
   # ............ END
 }

@@ -5,7 +5,7 @@
 \title{Generate a matrix of allele frequencies from genotypes}
 \usage{
 genos2freqs(dat, popCol = "POP", sampCol = "SAMPLE", locusCol = "LOCUS",
-  genoCol = "GT")
+  genoCol = "GT", returnMat = TRUE)
 }
 \arguments{
 \item{dat}{Data table: It is expected that there are only two alleles, and therefore, only three possible genotypes:
@@ -24,19 +24,24 @@ genos2freqs(dat, popCol = "POP", sampCol = "SAMPLE", locusCol = "LOCUS",
 \item{locusCol}{Character: The column name with the locus information. Default = \code{'LOCUS'}.}
 
 \item{genoCol}{Character: The column name with the genotype information. Default = \code{'GT'}.}
+
+\item{returnMat}{Logical: Should an allele frequency matrix be returned?
+Default = \code{TRUE}, but if \code{FALSE}, will return a data table.}
 }
 \value{
-Returns a matrix of allele frequencies for the Ref allele (coded as '0' in the genotype)
+Returns a matrix of allele frequencies for the Alt allele, or
+a data table with the columns \code{$POP}, \code{$SAMPLE}, \code{$LOCUS}
+and \code{$ALT.FREQ}.
 }
 \description{
 Parses a data table of genotypes and returns a matrix of allele frequencies.
 }
 \examples{
 # Import genotype data
-data(genomaliciousGenos)
-genomaliciousGenos
+data(genomalicious_4pops)
+genomalicious_4pops
 
 # Convert to frequency matrix
-genos2freqs(genomaliciousGenos)
+genos2freqs(genomalicious_4pops)
 
 }

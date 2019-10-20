@@ -16,3 +16,7 @@ columns = loci.}
 \description{
 Calculate the variance components of Weir & Cockerham's FST
 }
+\references{
+Weir, Cockerham (1984) Estimating F-statistics for the analysis of population structure. Evol. \cr
+Weir, Hill (2002) Estimating F-statistics. Annu. Rev. Genet
+}

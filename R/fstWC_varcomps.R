@@ -6,6 +6,11 @@
 #' @param sampMat Matrix: Number of sampled individuals. Rows = populations,
 #' columns = loci.
 #'
+#' @references
+#' Weir, Cockerham (1984) Estimating F-statistics for the analysis of population structure. Evol. \cr
+#' Weir, Hill (2002) Estimating F-statistics. Annu. Rev. Genet
+#'
+#' @export
 fstWC_varcomps <- function(freqMat, sampMat){
   lociNames <- colnames(freqMat)
   numPops <- nrow(freqMat)

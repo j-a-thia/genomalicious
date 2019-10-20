@@ -1,7 +1,7 @@
 #' Calculate Weir and Cockerham's FST from allele frequencies
 #'
-#' Takes a matrix of biallelic allele frequencies, and a matric of sample sizes,
-#' and calculates Weir and Cockerham's FST, i.e. theta (Weir & Cockerham, 1984)
+#' Takes a matrix of biallelic allele frequencies, and a matrix of sample sizes,
+#' and calculates Weir and Cockerham's FST, i.e. theta (Weir & Cockerham, 1984).
 #'
 #' @param freqMat Matrix: Ref allele counts. Rows = populations,
 #' columns = loci; make sure both are named. Row names used to label output FST matrix.
@@ -9,21 +9,24 @@
 #' @param sampMat Matrix: Number of sampled individuals. Rows = populations,
 #' columns = loci.
 #'
-#' @param pairs Logical: Should pairwise FSTwc be calculated (TRUE) or the
+#' @param doPairs Logical: Should pairwise FSTwc be calculated (TRUE) or the
 #' among population FSTwc (FALSE)?
 #'
-#' @param dist Logical: Should a a distance matrix of FST be returned as well?
-#' Will only run if \code{pairs==TRUE}.
+#' @param doDist Logical: Should a a distance matrix of FST be returned as well?
+#' Will only run if \code{doPairs==TRUE}.
 #'
 #' @param perLocus Logical: Should the per locus FST be returned? Default is FALSE.
 #'
 #' @return A list with up to three different indices.
-#' \code{$fst.mean} contains the mean FST. In pairwise analyses,
-#' this is a data table with population pairs. \code{$fst.locus} contains the locus-specific
-#' FST values. If analysis was not pairwise, this is a vector, but for pairwise analyses,
-#' this is a data table with population pairs. Additionally, if a pairwise analysis
-#' was run and a distance matrix requested (\code{pairs==TRUE} and \code{dist==TRUE}),
-#' the output can be found in \code{$fst.dist}.
+#' \enumerate{
+#'    \item \code{$fst.mean}: contains the mean FST across loci. For among populations,
+#'          this is a vector, whereas for pairwise analyses it is a data table
+#'          with a \code{$POP1}, \code{$POP2}, and \code{$FST} column.
+#'    \item \code{$fst.locus}: contains the locus-specific FST values
+#'          if \code{perLocus==TRUE}. For amonong populations, this is a vector,
+#'          but for pairwise analyses, this is a data table with population pairs.
+#'    \item \code{$fst.dist}: will contain a distance matrix of FST values
+#'          if \code{doPairs==TRUE} and \code{doDist==TRUE}.
 #'
 #' @references
 #' Weir, Cockerham (1984) Estimating F-statistics for the analysis of population structure. Evol. \cr
@@ -36,12 +39,12 @@
 #' rownames(sampMat) <- paste0('Pop', 1:4)
 #' colnames(sampMat) <- colnames(freqMat); rownames(sampMat) <- rownames(freqMat)
 #'
-#' fstWC_freqs(freqMat, sampMat, pairs=FALSE)
-#' fstWC_freqs(freqMat, sampMat, pairs=TRUE)
-#' fstWC_freqs(freqMat, sampMat, pairs=TRUE, dist=TRUE)
+#' fstWC_freqs(freqMat, sampMat, doPairs=FALSE)
+#' fstWC_freqs(freqMat, sampMat, doPairs=TRUE)
+#' fstWC_freqs(freqMat, sampMat, doPairs=TRUE, doDist=TRUE)
 #'
 #' @export
-fstWC_freqs <- function(freqMat, sampMat, pairs=FALSE, dist=FALSE){
+fstWC_freqs <- function(freqMat, sampMat, doPairs=FALSE, doDist=FALSE, perLocus=FALSE){
   # --------------------------------------------+
   # Libraries and assertions
   # --------------------------------------------+
@@ -65,8 +68,8 @@ fstWC_freqs <- function(freqMat, sampMat, pairs=FALSE, dist=FALSE){
     stop('Make sure all column names in freqMat are also in sampMat.')
   }
 
-  if(dist==TRUE & pairs==FALSE){
-    warning('Argument dist set to TRUE, but pairs set to FALSE: Will
+  if(doDist==TRUE & doPairs==FALSE){
+    warning('Argument doDist set to TRUE, but doPairs set to FALSE: Will
     only calcualte a distance matrix for pairwise analyses.')
   }
 
@@ -76,19 +79,28 @@ fstWC_freqs <- function(freqMat, sampMat, pairs=FALSE, dist=FALSE){
   # --------------------------------------------+
   # Code
   # --------------------------------------------+
-  if(pairs==FALSE){
+  if(doPairs==FALSE){
+    fst_out <- list()
+
     # Calculate variance per locus
     lociVar <- fstWC_varcomps(freqMat, sampMat)
+
     # Theta across loci
-    fst.mean <- data.table(FST=sum(lociVar$NUMER) / sum(lociVar$DENOM))
+    fst_out$fst.mean <- sum(lociVar$NUMER) / sum(lociVar$DENOM)
+
     # Theta per locus
-    fst.locus <- lociVar$NUMER / lociVar$DENOM
-    names(fst.locus) <- lociVar$LOCUS
+    if(perLocus==TRUE){
+      fst.locus <- lociVar$NUMER / lociVar$DENOM
+      names(fst.locus) <- lociVar$LOCUS
+      fst_out$fst.locus <- fst.locus
+    }
 
     # Return among population analyses
-    return(list(fst.mean=fst.mean, fst.locus=fst.locus))
+    return(fst_out)
 
-  } else if(pairs==TRUE){
+  } else if(doPairs==TRUE){
+    fst_out <- list()
+
     pairCombos <- combn(x=rownames(freqMat), m=2)
 
     # For the Xth pair
@@ -98,22 +110,26 @@ fstWC_freqs <- function(freqMat, sampMat, pairs=FALSE, dist=FALSE){
       # Theta across loci
       thetaMean <- data.table(POP1=X[1], POP2=X[2]
                     , FST=sum(lociVar$NUMER) / sum(lociVar$DENOM))
-      # Theta per locus
-      thetaLocus <- data.table(POP1=X[1], POP2=X[2]
-                              , LOCUS=lociVar$LOCUS
-                              , FST=lociVar$NUMER / lociVar$DENOM)
 
-      # Return list
-      return(list(mean=thetaMean, bylocus=thetaLocus))
+      # Theta per locus
+      if(perLocus==TRUE){
+        thetaLocus <- data.table(POP1=X[1], POP2=X[2]
+                                 , LOCUS=lociVar$LOCUS
+                                 , FST=lociVar$NUMER / lociVar$DENOM)
+        return(list(mean=thetaMean, bylocus=thetaLocus))
+      } else{ return(list(mean=thetaMean)) }
     })
 
     # Create a list of objects to return for pairwise analyses
-    outLs <- list(fst.mean=do.call('rbind', lapply(pairLs, function(X){ X$mean}))
-                    , fst.locus=do.call('rbind', lapply(pairLs, function(X){ X$bylocus}))
-    )
+    if(perLocus==TRUE){
+      outLs <- list(fst.mean=do.call('rbind', lapply(pairLs, function(X){ X$mean}))
+                    , fst.locus=do.call('rbind', lapply(pairLs, function(X){ X$bylocus})))
+    } else{
+      outLs <- list(fst.mean=do.call('rbind', lapply(pairLs, function(X){ X$mean})))
+    }
 
     # If an FST distance matrix was requested:
-    if(dist==TRUE){
+    if(doDist==TRUE){
       # Empty matrix
       fst.dist <- matrix(0, nrow=nrow(freqMat), ncol=nrow(freqMat)
                          , dimnames=list(rownames(freqMat), rownames(freqMat)))
