@@ -50,29 +50,23 @@ Will only run if \code{doPairs==TRUE}.}
 }
 \value{
 A list, contents depend on whether analysis is among populations
-or pairwise. \cr
-For among populations:
+or pairwise. For among populations:
 \enumerate{
    \item \code{$fst.mean}: Numeric, the mean FST across loci
    \item \code{$fst.locus}: Numeric, the locus-specific FST values
-   \item \code{$fst.perm.pval}: Numeric, the p-value from permutation tests,
-   the number of permutations that produced FST > observed FST.
+   \item \code{$fst.perm.pval}: Numeric, the p-value from permutation tests, the number of permutations that produced FST > observed FST.
    \item \code{$fst.boot.ci}: Numeric, the bootstrap 2.5% and 97.5% percentiles.
 }
 For pairiwse populations:
 \enumerate{
-   \item \code{$fst.mean}: Data table, contains the columns \code{$POP1},
-   \code{$POP2}, \code{$FST}. Will also contain \code{$PVAL} for
-   permutation tests, and \code{$CI.025} and \code{$CI.975} for
-   bootstrap confidence intervals.
-   \item \code{$fst.locus}: Data table, contains the columns \code{$POP1},
-   \code{$POP2}, \code{$LOCUS},and \code{$FST}.
+   \item \code{$fst.mean}: Data table, contains the columns \code{$POP1}, \code{$POP2}, \code{$FST}. Will also contain \code{$PVAL} for permutation tests, and \code{$CI.025} and \code{$CI.975} for bootstrap confidence intervals.
+   \item \code{$fst.locus}: Data table, contains the columns \code{$POP1}, \code{$POP2}, \code{$LOCUS},and \code{$FST}.
    \item \code{$fst.dist}: Dist, a distance matrix of mean FST values.
 }
 }
 \description{
-Takes a long format data table of biallelic genotypes and calculates
-Weir and Cockerham's FST, i.e. theta (Weir & Cockerham, 1984).
+Takes a long format data table of biallelic genotypes
+and calculates Weir and Cockerham's FST, i.e. theta (Weir & Cockerham, 1984).
 }
 \details{
 Significance testing using permutations (\code{permTest==TRUE})
@@ -83,9 +77,7 @@ observed FST > 0, this tends to always give a significant result because
 Weir & Cockerham's FST always returns negative FST values when individuals
 are fully randomised among populations (based on personal trails). Sometimes
 observed FST < 0 can also be significant, but this is because randomisation
-can create less negative FST values. \cr
-
-Estimating confidence intervals using bootstrap resampling
+can create less negative FST values. Estimating confidence intervals using bootstrap resampling
 (\code{bootCI==TRUE}) can provide insight into how likely the FST
 estimate overlaps with zero, and might be a more conservative test
 for testing statistical significance.
