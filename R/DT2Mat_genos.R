@@ -38,22 +38,14 @@
 #' datGt <- genomalicious_4pops[LOCUS %in% unique(genomalicious_4pops$LOCUS)[1:8]]
 #'
 #' # Convert a long data table to a wide matrix
-#' genoMatSep <- DT2Mat_genos(datGt
+#' genoMat <- DT2Mat_genos(datGt
 #'               , sampCol='SAMPLE'
 #'               , locusCol='LOCUS'
 #'               , genoCol='GT'
 #'               , flip=FALSE)
 #'
-#' # Convert a wide matrix back to a data table
-#' genoDTSep <- DT2Mat_genos(genoMatSep
-#'               , sampCol='SAMPLE'
-#'               , locusCol='LOCUS'
-#'               , genoCol='GT'
-#'               , genoScore='sep'
-#'               , flip=TRUE)
-#'
 #' @export
-DT2Mat_genos <- function(dat, sampCol=NA, locusCol=NA, genoCol=NA, genoScore='sep', flip=FALSE){
+DT2Mat_genos <- function(dat, sampCol=NA, locusCol=NA, genoCol=NA, flip=FALSE){
 
   # --------------------------------------------+
   # Libraries and assertions
