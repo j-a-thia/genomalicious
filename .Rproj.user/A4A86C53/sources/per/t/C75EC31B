@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1571607459351.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "205936733",
+    "id" : "C75EC31B",
+    "lastKnownWriteTime" : 1571607885,
+    "last_content_update" : 1571607885868,
+    "path" : "~/GitHub/genomalicious/R/fstWC_freqs.R",
+    "project_path" : "R/fstWC_freqs.R",
+    "properties" : {
+        "cursorPosition" : "17,0",
+        "scrollLine" : "7"
+    },
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

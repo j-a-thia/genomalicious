@@ -11,7 +11,7 @@ fstWC_permgenos(dat, popCol = "POP", sampCol = "SAMPLE",
 \item{dat}{Data table: A long format data table of biallelic genotypes,
 coded as '/' separated alleles ('0/0', '0/1', '1/1'), or counts
 of the Alt alleles (0, 1, 2, repsectively).
-Three columns are required:
+Four columns are required:
 \enumerate{
    \item The population ID (see param \code{popCol}).
    \item The sampled individual ID (see param \code{sampCol}).
@@ -34,7 +34,7 @@ Default = \code{'GT'}.}
 \item{perms}{Integer: The number of permutations to conduct. Default = 100.}
 }
 \value{
-Returns a vector of permuted mean FST values (estimated across 
+Returns a vector of permuted mean FST values (estimated across
 all loci).
 }
 \description{

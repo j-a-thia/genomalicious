@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1571607540964.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "28481076",
+    "id" : "D9EB347",
+    "lastKnownWriteTime" : 1571574388,
+    "last_content_update" : 1571574388,
+    "path" : "~/GitHub/genomalicious/R/fstWC_boot.R",
+    "project_path" : "R/fstWC_boot.R",
+    "properties" : {
+    },
+    "relative_order" : 5,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

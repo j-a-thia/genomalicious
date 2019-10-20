@@ -14,13 +14,14 @@ columns = loci; make sure both are named. Row names used to label output FST mat
 \item{sampMat}{Matrix: Number of sampled individuals. Rows = populations,
 columns = loci.}
 
-\item{doPairs}{Logical: Should pairwise FSTwc be calculated (TRUE) or the
-among population FSTwc (FALSE)?}
+\item{doPairs}{Logical: Should pairwise FST be calculated? Default = \code{FALSE},
+which calculates the among population FST.}
 
-\item{doDist}{Logical: Should a a distance matrix of FST be returned as well?
-Will only run if \code{doPairs==TRUE}.}
+\item{doDist}{Logical: Should a a distance matrix of FST be returned?
+Default = \code{FALSE}. Only applied when \code{doPairs==TRUE}.}
 
-\item{perLocus}{Logical: Should the per locus FST be returned? Default is FALSE.}
+\item{perLocus}{Logical: Should the per locus FST be returned?
+Default = \code{FALSE}.}
 }
 \description{
 Takes a matrix of biallelic allele frequencies, and a matrix of sample sizes,
