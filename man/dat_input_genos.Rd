@@ -5,8 +5,8 @@
 \title{Genertate dadi input from individual genotype data}
 \usage{
 dat_input_genos(dat, sampCol = "SAMPLE", popCol = "POP",
-  locusCol = "LOCUS", refCol = "REF", altCol = "ALT", genoCol = "GT",
-  popSub = NULL)
+  locusCol = "LOCUS", refCol = "REF", altCol = "ALT",
+  genoCol = "GT", popSub = NULL)
 }
 \arguments{
 \item{dat}{Data table: Contains population and genotype information. Genotypes

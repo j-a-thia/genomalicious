@@ -4,9 +4,10 @@
 \alias{fstWC_genos}
 \title{Calculate Weir and Cockerham's FST from genotypes}
 \usage{
-fstWC_genos(dat, popCol = "POP", sampCol = "SAMPLE", locusCol = "LOCUS",
-  genoCol = "GT", permTest = FALSE, bootCI = FALSE, iters = 100,
-  doPairs = FALSE, doDist = FALSE, perLocus = FALSE)
+fstWC_genos(dat, popCol = "POP", sampCol = "SAMPLE",
+  locusCol = "LOCUS", genoCol = "GT", permTest = FALSE,
+  bootCI = FALSE, iters = 100, doPairs = FALSE, doDist = FALSE,
+  perLocus = FALSE)
 }
 \arguments{
 \item{dat}{Data table: A long format data table of biallelic genotypes,

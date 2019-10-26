@@ -4,8 +4,8 @@
 \alias{genos2freqs}
 \title{Generate a matrix of allele frequencies from genotypes}
 \usage{
-genos2freqs(dat, popCol = "POP", sampCol = "SAMPLE", locusCol = "LOCUS",
-  genoCol = "GT", returnMat = TRUE)
+genos2freqs(dat, popCol = "POP", sampCol = "SAMPLE",
+  locusCol = "LOCUS", genoCol = "GT", returnMat = TRUE)
 }
 \arguments{
 \item{dat}{Data table: It is expected that there are only two alleles, and therefore, only three possible genotypes:

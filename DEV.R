@@ -10,6 +10,7 @@ for(L in libs){require(L, character.only=TRUE)}
 # Make documents
 roxygenise('./', clean=TRUE) # Sometimes this throws an error?
 roxygenise('./')
+roxygenise()
 
 # Load currently installed genomalicious
 library(genomalicious)
