@@ -15,6 +15,12 @@
 #' } \cr
 #' Note, for VCF files produced by Stacks, the $CHROM is given the same value as the $ID column.
 #'
+#' @param dropCols Character: Vector of column names from the VCF that you
+#' want to drop from the data table. Default = \code{NULL}.
+#'
+#' @param keepComments Logical: Should the VCF comments be kept? Default = \code{FALSE},
+#' however, if \code{TRUE}, this is returned as an attribute of the data table.
+#'
 #' @examples
 #' # Create a link to raw external datasets in genomalicious
 #' genomaliciousExtData <- paste0(find.package('genomalicious'), '/extdata')
@@ -29,11 +35,19 @@
 #' # looks like:
 #' readLines(vcfPath)
 #'
-#' # Now read it in as a data.table
-#' vcf2DT(vcfPath)
+#' # Now read it in as a data table
+#' readVcf1 <- vcf2DT(vcfPath)
+#' readVcf1
+#'
+#' # Read in VCF, but drop some columns, and keep comments
+#' readVcf2 <- vcf2DT(vcfPath
+#'     , dropCols=c('FILTER', 'ID', 'INFO', 'QUAL')
+#'     , keepComments=TRUE)
+#' readVcf2
+#' attr(readVcf2, 'vcf_comments')
 #'
 #' @export
-vcf2DT <- function(vcfFile){
+vcf2DT <- function(vcfFile, dropCols=NULL, keepComments=FALSE){
 
   # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   # #### Libraries and assertions            ####
@@ -85,7 +99,16 @@ vcf2DT <- function(vcfFile){
     if(i %in% colnames(vcfDT)){ vcfDT[[i]] <- as.integer(vcfDT[[i]]) }
   }
 
-  # Return the data.table
-  return(vcfDT)
+  # Attach header as an attribute, if specified.
+  if(keepComments==TRUE){
+    attr(vcfDT, 'vcf_comments') <- readLines(vcfFile, n=headPos-1)
+  }
+
+  # Return the data.table, drop any columns if specified.
+  if(is.null(dropCols)){
+    return(vcfDT)
+  } else{
+    return(vcfDT[, !dropCols, with=FALSE])
+  }
 }
 
