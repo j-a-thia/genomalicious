@@ -278,12 +278,8 @@ vcf2DT <- function(vcfFile
     # Create and organise the $FORMAT column in the sample data table
     cat('(2/3) Organising into wide format matrix.', '\n')
     sampDat$FORMAT <- paste(vcfValues$format, collapse=':')
-    sampDat$VALUES <- unlist(lapply(1:nrow(sampDat), function(i){
-      ij <- unlist(sampDat[i, vcfValues$format, with=FALSE])
-      ij[which(is.na(ij))] <- '.'
-      ij <- paste(ij, collapse=':')
-      return(ij)
-    }))
+    sampDat$VALUES <- apply(dat[, vcfValues$format, with=FALSE], 1, function(i){
+      paste(i, collapse=':')})
     sampDat <- sampDat[, !vcfValues$format, with=FALSE]
     sampDat <- spread(sampDat, 'SAMPLE', 'VALUES')
 

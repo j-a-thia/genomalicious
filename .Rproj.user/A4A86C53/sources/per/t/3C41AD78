@@ -5,15 +5,15 @@
     "dirty" : false,
     "encoding" : "UTF-8",
     "folds" : "",
-    "hash" : "1543520347",
+    "hash" : "2134889248",
     "id" : "3C41AD78",
-    "lastKnownWriteTime" : 1572268944,
-    "last_content_update" : 1572268944267,
+    "lastKnownWriteTime" : 1572271883,
+    "last_content_update" : 1572271883,
     "path" : "~/GitHub/genomalicious/R/vcf2DT.R",
     "project_path" : "R/vcf2DT.R",
     "properties" : {
         "cursorPosition" : "117,0",
-        "scrollLine" : "104"
+        "scrollLine" : "76"
     },
     "relative_order" : 2,
     "source_on_save" : false,
