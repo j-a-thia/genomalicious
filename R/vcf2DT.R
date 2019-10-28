@@ -206,7 +206,7 @@ vcf2DT <- function(vcfFile
     cat('(4/4) Collecting and organising `FORMAT` data', sep='\n')
 
     # Split the $FORMAT column, rotate, rename columns, and bind.
-    formatCols <- unlist(strsplit(vcfDT$FORMAT[1], ':'))
+    formatCols <- vcfValues$format
     formatDat <- as.data.table(t(vcfDT[, strsplit(DATA, ':')]))
     colnames(formatDat) <- formatCols
     vcfDT <- cbind(vcfDT, formatDat[, vcfValues$format])
@@ -278,8 +278,12 @@ vcf2DT <- function(vcfFile
     # Create and organise the $FORMAT column in the sample data table
     cat('(2/3) Organising into wide format matrix.', '\n')
     sampDat$FORMAT <- paste(vcfValues$format, collapse=':')
-    sampDat$VALUES <- apply(sampDat[, vcfValues$format, with=FALSE], 1, function(i){
-      paste(i, collapse=':')})
+    sampDat$VALUES <- unlist(lapply(1:nrow(sampDat), function(i){
+      ij <- unlist(sampDat[i, vcfValues$format, with=FALSE])
+      ij[which(is.na(ij))] <- '.'
+      ij <- paste(ij, collapse=':')
+      return(ij)
+    }))
     sampDat <- sampDat[, !vcfValues$format, with=FALSE]
     sampDat <- spread(sampDat, 'SAMPLE', 'VALUES')
 
