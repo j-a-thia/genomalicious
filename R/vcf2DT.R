@@ -160,7 +160,7 @@ vcf2DT <- function(vcfFile
                    , dat
                    , vcfValues=list(loci='LOCUS'
                          , variants=c('CHROM', 'POS', 'REF', 'ALT')
-                         , format=c('DP', 'RO', 'AO')
+                         , format=c('GT', 'DP', 'RO', 'AO')
                          , samples='SAMPLE'))
 {
 
@@ -203,13 +203,13 @@ vcf2DT <- function(vcfFile
     vcfDT$SAMPLE <- as.character(vcfDT$SAMPLE)
 
     # Add the $FORMAT data into the data table
-    cat('(4/4) Collecting and organising `FORMAT` data', sep='\n')
+    cat('(4/4) Collecting and organising FORMAT data', sep='\n')
 
-    # Split the $FORMAT column, rotate, rename columns, and bind.
-    formatCols <- vcfValues$format
-    formatDat <- as.data.table(t(vcfDT[, strsplit(DATA, ':')]))
-    colnames(formatDat) <- formatCols
-    vcfDT <- cbind(vcfDT, formatDat[, vcfValues$format])
+    # Split the $FORMAT column, identify NAs, rotate, rename columns, and bind.
+    formatDat <- t(vcfDT[, strsplit(DATA, ':')])
+    formatDat[which(formatDat=='.')] <- NA
+    colnames(formatDat) <- unlist(strsplit(vcfDT$FORMAT[1], ':'))
+    vcfDT <- cbind(vcfDT, as.data.table(formatDat))
 
     # Drop FORMAT and DATA
     vcfDT <- vcfDT[, !c('FORMAT','DATA'), with=FALSE]

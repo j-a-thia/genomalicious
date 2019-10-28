@@ -6,8 +6,8 @@
 \usage{
 vcf2DT(vcfFile, dropCols = NULL, keepComments = FALSE,
   keepInfo = FALSE, flip = FALSE, dat, vcfValues = list(loci =
-  "LOCUS", variants = c("CHROM", "POS", "REF", "ALT"), format = c("DP",
-  "RO", "AO"), samples = "SAMPLE"))
+  "LOCUS", variants = c("CHROM", "POS", "REF", "ALT"), format = c("GT",
+  "DP", "RO", "AO"), samples = "SAMPLE"))
 }
 \arguments{
 \item{vcfFile}{Character: The path to the input VCF file.}
@@ -29,8 +29,9 @@ columns that are specified in argument \code{vcfValues}, and optionally,
 the attributes \code{'vcf_comments'} and \code{'vcf_info'}. See Details.}
 
 \item{vcfValues}{List: Information about relevant columns for constructing
-a VCF file from a long format data table. All these values must be specific
-column names in argument \code{dat}. Structure with the following indices,
+a VCF file from a long format data table. Only relevant when \code{flip==TRUE}.
+All these values must be specific column names in argument \code{dat}.
+Structure with the following indices,
 \enumerate{
     \item \code{$locusCol}: Character, single value specifying the column
         of locus names. Default = \code{'LOCUS'}.
@@ -38,7 +39,7 @@ column names in argument \code{dat}. Structure with the following indices,
         on variant sites. Default = \code{c('CHROM', 'POS', 'REF', 'ALT')}.
     \item \code{$formatCols}: Character, 1+ values specifying information
         on the format of sample data. Default = \code{c('DP', 'RO', 'AO')}.
-   \item \code{#sampCol}: Character, a single value specifying the column
+   \item \code{$sampCol}: Character, a single value specifying the column
         of sample names. Default = \code{'SAMPLE'}.
 }}
 
