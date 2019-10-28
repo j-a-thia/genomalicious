@@ -5,14 +5,14 @@
     "dirty" : false,
     "encoding" : "UTF-8",
     "folds" : "",
-    "hash" : "1828762363",
+    "hash" : "3103765319",
     "id" : "1FFB5FA6",
-    "lastKnownWriteTime" : 1572055949,
-    "last_content_update" : 1572055949848,
+    "lastKnownWriteTime" : 1572235365,
+    "last_content_update" : 1572235365310,
     "path" : "~/GitHub/genomalicious/DEV.R",
     "project_path" : "DEV.R",
     "properties" : {
-        "cursorPosition" : "12,0",
+        "cursorPosition" : "7,38",
         "scrollLine" : "3"
     },
     "relative_order" : 1,

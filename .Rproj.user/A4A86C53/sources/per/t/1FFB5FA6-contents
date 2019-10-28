@@ -8,8 +8,7 @@ libs <- c('devtools', 'roxygen2', 'testthat', 'knitr', 'data.table', 'tidyr')
 for(L in libs){require(L, character.only=TRUE)}
 
 # Make documents
-roxygenise('./', clean=TRUE) # Sometimes this throws an error?
-roxygenise('./')
+roxygenise(clean=TRUE) # Sometimes this throws an error?
 roxygenise()
 
 # Load currently installed genomalicious
