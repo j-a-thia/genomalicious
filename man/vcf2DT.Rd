@@ -69,14 +69,21 @@ Also provides functionality #' to go in reverse,
 i.e. writing a VCF from a long format data table.
 }
 \details{
+Firstly, it should be noted that while data tables are a really
+excellent way of handling genotype and sequence read information in R,
+they are not necessarily the most efficient way to do so. Importing VCFs
+as data table (or the reverse, exporting data tables as VCFs), can take
+a considerable amount of time if the number of loci and samples are large.
+However, a bit of patience is worth it! \cr
+
 The direction of this function, i.e. importing VCFs or exporting VCFs,
-is controlled by the argumnet \code{flip}. This section will describe the
-nuances of the parameterisation. \cr
+is controlled by the argumnet \code{flip}. The remaineder of this section
+will describe the nuances of parameterising import/export. \cr
 
 If \code{flip==FALSE}, this converts a VCF file into a long format data table.
 Parameterisation can be simple, just specify the VCF file path with
 \code{vcfFile}. More fine-scale control can be exerted by removing specific
-columns using the argument \code{dropCols}. NOTE, however, that the FORMAT
+columns using the argument \code{dropCols}. Note, however, that the FORMAT
 and INFO columns from the VCF are always removed. The VCF INFO column contains
 specifics of the called variants, which you may want to keep by specifying
 the argument \code{keepInfo==TRUE}. Doing so saves INFO as an attribute, such

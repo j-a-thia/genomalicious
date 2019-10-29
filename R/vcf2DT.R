@@ -40,14 +40,21 @@
 #'         of sample names. Default = \code{'SAMPLE'}.
 #' }
 #'
-#' @details The direction of this function, i.e. importing VCFs or exporting VCFs,
-#' is controlled by the argumnet \code{flip}. This section will describe the
-#' nuances of the parameterisation. \cr
+#' @details Firstly, it should be noted that while data tables are a really
+#' excellent way of handling genotype and sequence read information in R,
+#' they are not necessarily the most efficient way to do so. Importing VCFs
+#' as data table (or the reverse, exporting data tables as VCFs), can take
+#' a considerable amount of time if the number of loci and samples are large.
+#' However, a bit of patience is worth it! \cr
+#'
+#' The direction of this function, i.e. importing VCFs or exporting VCFs,
+#' is controlled by the argumnet \code{flip}. The remaineder of this section
+#' will describe the nuances of parameterising import/export. \cr
 #'
 #' If \code{flip==FALSE}, this converts a VCF file into a long format data table.
 #' Parameterisation can be simple, just specify the VCF file path with
 #' \code{vcfFile}. More fine-scale control can be exerted by removing specific
-#' columns using the argument \code{dropCols}. NOTE, however, that the FORMAT
+#' columns using the argument \code{dropCols}. Note, however, that the FORMAT
 #' and INFO columns from the VCF are always removed. The VCF INFO column contains
 #' specifics of the called variants, which you may want to keep by specifying
 #' the argument \code{keepInfo==TRUE}. Doing so saves INFO as an attribute, such
@@ -241,11 +248,18 @@ vcf2DT <- function(vcfFile
   # #### Code: Data table to VCF             ####
   # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   if(flip==TRUE){
-    # Create a data table of variants (varDat) and samples (sampDat)
-    cat('(1/3) Collecting variant and sample information.', '\n')
-    varDat <- unique(dat[,c(vcfValues$variants, vcfValues$loci), with=FALSE])
-    sampDat <- dat[, c(vcfValues$loci, vcfValues$samples, vcfValues$format), with=FALSE]
+    # Internal function
+    FUN_format_paste <- function(x){
+      x[is.na(x)] <- '.'
+      return(paste(trimws(x), collapse=':'))
+    }
 
+    # Create a data table of variants (varDat).
+    cat('(1/5) Collecting the variant data.', '\n')
+    varDat <- unique(dat[,c(vcfValues$variants, vcfValues$loci), with=FALSE])
+
+    # Should INFO and comments be kept?
+    cat('(2/5) Collecting info and comments if specified.', '\n')
     # Extract VCF INFO column
     if(keepInfo==TRUE){
       outInfo <- attr(dat, 'vcf_info')
@@ -275,13 +289,27 @@ vcf2DT <- function(vcfFile
       }
     } else{ outComms <- NULL }
 
+    # Create a data table of sample data (sampDat).
+    cat('(3/5) Collecting the sample data.', '\n')
+
+    # To get the sample data, first extract the columns for FORMAT.
+    # Transpose the data table such that the FORMAT values are in
+    # rows and the samples are in columns.
+    sampDat <- as.data.table(t(dat[, vcfValues$format, with=FALSE]))
+
+    # Paste the columns together with ':', as per VCF.
+    # Return as a vector.
+    sampDat <- unlist(sampDat[, lapply(.SD, FUN_format_paste), .SDcols=colnames(sampDat)])
+
+    # Merge the locus and sample names with the FORMAT data.
+    sampDat <- cbind(dat[, vcfValues$loci, with=FALSE]
+                     , FORMAT=paste(vcfValues$format, collapse=':')
+                     , dat[, vcfValues$samples, with=FALSE]
+                     , DATA=sampDat)
+
     # Create and organise the $FORMAT column in the sample data table
-    cat('(2/3) Organising into wide format matrix.', '\n')
-    sampDat$FORMAT <- paste(vcfValues$format, collapse=':')
-    sampDat$VALUES <- apply(dat[, vcfValues$format, with=FALSE], 1, function(i){
-      paste(i, collapse=':')})
-    sampDat <- sampDat[, !vcfValues$format, with=FALSE]
-    sampDat <- spread(sampDat, 'SAMPLE', 'VALUES')
+    cat('(4/5) Organising into wide format matrix.', '\n')
+    sampDat <- spread(sampDat, 'SAMPLE', 'DATA')
 
     # Loci names for ordering rows
     lociNames <- varDat$LOCUS
@@ -295,9 +323,10 @@ vcf2DT <- function(vcfFile
     vcfCols <- paste(vcfCols, collapse='\t')
 
     # Write out: Comments and header, then data.
-    cat('(3/3) Writing the VCF file.', '\n')
+    cat('(5/5) Writing the VCF file.', '\n')
     writeLines(text=c(outComms, vcfCols), con=vcfFile)
     fwrite(x=vcfDat, file=vcfFile, append=TRUE, sep='\t')
   }
 }
+
 
