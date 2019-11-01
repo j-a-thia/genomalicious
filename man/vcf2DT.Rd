@@ -114,6 +114,12 @@ respectively. However, in order for this to occur, the data table, \code{dt},
 specified in \code{dat}, must have the attributes \code{attr(dt, 'vcf_comments')}
 and \code{attr(dt, 'vcf_info')}, respectively. These attributes can be created
 when importing a VCF file with \code{vcf2DT()}, see above.
+
+Note, writing VCFs from data tables is very slow. Going from a long format to
+wide format for many samples and loci is memory intensive. The current algorithm
+deals with each unique locus individually and in order, writing on the fly
+to avoid loading #' extremely large wide format datasets into memory.
+Would gladly accept any suggestions on how to improve the algorithm!
 }
 \examples{
 # Create a link to raw external datasets in genomalicious

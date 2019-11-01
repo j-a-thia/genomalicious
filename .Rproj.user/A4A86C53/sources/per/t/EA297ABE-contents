@@ -86,6 +86,12 @@
 #' and \code{attr(dt, 'vcf_info')}, respectively. These attributes can be created
 #' when importing a VCF file with \code{vcf2DT()}, see above.
 #'
+#' Note, writing VCFs from data tables is very slow. Going from a long format to
+#' wide format for many samples and loci is memory intensive. The current algorithm
+#' deals with each unique locus individually and in order, writing on the fly
+#' to avoid loading #' extremely large wide format datasets into memory.
+#' Would gladly accept any suggestions on how to improve the algorithm!
+#'
 #' @return When \code{flip==FALSE}, i.e. converting a VCF to data table, a
 #' \code{data.table} object is returned with all the columns contained in
 #' the original VCF file with some additions:
@@ -242,29 +248,57 @@ vcf2DT <- function(vcfFile
     } else{
       return(vcfDT[, !dropCols, with=FALSE])
     }
+
+    cat('All done! <3', '\n')
   }
 
   # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   # #### Code: Data table to VCF             ####
   # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   if(flip==TRUE){
+    # Check that all columns in vcfValues are in dat.
+    if(sum(unlist(vcfValues) %in% colnames(dat))!=length(unlist(vcfValues))){
+      stop('Not all columns specified in `vcfValues` match `colnames(dat)`: See ?vcf2DT.')
+    }
+
+    # Check that CHROM and POS are specified in vcfValues$variants,
+    # and put CHROM and POS first if they are not already.
+    if(sum(c('CHROM', 'POS') %in% vcfValues$variants)!=2){
+      stop("Argument `vcfValues$variants` must at minimum contain the values
+           'CHROM' and 'POS': See ?vcf2DT.")
+    } else{
+      chrompos <- match(c('CHROM', 'POS'), vcfValues$variants)
+      vcfValues$variants <- c(vcfValues$variants[chrompos]
+                              , vcfValues$variants[-chrompos])
+    }
+
     # Internal function
     FUN_format_paste <- function(x){
       x[is.na(x)] <- '.'
       return(paste(trimws(x), collapse=':'))
     }
 
+    # The unquie loci and samples
+    uniqLoci <- unique(dat[, c('CHROM', 'POS', 'LOCUS')])
+    setorder(uniqLoci, CHROM, POS)
+
+    uniqSamps <- sort(unique(dat$SAMPLE))
+
+    # Locus counter
+    countLoci <- round(quantile(1:nrow(uniqLoci), seq(0.05, 1, by=0.05)))
+    names(countLoci) <- sub('%', '', names(countLoci))
+
     # Create a data table of variants (varDat).
-    cat('(1/5) Collecting the variant data.', '\n')
+    cat('(1/4) Collecting the variant data.', '\n')
     varDat <- unique(dat[,c(vcfValues$variants, vcfValues$loci), with=FALSE])
 
     # Should INFO and comments be kept?
-    cat('(2/5) Collecting info and comments if specified.', '\n')
+    cat('(2/4) Collecting info and comments if specified.', '\n')
     # Extract VCF INFO column
     if(keepInfo==TRUE){
       outInfo <- attr(dat, 'vcf_info')
       if(is.null(outInfo)==TRUE){
-        cat("NOTE: `keepInfo==TRUE` but `attr(dat, 'vcf_info')` is NULL.", sep='\n')
+        cat("   NOTE: `keepInfo==TRUE` but `attr(dat, 'vcf_info')` is NULL.", sep='\n')
       }
       varDat$INFO <- outInfo[varDat$LOCUS]
     } else{ outInfo <- NULL }
@@ -290,42 +324,54 @@ vcf2DT <- function(vcfFile
     } else{ outComms <- NULL }
 
     # Create a data table of sample data (sampDat).
-    cat('(3/5) Collecting the sample data.', '\n')
+    # Will iterate through loci and write lines on the fly.
+    cat('(3/4) Collecting the sample data.', '\n')
+    sampDat <- dat[, c(vcfValues$loci, vcfValues$samples, vcfValues$format), with=FALSE]
 
-    # To get the sample data, first extract the columns for FORMAT.
-    # Transpose the data table such that the FORMAT values are in
-    # rows and the samples are in columns.
-    sampDat <- as.data.table(t(dat[, vcfValues$format, with=FALSE]))
+    # Create the VCF
+    cat('(4/4) Writing the VCF.', '\n')
 
-    # Paste the columns together with ':', as per VCF.
-    # Return as a vector.
-    sampDat <- unlist(sampDat[, lapply(.SD, FUN_format_paste), .SDcols=colnames(sampDat)])
+    # Write info, comments, and column header.
+    vcfHead <- paste0('#', paste(c(vcfValues$variants, 'FORMAT', uniqSamps), collapse='\t'))
+    writeLines(c(outComms, vcfHead), vcfFile)
 
-    # Merge the locus and sample names with the FORMAT data.
-    sampDat <- cbind(dat[, vcfValues$loci, with=FALSE]
-                     , FORMAT=paste(vcfValues$format, collapse=':')
-                     , dat[, vcfValues$samples, with=FALSE]
-                     , DATA=sampDat)
+    # Write the VCF lines for each ith locus.
+    cat('   % complete: ')
+    for(i in 1:length(uniqLoci)){
+      locus <- uniqLoci$LOCUS[i]
 
-    # Create and organise the $FORMAT column in the sample data table
-    cat('(4/5) Organising into wide format matrix.', '\n')
-    sampDat <- spread(sampDat, 'SAMPLE', 'DATA')
+      # Make count if at checkpoint
+      if(i %in% countLoci){ cat(names(countLoci[countLoci==i]), ' ') }
 
-    # Loci names for ordering rows
-    lociNames <- varDat$LOCUS
+      # Subset data based on locus: get desired format values
+      # and the sample names.
+      locDT <- sampDat[LOCUS==locus, c(vcfValues$format, vcfValues$samples), with=FALSE]
 
-    # Bind columns of variant and sample data
-    vcfDat <- cbind(varDat[, !'LOCUS'], sampDat[match(lociNames, sampDat$LOCUS),!'LOCUS'])
+      # Rotate into wide format such that samples are in columns,
+      loc_samp_vals <- as.data.table(t(locDT[, !vcfValues$samples, with=FALSE]))
 
-    # Get thh VCF column heads
-    vcfCols <- colnames(vcfDat)
-    vcfCols[1] <- paste0('#', vcfCols[1])
-    vcfCols <- paste(vcfCols, collapse='\t')
+      # Iterate over all columns with .SDcols and apply
+      # FUN_formate_paste() to each, which combines all format
+      # values into a single string.
+      loc_samp_vals <- loc_samp_vals[, lapply(.SD, FUN_format_paste)
+                                     , .SDcols=colnames(loc_samp_vals)]
 
-    # Write out: Comments and header, then data.
-    cat('(5/5) Writing the VCF file.', '\n')
-    writeLines(text=c(outComms, vcfCols), con=vcfFile)
-    fwrite(x=vcfDat, file=vcfFile, append=TRUE, sep='\t')
+      # Label columns based on samples
+      colnames(loc_samp_vals) <- locDT$SAMPLE
+
+      # Reorganise to keep sample name consistency
+      loc_samp_vals <- loc_samp_vals[, uniqSamps, with=FALSE]
+
+      # Write the new line to file.
+      vcfLine <- cbind(varDat[LOCUS==locus, !'LOCUS']
+                       , FORMAT=paste(vcfValues$format, collapse=':')
+                       , loc_samp_vals)
+
+      fwrite(x=vcfLine, file=vcfFile, append=TRUE, sep='\t')
+    }
+    cat('\n')
+
+    cat('All done! <3', '\n')
   }
 }
 
