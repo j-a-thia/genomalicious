@@ -170,8 +170,14 @@ pca_plot <- function(dat, type='scatter', axisIndex=c(1,2)
     # If explained variance, divide eigenvalues by sum,
     # also create Y axis label
     if(type=='expvar'){
-      Y <- 1- dat/sum(dat); axY <- 'Cumulative explained variance'
-    } else{ Y <- dat; axY <- 'Eigenvalue'}
+      Y <- unlist(lapply(1:length(dat), function(i){
+              sum(dat[1:i])/sum(dat)
+           }))
+      axY <- 'Cumulative explained variance'
+    } else{
+      Y <- dat
+      axY <- 'Eigenvalue'
+    }
 
     # The plot
     gg <- (ggplot(data.frame(X, Y), aes(x=X, y=Y))
