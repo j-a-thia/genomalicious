@@ -23,7 +23,7 @@ Default = \code{FALSE}. See Details for parameterisation.}
 Default = \code{FALSE}, i.e. VCF to data table. See Details for parameterisation.}
 
 \item{dat}{Data table: Long format data table containing read and genotype information.
-Ideally, a data table produced with \code{vcf2DT(..., flip=TRUE)}. This
+Ideally, a data table produced with \code{vcf2DT(..., flip=FALSE)}. This
 argument is only relevant when \code{flip==TRUE} and should contain all the
 columns that are specified in argument \code{vcfValues}, and optionally,
 the attributes \code{'vcf_comments'} and \code{'vcf_info'}. See Details.}
@@ -65,7 +65,7 @@ the path specified in argument \code{vcfFile}.
 }
 \description{
 Reads a VCF file and converts to a long format data table.
-Also provides functionality #' to go in reverse,
+Also provides functionality to go in reverse,
 i.e. writing a VCF from a long format data table.
 }
 \details{
