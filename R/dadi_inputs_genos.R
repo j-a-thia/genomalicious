@@ -11,7 +11,7 @@
 #' \item Locus ID
 #' \item Reference allele
 #' \item Alternate alelle
-#' \item Genotyp
+#' \item Genotype
 #' }
 #'
 #' @param sampCol Character: Sample ID. Default = \code{'SAMPLE'}.
@@ -20,7 +20,7 @@
 #' @param refCol Character: Reference allele. Default = \code{'REF'}.
 #' @param altCol Character: Alternate allele. Default = \code{'ALT'}.
 #' @param genoCol Character: The genotype. Default = \code{'GT'}.
-#' @param popSub Character: The populations to subset out of \code{poolCol}. Default = \code{NULL}.
+#' @param popSub Character: The populations to subset out of \code{popCol}. Default = \code{NULL}.
 #'
 #' @return Returns a data table in the dadi input format.
 #'
@@ -45,9 +45,9 @@
 #' datGt$ALT <- alt10[match(datGt$LOCUS, names(alt10))]
 #'
 #' # Make the dadi input
-#' dat_input_genos(dat=datGt, popSub=c('Pop1', 'Pop2'))
+#' dadi_inputs_genos(dat=datGt, popSub=c('Pop1', 'Pop2'))
 #'
-dat_input_genos <- function(dat
+dadi_inputs_genos <- function(dat
                             , sampCol='SAMPLE'
                             , popCol='POP'
                             , locusCol='LOCUS'
