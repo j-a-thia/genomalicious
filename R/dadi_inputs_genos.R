@@ -47,6 +47,7 @@
 #' # Make the dadi input
 #' dadi_inputs_genos(dat=datGt, popSub=c('Pop1', 'Pop2'))
 #'
+#' @export
 dadi_inputs_genos <- function(dat
                             , sampCol='SAMPLE'
                             , popCol='POP'
@@ -72,7 +73,7 @@ dadi_inputs_genos <- function(dat
   }
 
   # Get the class of the genotypes
-  gtClass <- class(dat[[genoCol]])
+  gtClass <- class(dat$GT)
 
   # Check that genotypes are characters or counts
   if(!gtClass %in% c('character', 'numeric', 'integer')){
