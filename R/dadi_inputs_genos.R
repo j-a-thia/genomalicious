@@ -83,12 +83,12 @@ dadi_inputs_genos <- function(dat
 
   # Convert characters of separated alleles to counts
   if(gtClass=='character'){
-    dat[[genoCol]] <- genoscore_converter(dat[[genoCol]])
+    dat$GT <- genoscore_converter(dat$GT)
   }
 
   # Convert numeric allele counts to integers
   if(gtClass=='numeric'){
-    dat[[genoCol]] <- as.integer(dat[[genoCol]])
+    dat$GT <- as.integer(dat$GT)
   }
 
   # --------------------------------------------+
