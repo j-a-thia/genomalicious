@@ -53,14 +53,52 @@ save(genomalicious_4pops, file='data/genomalicious_4pops.RData')
 
 # Make a VCF from 4 pop genotypes
 data("genomalicious_4pops")
-dat4pops <- copy(genomalicious_4pops)
 
-dat4pops[, DP:=rnbinom(nrow(dat4pops), mu=30, size=2)]
+sub4pops <- genomalicious_4pops[
+  LOCUS %in% sample(x=unique(genomalicious_4pops$LOCUS), size=8, replace=FALSE)
+  & SAMPLE %in% genomalicious_4pops[, unique(SAMPLE)[1:8], by=POP]$V1, ]
 
-hist(dat4pops$DP)
+sub4pops[, DP:=rnbinom(nrow(sub4pops), mu=30, size=1)]
 
-dat4pops[, RO:=sum(rbinom(DP, size=1, prob=0.5)), by=c('SAMPLE', 'LOCUS')]
-dat4pops[, AO:=DP-RO]
+hist(sub4pops$DP)
 
-badDP4pops <- which(dat4pops$DP==0 | dat4pops$DP==1)
-dat4pops$GT[badDP4pops] <- NA
+sub4pops[, RO:=sum(rbinom(DP, size=1, prob=0.5)), by=c('SAMPLE', 'LOCUS')]
+sub4pops[, AO:=DP-RO]
+
+badDP4pops <- which(sub4pops$DP==0 | sub4pops$DP==1)
+sub4pops$GT[badDP4pops] <- './.'
+
+vcf4pops <- do.call('rbind', lapply(unique(sub4pops$LOCUS), function(locus){
+  X <- sub4pops[LOCUS==locus]
+  alleles <- sample(size=2, x=c('G', 'A', 'T', 'C'), replace=FALSE)
+
+  col_names <- c('CHROM', 'POS', 'ID', 'REF', 'ALT', 'QUAL', 'FILTER', 'INFO', 'FORMAT', X$SAMPLE)
+
+  vcfRow <- matrix('.', nrow=1, ncol=9+nrow(X), dimnames=list(NULL, col_names))
+
+  vcfRow[,'CHROM'] <- X$CHROM[1]
+  vcfRow[1,'POS'] <- strsplit(locus, '_')[[1]][3]
+  vcfRow[1,'REF'] <- alleles[1]
+  vcfRow[1,'ALT'] <- alleles[2]
+  vcfRow[1,'INFO'] <- paste0('DP=', sum(X$DP))
+  vcfRow[1,'QUAL'] <- 30
+  vcfRow[1,'FORMAT'] <- 'GT:DP:RO:AO'
+
+  for(samp in unique(X$SAMPLE)){
+    xsamp <- unlist(X[SAMPLE==samp, c('GT', 'DP', 'RO', 'AO')])
+    vcfRow[, samp] <- paste(xsamp, collapse=':')
+  }
+
+  return(vcfRow)
+}))
+
+fwrite(vcf4pops, 'inst/extdata/genomalicious_indseq.vcf', sep='\t')
+
+##This is a toy dataset for the R package genomalicious - it emulates a VCF file for individually genotyped data
+##INFO=<ID=DP,Number=1,Type=Integer,Description='The total depth across samples'>
+##FORMAT=<ID=GT,Number=1,Type=String,Description='Genotype'>
+##FORMAT=<ID=DP,Number=1,Type=Integer,Description='The total depth in a sample'>
+##FORMAT=<ID=RO,Number=1,Type=Integer,Description='The reference allele counts in a sample'>
+##FORMAT=<ID=AO,Number=1,Type=Integer,Description='The alternate allele counts in a sample'>
+
+

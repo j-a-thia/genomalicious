@@ -18,10 +18,32 @@
 #' @param freqCol Character: The reference allele frequency. Default = \code{'FREQ'}.
 #' @param indsCol Character: The number of individuals per population pool. Default = \code{'INDS'}.
 #' @param poolSub Character: The pools to subset out of \code{poolCol}. Default = \code{NULL}.
+#' @param methodSFS Character: The method to estimate the SFS, either \code{'counts'} or
+#' \code{'probs'}. Default = \code{'counts'}. See Details for parameterisation.
 #'
-#' @return Returns a data table in the dadi input format. NOTE: The estimated number
-#' of indivdiuals carrying an allele is rounded to nearest integer (e.g. 1.5 = 2, and 1.4 = 1),
-#' with the exception when the number of individauls is < 1 but > 0, in which it is always rounded to 1.
+#' @details Because pool-seq provides estimates of allele frequencies, not direct observations
+#' of allele counts, we have to infer the SFS from the allele frequencies. This is determined
+#' by the argument \code{methodSFS}.
+#' \cr\cr
+#' When \code{methodSFS=='counts'}, the default, the allele counts are simply rounded to the
+#' nearest integer (e.g. 1.5 = 2, and 1.4 = 1), relative to the number of chromosomes.
+#' The Ref allele counts are made first, then the Alt allele counts are made.
+#' For instance, if 20 diploid individuals were pooled and the Ref allele frequency was 0.82,
+#' from the 40 haploid chromosomes, 33 (32.8 rounded up) would be expected to contain the
+#' Ref allele, whilst 7 (40 - 33) would be expected to carry the Alt allele. NOTE: if the
+#' estimated number of individuals for the Ref allele is < 1 but > 0, this will always be
+#' rounded to 1. This method will produce a consistent SFS, but note that extremely low
+#' Ref allele frequencies will have a tendency to produce counts of 1.
+#' \cr\cr
+#' When \code{methodSFS=='probs'}, the allele counts are derived from a binomial draw using
+#' R's \code{rbinom()} function. Again, if the Ref allele frequency from pooled diploids was
+#' 0.82, then the SFS would be generated from the command call: \code{rbinom(n=1, size=40, prob=0.82)},
+#' which would produce a probable number of Ref allele counts, and the Alt allele counts would
+#' be 40 minus this number. This method will not produce consistently reproducible SFSs due
+#' to the nature of the probabilistic draws. However, it does avoid potentially biasing
+#' the SFS from rounding errors when allele frequencies are low.
+#'
+#' @return Returns a data table in the dadi input format.
 #'
 #' @references Gutenkunst et al. (2009) Inferring the joint demographic history of multiply populations
 #' from multidimensional SNP frequency data. PLoS Genetics: 10, e1000695.
@@ -30,6 +52,7 @@
 #' data(genomalicious_PoolPi)
 #' genomalicious_PoolPi
 #'
+#' # Default allele count estimation
 #' dadi_inputs_pools(dat=genomalicious_PoolPi
 #'                   , poolCol='POOL'
 #'                   , locusCol='LOCUS'
@@ -38,6 +61,17 @@
 #'                   , freqCol='PI'
 #'                   , indsCol='INDS'
 #'                   , poolSub=c('Pop1', 'Pop2'))
+#'
+#' # Using probabilistic allele count estimation
+#' dadi_inputs_pools(dat=genomalicious_PoolPi
+#'                   , poolCol='POOL'
+#'                   , locusCol='LOCUS'
+#'                   , refCol='REF'
+#'                   , altCol='ALT'
+#'                   , freqCol='PI'
+#'                   , indsCol='INDS'
+#'                   , poolSub=c('Pop1', 'Pop2')
+#'                   , methodSFS='probs')
 #'
 #'
 #' @export
@@ -48,14 +82,20 @@ dadi_inputs_pools <- function(dat
                               , altCol='ALT'
                               , freqCol='P'
                               , indsCol='INDS'
-                              , poolSub=NULL){
+                              , poolSub=NULL
+                              , methodSFS='counts'){
 
   # BEGIN ...........
 
   # --------------------------------------------+
   # Libraries and assertions
   # --------------------------------------------+
-  for(lib in c('data.table', 'dplyr')){ require(lib, character.only = TRUE)}
+  for(lib in c('data.table', 'dplyr', 'tidyr')){ require(lib, character.only = TRUE)}
+
+  # Check that the `methodSFS` argument has been assigned properly.
+  if((methodSFS %in% c('count', 'probs'))==FALSE){
+    stop("Argument `methodSFS` must be 'counts' or 'probs'. See ?dadi_inputs_pools.")
+  }
 
   # Reassign names
   colReass <- match(c(poolCol, locusCol, refCol, altCol, freqCol, indsCol), colnames(dat))
@@ -66,22 +106,33 @@ dadi_inputs_pools <- function(dat
     dat <- dat[POOL %in% poolSub]
   }
 
-
   # --------------------------------------------+
   # Code
   # --------------------------------------------+
-  # Convert frequency into estimated counts of individuals with each allele
-  dat$REF.COUNT <- apply(dat[, c('P', 'INDS')], 1, function(X){
-    p <- X[['P']]
-    inds <- X[['INDS']]
-    ref.count <- p * (inds * 2)
-    if(p != 0 & ref.count < 1){ ref.count <- 1
-    } else if(p != 1 & ref.count < 1){ ref.count <- 1
-    } else{ ref.count <- round(ref.count)
-    }
-    return(ref.count)
-  })
 
+  # Simple REF counts
+  if(methodSFS=='counts'){
+    # Convert frequency into estimated counts of individuals with each allele
+    dat$REF.COUNT <- apply(dat[, c('P', 'INDS')], 1, function(X){
+      p <- X[['P']]
+      inds <- X[['INDS']]
+      ref.count <- p * (inds * 2)
+      if(p != 0 & ref.count < 1){ ref.count <- 1
+      } else if(p != 1 & ref.count < 1){ ref.count <- 1
+      } else{ ref.count <- round(ref.count)
+      }
+      return(ref.count)
+    })
+
+    # Probabilistic REF counts
+  } else if(methodSFS=='probs'){
+    # Get probabilistic counts of alleles using binomial draws
+    dat$REF.COUNT <- apply(dat[, c('P', 'INDS')], 1, function(X){
+      rbinom(n=1, size=X['INDS']*2, prob=X['P'])
+    })
+  }
+
+  # Get the ALT allele counts
   dat[, ALT.COUNT:=(INDS*2)-REF.COUNT]
 
   # Some manipulations

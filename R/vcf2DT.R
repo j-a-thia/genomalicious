@@ -42,7 +42,7 @@
 #'
 #' @examples
 #' # Create a link to raw external datasets in genomalicious
-#' genomaliciousExtData <- paste0(find.package('genomalicious'), '/extdata')
+#' genomaliciousExtData <- paste0(find.package('genomalicious'), 'inst/extdata')
 #'
 #' # This command here shows you the VCF file that comes with genomalicious
 #' list.files(genomaliciousExtData, pattern='_poolseq.vcf')

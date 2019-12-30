@@ -6,7 +6,7 @@
 \usage{
 dadi_inputs_pools(dat, poolCol = "POOL", locusCol = "LOCUS",
   refCol = "REF", altCol = "ALT", freqCol = "P", indsCol = "INDS",
-  poolSub = NULL)
+  poolSub = NULL, methodSFS = "counts")
 }
 \arguments{
 \item{dat}{Data table: Must contain columns with the following information,
@@ -32,19 +32,44 @@ dadi_inputs_pools(dat, poolCol = "POOL", locusCol = "LOCUS",
 \item{indsCol}{Character: The number of individuals per population pool. Default = \code{'INDS'}.}
 
 \item{poolSub}{Character: The pools to subset out of \code{poolCol}. Default = \code{NULL}.}
+
+\item{methodSFS}{Character: The method to estimate the SFS, either \code{'counts'} or
+\code{'probs'}. Default = \code{'counts'}. See Details for parameterisation.}
 }
 \value{
-Returns a data table in the dadi input format. NOTE: The estimated number
-of indivdiuals carrying an allele is rounded to nearest integer (e.g. 1.5 = 2, and 1.4 = 1),
-with the exception when the number of individauls is < 1 but > 0, in which it is always rounded to 1.
+Returns a data table in the dadi input format.
 }
 \description{
 Creates an input file for the program dadi, described in Gutenkunst et al. (2009).
+}
+\details{
+Because pool-seq provides estimates of allele frequencies, not direct observations
+of allele counts, we have to infer the SFS from the allele frequencies. This is determined
+by the argument \code{methodSFS}.
+\cr\cr
+When \code{methodSFS=='counts'}, the default, the allele counts are simply rounded to the
+nearest integer (e.g. 1.5 = 2, and 1.4 = 1), relative to the number of chromosomes.
+The Ref allele counts are made first, then the Alt allele counts are made.
+For instance, if 20 diploid individuals were pooled and the Ref allele frequency was 0.82,
+from the 40 haploid chromosomes, 33 (32.8 rounded up) would be expected to contain the
+Ref allele, whilst 7 (40 - 33) would be expected to carry the Alt allele. NOTE: if the
+estimated number of individuals for the Ref allele is < 1 but > 0, this will always be
+rounded to 1. This method will produce a consistent SFS, but note that extremely low
+Ref allele frequencies will have a tendency to produce counts of 1.
+\cr\cr
+When \code{methodSFS=='probs'}, the allele counts are derived from a binomial draw using
+R's \code{rbinom()} function. Again, if the Ref allele frequency from pooled diploids was
+0.82, then the SFS would be generated from the command call: \code{rbinom(n=1, size=40, prob=0.82)},
+which would produce a probable number of Ref allele counts, and the Alt allele counts would
+be 40 minus this number. This method will not produce consistently reproducible SFSs due
+to the nature of the probabilistic draws. However, it does avoid potentially biasing
+the SFS from rounding errors when allele frequencies are low.
 }
 \examples{
 data(genomalicious_PoolPi)
 genomalicious_PoolPi
 
+# Default allele count estimation
 dadi_inputs_pools(dat=genomalicious_PoolPi
                   , poolCol='POOL'
                   , locusCol='LOCUS'
@@ -53,6 +78,17 @@ dadi_inputs_pools(dat=genomalicious_PoolPi
                   , freqCol='PI'
                   , indsCol='INDS'
                   , poolSub=c('Pop1', 'Pop2'))
+
+# Using probabilistic allele count estimation
+dadi_inputs_pools(dat=genomalicious_PoolPi
+                  , poolCol='POOL'
+                  , locusCol='LOCUS'
+                  , refCol='REF'
+                  , altCol='ALT'
+                  , freqCol='PI'
+                  , indsCol='INDS'
+                  , poolSub=c('Pop1', 'Pop2')
+                  , methodSFS='probs')
 
 
 }

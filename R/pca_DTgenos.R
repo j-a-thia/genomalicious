@@ -67,7 +67,7 @@ pca_DTgenos <- function(dat, scaling='covar', sampCol='SAMPLE'
 
   # Check that scaling is specified
   if(!scaling %in% c('covar', 'corr', 'patterson', 'none')){
-    stop('Argument scaling is invalid')
+    stop('Argument `scaling`` is invalid. See: ?pca_DTgenos')
   }
 
   # Get the class of the genotypes
@@ -76,7 +76,7 @@ pca_DTgenos <- function(dat, scaling='covar', sampCol='SAMPLE'
   # Check that genotypes are characters or counts
   if(!gtClass %in% c('character', 'numeric', 'integer')){
     stop("Check that genotypes are coded as '/' separated characters or as
-         counts of the Alt allele.")
+         counts of the Alt allele. See: ?pca_DTgenos")
   }
 
   # Convert characters of separated alleles to counts
