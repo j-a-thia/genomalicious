@@ -102,5 +102,4 @@ hist(
     , 100, xlim=c(0,1), main='Guide patchy: Loci', xlab='\% missing')
 par(mfrow=c(1,1))
 
-
 }
