@@ -9,7 +9,7 @@ DT2Mat_genos(dat, sampCol = NA, locusCol = NA, genoCol = NA,
 }
 \arguments{
 \item{dat}{Data table or Matrix: The object to transform. If this is a long data table
-# of genotypes coded as per VCF specifications ('0/0', '0/1', '1/1'), or counts
+of genotypes coded as per VCF specifications ('0/0', '0/1', '1/1'), or counts
 of the Alt alleles (0, 1, 2, repsectively).
 Three columns are required:
 \enumerate{

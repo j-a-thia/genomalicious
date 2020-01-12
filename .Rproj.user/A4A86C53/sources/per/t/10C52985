@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1578782705760.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "545998284",
+    "id" : "10C52985",
+    "lastKnownWriteTime" : 1578787136,
+    "last_content_update" : 1578787136110,
+    "path" : "~/GitHub/genomalicious/R/miss_sim_structure.R",
+    "project_path" : "R/miss_sim_structure.R",
+    "properties" : {
+        "cursorPosition" : "50,12",
+        "scrollLine" : "47",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
