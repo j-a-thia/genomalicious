@@ -178,5 +178,5 @@ miss_sim_structure <- function(dat_clean, mat_patchy
   }
 
   # Return
-  return(dat_sim)
+  return(dat_sim[, !'SAMPLE.LOCUS'])
 }
