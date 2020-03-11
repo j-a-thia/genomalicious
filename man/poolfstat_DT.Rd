@@ -16,7 +16,7 @@ produced by the function \code{vcf2DT}. Must contain all the following columns:
    \item \code{$ALT} The alternate allele.
    \item \code{$LOCUS} The locus ID.
    \item \code{$POOL} The pool ID.
-   \item \code{$DP} The total depth of reads supporting the variant.
+   \item \code{$AO} The number of reads supporting the alternate allele.
    \item \code{$RO} The number of reads supporting the reference allele.
 }}
 
