@@ -23,8 +23,8 @@ A data table, with the following columns:
 \enumerate{
    \item \code{$POOL}, the population pool ID. \cr
    \item \code{$LOCUS}, the locus ID. \cr
-   \item \code{$SIM.NUM}, the simulation number. \cr
-   \item \code{$SIM.PI}, the simulated pi (Ref allele frequency).
+   \item \code{$BOOT.NUM}, the simulation number. \cr
+   \item \code{$BOOT.PI}, the simulated pi (Ref allele frequency).
 }
 }
 \description{

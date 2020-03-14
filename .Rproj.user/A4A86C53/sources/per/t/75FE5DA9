@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1584146689317.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3246504986",
+    "id" : "75FE5DA9",
+    "lastKnownWriteTime" : 1584146713,
+    "last_content_update" : 1584146713667,
+    "path" : "~/GitHub/genomalicious/R/poolne_estim_boot_pi.R",
+    "project_path" : "R/poolne_estim_boot_pi.R",
+    "properties" : {
+        "cursorPosition" : "20,44",
+        "scrollLine" : "15"
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
