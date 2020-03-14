@@ -1,10 +1,8 @@
-#' Simulate observed allele frequencies
+#' Parametric bootstrap of \code{poolne_estim} allele frequencies
 #'
-#' Used to generate a simulated distribution of Ref allele frequencies. Takes the
-#' output of \code{poolne_estim}, a programme by Gautier et al. (2013).
-#' The output is a list, where each indexed item is a data table for each locus;
-#' these data tables contain simulated Ref allele frequencies for each population pool
-#' based on their pi and sd (as estimated by \code{poolne_estim}).
+#' Takes the results of \code{poolne_estim} (Gautier et al. 2013) and
+#' performs a parametric bootstrap of Ref allele frequencies based on their
+#' pi (estimated Ref allele frequency) and sd (the standard deviation).
 #'
 #' @param dat Data table: the \code{poolne_estim} data. For example, the
 #' output from \code{genomalicious::poolne_estim_output()}. Requires 4 columns: \cr
@@ -50,7 +48,7 @@
 #' pi.sims
 #'
 #' @export
-poolne_estim_sim_pi <- function(dat, num.sims=100){
+poolne_estim_boot_pi <- function(dat, num.sims=100){
 
   # BEGIN ...................
 
