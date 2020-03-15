@@ -4,7 +4,9 @@
 \name{genomalicious_4pops}
 \alias{genomalicious_4pops}
 \title{An example of multi-population genotype data}
-\format{A data table with 144600 rows and 5 columns.}
+\format{
+A data table with 144600 rows and 5 columns.
+}
 \usage{
 data(genomalicious_4pops)
 }

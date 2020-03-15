@@ -4,7 +4,9 @@
 \name{genomalicious_PoolReads}
 \alias{genomalicious_PoolReads}
 \title{An example of pool-seq read info}
-\format{A data table with 96 rows and 10 columns.}
+\format{
+A data table with 96 rows and 10 columns.
+}
 \usage{
 data(genomalicious_PoolReads)
 }

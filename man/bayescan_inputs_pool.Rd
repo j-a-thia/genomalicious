@@ -4,8 +4,15 @@
 \alias{bayescan_inputs_pool}
 \title{Generate \code{bayescan} input files}
 \usage{
-bayescan_inputs_pool(dat, pool.info, file.bayescan, file.loci, poolCol,
-  locusCol, freqCol)
+bayescan_inputs_pool(
+  dat,
+  pool.info,
+  file.bayescan,
+  file.loci,
+  poolCol,
+  locusCol,
+  freqCol
+)
 }
 \arguments{
 \item{dat}{Data table: The biallelic SNP data. Requires all of the following columns: \cr

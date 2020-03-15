@@ -4,9 +4,17 @@
 \alias{missHist}
 \title{Plot missing genotypes, by samples}
 \usage{
-missHist(dat, plotBy, look = "ggplot", sampCol = "SAMPLE",
-  locusCol = "LOCUS", genoCol = "GT", popCol = NA,
-  plotColours = "white", plotNCol = 2)
+missHist(
+  dat,
+  plotBy,
+  look = "ggplot",
+  sampCol = "SAMPLE",
+  locusCol = "LOCUS",
+  genoCol = "GT",
+  popCol = NA,
+  plotColours = "white",
+  plotNCol = 2
+)
 }
 \arguments{
 \item{dat}{Data table: Contains genetic information and must have
@@ -48,6 +56,9 @@ Displays plot and returns the plot object.
 \description{
 Use to visualise missing data with respect to samples and
 their associated populations.
+}
+\details{
+
 }
 \examples{
 ####   MISSING GENOTYPE DATA   ####

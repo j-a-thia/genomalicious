@@ -4,8 +4,7 @@
 \alias{DT2Mat_freqs}
 \title{Convert a data table of allele frequencies into a matrix (or vice versa)}
 \usage{
-DT2Mat_freqs(dat, popCol = NA, locusCol = NA, freqCol = NA,
-  flip = FALSE)
+DT2Mat_freqs(dat, popCol = NA, locusCol = NA, freqCol = NA, flip = FALSE)
 }
 \arguments{
 \item{dat}{Data table or Matrix: The object to transform. If this is a long data table

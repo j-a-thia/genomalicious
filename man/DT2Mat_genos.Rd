@@ -4,8 +4,7 @@
 \alias{DT2Mat_genos}
 \title{Convert a data table of genotypes into a matrix (or vice versa)}
 \usage{
-DT2Mat_genos(dat, sampCol = NA, locusCol = NA, genoCol = NA,
-  flip = FALSE)
+DT2Mat_genos(dat, sampCol = NA, locusCol = NA, genoCol = NA, flip = FALSE)
 }
 \arguments{
 \item{dat}{Data table or Matrix: The object to transform. If this is a long data table

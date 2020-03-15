@@ -4,7 +4,9 @@
 \name{genomalicious_PatchyGTs}
 \alias{genomalicious_PatchyGTs}
 \title{An example of a patchy genotype matrix}
-\format{A matrix with 100 rows and 100 columns.}
+\format{
+A matrix with 100 rows and 100 columns.
+}
 \usage{
 data(genomalicious_PatchyMat)
 }

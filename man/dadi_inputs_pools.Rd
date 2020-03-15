@@ -4,9 +4,17 @@
 \alias{dadi_inputs_pools}
 \title{Genertate dadi input from pool-seq data}
 \usage{
-dadi_inputs_pools(dat, poolCol = "POOL", locusCol = "LOCUS",
-  refCol = "REF", altCol = "ALT", freqCol = "P", indsCol = "INDS",
-  poolSub = NULL, methodSFS = "counts")
+dadi_inputs_pools(
+  dat,
+  poolCol = "POOL",
+  locusCol = "LOCUS",
+  refCol = "REF",
+  altCol = "ALT",
+  freqCol = "P",
+  indsCol = "INDS",
+  poolSub = NULL,
+  methodSFS = "counts"
+)
 }
 \arguments{
 \item{dat}{Data table: Must contain columns with the following information,

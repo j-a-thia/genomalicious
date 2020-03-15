@@ -4,7 +4,9 @@
 \name{genomalicious_Freqs}
 \alias{genomalicious_Freqs}
 \title{An example matrix of allele frequencies}
-\format{A data table with 4 rows and 8 columns.}
+\format{
+A data table with 4 rows and 8 columns.
+}
 \usage{
 data(genomalicious_Freqs)
 }

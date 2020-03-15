@@ -4,8 +4,14 @@
 \alias{pca_plot}
 \title{Plot PCA results}
 \usage{
-pca_plot(dat, type = "scatter", axisIndex = c(1, 2), pops = NULL,
-  popColours = NULL, look = "ggplot")
+pca_plot(
+  dat,
+  type = "scatter",
+  axisIndex = c(1, 2),
+  pops = NULL,
+  popColours = NULL,
+  look = "ggplot"
+)
 }
 \arguments{
 \item{dat}{Prcomp/Data table/Data frame/Matrix or Numeric: The class of this

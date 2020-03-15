@@ -4,10 +4,16 @@
 \alias{vcf2DT}
 \title{VCF file to data table}
 \usage{
-vcf2DT(vcfFile, dropCols = NULL, keepComments = FALSE,
-  keepInfo = FALSE, flip = FALSE, dat, vcfValues = list(loci =
-  "LOCUS", variants = c("CHROM", "POS", "REF", "ALT"), format = c("GT",
-  "DP", "RO", "AO"), samples = "SAMPLE"))
+vcf2DT(
+  vcfFile,
+  dropCols = NULL,
+  keepComments = FALSE,
+  keepInfo = FALSE,
+  flip = FALSE,
+  dat,
+  vcfValues = list(loci = "LOCUS", variants = c("CHROM", "POS", "REF", "ALT"), format =
+    c("GT", "DP", "RO", "AO"), samples = "SAMPLE")
+)
 }
 \arguments{
 \item{vcfFile}{Character: The path to the input VCF file.}

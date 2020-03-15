@@ -4,8 +4,13 @@
 \alias{miss_sim_structure}
 \title{Simulate missing data with a specified strcuture}
 \usage{
-miss_sim_structure(dat_clean, mat_patchy, sampCol = "SAMPLE",
-  locusCol = "LOCUS", genoCol = "GT")
+miss_sim_structure(
+  dat_clean,
+  mat_patchy,
+  sampCol = "SAMPLE",
+  locusCol = "LOCUS",
+  genoCol = "GT"
+)
 }
 \arguments{
 \item{dat_clean}{Data table: Must be in long format and contains

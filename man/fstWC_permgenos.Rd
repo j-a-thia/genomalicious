@@ -4,8 +4,14 @@
 \alias{fstWC_permgenos}
 \title{Permutation significance test for Weir & Cockerham's FST}
 \usage{
-fstWC_permgenos(dat, popCol = "POP", sampCol = "SAMPLE",
-  locusCol = "LOCUS", genoCol = "GT", perms = 100)
+fstWC_permgenos(
+  dat,
+  popCol = "POP",
+  sampCol = "SAMPLE",
+  locusCol = "LOCUS",
+  genoCol = "GT",
+  perms = 100
+)
 }
 \arguments{
 \item{dat}{Data table: A long format data table of biallelic genotypes,

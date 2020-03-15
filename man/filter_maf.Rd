@@ -4,8 +4,15 @@
 \alias{filter_maf}
 \title{Filter loci by minor allele frequency (MAF)}
 \usage{
-filter_maf(dat, maf = 0.05, type = "freqs", popCol = "POP",
-  sampCol = "SAMPLE", locusCol = "LOCUS", genoCol = "GT")
+filter_maf(
+  dat,
+  maf = 0.05,
+  type = "freqs",
+  popCol = "POP",
+  sampCol = "SAMPLE",
+  locusCol = "LOCUS",
+  genoCol = "GT"
+)
 }
 \arguments{
 \item{dat}{Matrix or data table: Default expectation is that user is supplying a matrix of Ref allele

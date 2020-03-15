@@ -3,7 +3,6 @@
 \docType{package}
 \name{genomalicious}
 \alias{genomalicious}
-\alias{genomalicious-package}
 \title{\code{genomalicious}: A smorgasbord of R functions for population genomic analyses}
 \description{
 An R package containing a variety of functions useful in importing,

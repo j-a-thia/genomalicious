@@ -4,8 +4,15 @@
 \alias{missHeatmap}
 \title{Plot a heatmap of missing information}
 \usage{
-missHeatmap(dat, sampCol = "SAMPLE", locusCol = "LOCUS",
-  genoCol = "GT", popCol = NA, plotColours = "white", plotNCol = 2)
+missHeatmap(
+  dat,
+  sampCol = "SAMPLE",
+  locusCol = "LOCUS",
+  genoCol = "GT",
+  popCol = NA,
+  plotColours = "white",
+  plotNCol = 2
+)
 }
 \arguments{
 \item{dat}{Data table: Contains genetic information and must have

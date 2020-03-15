@@ -4,7 +4,9 @@
 \name{genomalicious_PoolPi}
 \alias{genomalicious_PoolPi}
 \title{An example of collating results from \code{poolne_estim}, in R}
-\format{A data table with 32 rows and 10 columns.}
+\format{
+A data table with 32 rows and 10 columns.
+}
 \usage{
 data(genomalicious_PoolPi)
 }

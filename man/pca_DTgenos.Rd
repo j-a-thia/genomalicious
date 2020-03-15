@@ -4,8 +4,14 @@
 \alias{pca_DTgenos}
 \title{Conduct a PCA on individual genotypes stored in a (long) data table}
 \usage{
-pca_DTgenos(dat, scaling = "covar", sampCol = "SAMPLE",
-  locusCol = "LOCUS", genoCol = "GT", popCol = NULL)
+pca_DTgenos(
+  dat,
+  scaling = "covar",
+  sampCol = "SAMPLE",
+  locusCol = "LOCUS",
+  genoCol = "GT",
+  popCol = NULL
+)
 }
 \arguments{
 \item{dat}{Data table: A long data table, e.g. like that imported from

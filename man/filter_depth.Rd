@@ -4,8 +4,7 @@
 \alias{filter_depth}
 \title{Filter loci by sequencing depth}
 \usage{
-filter_depth(dat, minDP = 10, maxDP = NA, locusCol = "LOCUS",
-  dpCol = "DP")
+filter_depth(dat, minDP = 10, maxDP = NA, locusCol = "LOCUS", dpCol = "DP")
 }
 \arguments{
 \item{dat}{Data table: The sequencing read information, must contain the columns:

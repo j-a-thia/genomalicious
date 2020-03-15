@@ -4,8 +4,13 @@
 \alias{fstWC_freqs}
 \title{Calculate Weir and Cockerham's FST from allele frequencies}
 \usage{
-fstWC_freqs(freqMat, sampMat, doPairs = FALSE, doDist = FALSE,
-  perLocus = FALSE)
+fstWC_freqs(
+  freqMat,
+  sampMat,
+  doPairs = FALSE,
+  doDist = FALSE,
+  perLocus = FALSE
+)
 }
 \arguments{
 \item{freqMat}{Matrix: Ref allele counts. Rows = populations,
@@ -22,6 +27,9 @@ Default = \code{FALSE}. Only applied when \code{doPairs==TRUE}.}
 
 \item{perLocus}{Logical: Should the per locus FST be returned?
 Default = \code{FALSE}.}
+}
+\value{
+
 }
 \description{
 Takes a matrix of biallelic allele frequencies, and a matrix of sample sizes,

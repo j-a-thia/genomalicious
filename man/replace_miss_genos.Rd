@@ -4,8 +4,14 @@
 \alias{replace_miss_genos}
 \title{Replace missing genotypes}
 \usage{
-replace_miss_genos(dat, sampCol = "SAMPLE", locusCol = "LOCUS",
-  genoCol = "GT", popCol = NULL, methodReplace = "mode")
+replace_miss_genos(
+  dat,
+  sampCol = "SAMPLE",
+  locusCol = "LOCUS",
+  genoCol = "GT",
+  popCol = NULL,
+  methodReplace = "mode"
+)
 }
 \arguments{
 \item{dat}{Data table: A long data table, e.g. like that imported from

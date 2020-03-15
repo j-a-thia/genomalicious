@@ -4,8 +4,7 @@
 \alias{poolfstat_boot}
 \title{Bootstrap FST values from \code{poolfstat}}
 \usage{
-poolfstat_boot(dat, num.boots = 100, method = "Anova",
-  snp.index = NA)
+poolfstat_boot(dat, num.boots = 100, method = "Anova", snp.index = NA)
 }
 \arguments{
 \item{dat}{Pooldata: The main data class object for \code{poolfstat}. Can be created

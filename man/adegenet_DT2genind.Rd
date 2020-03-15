@@ -4,8 +4,14 @@
 \alias{adegenet_DT2genind}
 \title{Convert a long genotype data table into a \code{genind} object}
 \usage{
-adegenet_DT2genind(dat, sampCol = "SAMPLE", locusCol = "LOCUS",
-  genoCol = "GT", popCol = NULL, n = 2L)
+adegenet_DT2genind(
+  dat,
+  sampCol = "SAMPLE",
+  locusCol = "LOCUS",
+  genoCol = "GT",
+  popCol = NULL,
+  n = 2L
+)
 }
 \arguments{
 \item{dat}{Data.table: Contains samples and loci in rows, with a

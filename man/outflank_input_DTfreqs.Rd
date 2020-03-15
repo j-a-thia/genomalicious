@@ -4,8 +4,14 @@
 \alias{outflank_input_DTfreqs}
 \title{Convert an allele frequency data table (long format) to \code{OutFLANK} input}
 \usage{
-outflank_input_DTfreqs(dat, popCol = "POP", locusCol = "LOCUS",
-  freqCol = "P", indsCol = "INDS", HoCol = NULL)
+outflank_input_DTfreqs(
+  dat,
+  popCol = "POP",
+  locusCol = "LOCUS",
+  freqCol = "P",
+  indsCol = "INDS",
+  HoCol = NULL
+)
 }
 \arguments{
 \item{dat}{Data table: The biallelic allele frequency data. Requires the
@@ -35,6 +41,9 @@ A data frame in the required format for analysis by \code{OutFLANK}.
 \description{
 Converts a long format data table of allele frequency information into
 a data frame fit for analysis by OutFLANK (Whitlock & Lotterhos 2015).
+}
+\details{
+
 }
 \examples{
 data('genomalicious_PoolPi')

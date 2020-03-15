@@ -4,7 +4,9 @@
 \name{genomalicious_PoolInfo}
 \alias{genomalicious_PoolInfo}
 \title{An example of pool-seq sample info}
-\format{A data table with 2 rows and 2 columns.}
+\format{
+A data table with 2 rows and 2 columns.
+}
 \usage{
 data(genomalicious_PoolInfo)
 }

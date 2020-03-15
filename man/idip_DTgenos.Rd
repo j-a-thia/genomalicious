@@ -4,8 +4,13 @@
 \alias{idip_DTgenos}
 \title{Calculate diversity statistics with \code{IDIP} from a data table of genotypes}
 \usage{
-idip_DTgenos(snpDat, strucMat, popCol = "POP", locusCol = "LOCUS",
-  genoCol = "GT")
+idip_DTgenos(
+  snpDat,
+  strucMat,
+  popCol = "POP",
+  locusCol = "LOCUS",
+  genoCol = "GT"
+)
 }
 \arguments{
 \item{snpDat}{Data table: a long-format data table with SNP genotypes

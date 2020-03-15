@@ -4,8 +4,14 @@
 \alias{idip_DTfreqs}
 \title{Calculate diversity statistics with \code{IDIP} from a data table of frequencies}
 \usage{
-idip_DTfreqs(freqDat, strucMat, popCol = "POP", locusCol = "LOCUS",
-  freqCol = "FREQ", alleleCol = NA)
+idip_DTfreqs(
+  freqDat,
+  strucMat,
+  popCol = "POP",
+  locusCol = "LOCUS",
+  freqCol = "FREQ",
+  alleleCol = NA
+)
 }
 \arguments{
 \item{freqDat}{Data table: a long-format data table with SNP genotypes

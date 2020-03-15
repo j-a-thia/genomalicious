@@ -4,8 +4,13 @@
 \alias{adegenet_DT2genlight}
 \title{Convert a long genotype data table into a \code{genlight} object}
 \usage{
-adegenet_DT2genlight(dat, sampCol = "SAMPLE", locusCol = "LOCUS",
-  genoCol = "GT", popCol = NULL)
+adegenet_DT2genlight(
+  dat,
+  sampCol = "SAMPLE",
+  locusCol = "LOCUS",
+  genoCol = "GT",
+  popCol = NULL
+)
 }
 \arguments{
 \item{dat}{Data.table: Contains samples and loci in rows, with a
