@@ -1,11 +1,11 @@
 Package: genomalicious
 Type: Package
 Title: A smorgasbord of R functions for population genomic analyses
-Version: 0.2.0
+Version: 0.3.0
 Author: Joshua Thia
 Maintainer: Joshua Thia <joshua.a.thia@gmail.com>
 Description: Functions for importing, manipulating, and reformatting pooled and individually sequenced RAD-seq data in R.
-Depends: data.table, ggplot2, gridExtra, HierDpart, MASS, poolfstat, plyr, tidyr
+Depends: data.table, ggplot2, gridExtra, HierDpart, MASS, poolfstat, plyr, tidyr, pbapply
 License: GNU GPL v3
 Encoding: UTF-8
 LazyData: true

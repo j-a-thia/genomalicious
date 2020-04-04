@@ -8,6 +8,8 @@ fstWC_freqs(
   freqMat,
   sampMat,
   doPairs = FALSE,
+  bootCI = FALSE,
+  boots = 100,
   doDist = FALSE,
   perLocus = FALSE
 )
@@ -22,6 +24,11 @@ columns = loci.}
 \item{doPairs}{Logical: Should pairwise FST be calculated? Default = \code{FALSE},
 which calculates the among population FST.}
 
+\item{bootCI}{Logical: Should bootstrap confidence intervals be estimated?
+Default = \code{FALSE}.}
+
+\item{boots}{Integer: The number of bootstrap replicates. Default = 100.}
+
 \item{doDist}{Logical: Should a a distance matrix of FST be returned?
 Default = \code{FALSE}. Only applied when \code{doPairs==TRUE}.}
 
@@ -29,7 +36,22 @@ Default = \code{FALSE}. Only applied when \code{doPairs==TRUE}.}
 Default = \code{FALSE}.}
 }
 \value{
-
+Returns a list, the contents vary depending on argument choices. \cr
+When \code{doPairs==FALSE}, the analysis is among populations.
+\enumerate{
+   \item \code{$multilocus.mean}: the multilocus FST.
+   \item \code{$multilocus.ci}: a vector of bootstrap confidence intervals.
+   \item \code{$perlocus}: a data table of the FST for each locus.
+}
+When \code{doPairs==TRUE}, the analysis is between population pairs.
+\enumerate{
+   \item \code{$multilocus.mean}: a data table of multilocus FST.
+   \item \code{$multilocus.perms}: a data table of permuted FST values.
+   \item \code{$multilocus.pval}: a data table of p-values from permutation tests.
+   \item \code{$multilocus.ci}: a data table of bootstrap confidence intervals.
+   \item \code{$multilocus.dist}: a distance matrix of multilocus FST values.
+   \item \code{$perlocus}: a data table of the FST for each locus.
+}
 }
 \description{
 Takes a matrix of biallelic allele frequencies, and a matrix of sample sizes,
@@ -42,9 +64,9 @@ sampMat <- matrix(rep(30, 32), nrow=4, ncol=8)
 rownames(sampMat) <- paste0('Pop', 1:4)
 colnames(sampMat) <- colnames(freqMat); rownames(sampMat) <- rownames(freqMat)
 
-fstWC_freqs(freqMat, sampMat, doPairs=FALSE)
-fstWC_freqs(freqMat, sampMat, doPairs=TRUE)
-fstWC_freqs(freqMat, sampMat, doPairs=TRUE, doDist=TRUE)
+fstWC_freqs(freqMat=freqMat, sampMat=sampMat, doPairs=FALSE)
+fstWC_freqs(freqMat=freqMat, sampMat=sampMat, doPairs=TRUE)
+fstWC_freqs(freqMat=freqMat, sampMat=sampMat, doPairs=TRUE, doDist=TRUE)
 
 }
 \references{

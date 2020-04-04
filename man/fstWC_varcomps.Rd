@@ -4,17 +4,95 @@
 \alias{fstWC_varcomps}
 \title{Calculate the variance components of Weir & Cockerham's FST}
 \usage{
-fstWC_varcomps(freqMat, sampMat)
+fstWC_varcomps(dat, input_type, samp_size = NULL, pop_id = NULL)
 }
 \arguments{
-\item{freqMat}{Matrix: Ref allele counts. Rows = populations,
-columns = loci; make sure both are named. Row names used to label output FST matrix.}
+\item{dat}{Matrix: Allele frequencies for populations, or biallelic genotypes
+of individuals scored as integer counts of the Alt allele (0, 1, 2).
+Populations or individuals are in rows, loci are in columns.
+Column names are loci IDs and must exactly match those in argument \code{samp_size}.}
 
-\item{sampMat}{Matrix: Number of sampled individuals. Rows = populations,
-columns = loci.}
+\item{input_type}{Character: One of two possible values: 'genos', calcualte
+variance components from genotype matrix, or 'freqs', calculate variance
+components from an allele frequency matrix.}
+
+\item{samp_size}{Matrix: The sample size for each locus in each population.
+Default is \code{NULL} and is required if \code{input_type=='freqs'}.
+Allows for different sample sizes at each locus, for example, if there
+is missing data. Populations in rows, loci in columns. Rows must be
+in the same order as rows in \code{dat}. Column names are loci IDs
+and must all occur in \code{dat}.}
+
+\item{pop_id}{Charater: A vector of population IDs. Default is NULL and
+is only required if \code{input_type=='genos'}. Must be the same length
+as \code{nrow(dat)} and the order of values must match the order of rows in \code{dat}.}
+}
+\value{
+A data table with columns \code{$LOCUS} (locus ID),
+\code{$NUMER} (the numerator for FST) and \code{$DENOM} (the denominator for FST).
 }
 \description{
-Calculate the variance components of Weir & Cockerham's FST
+Calculates the numerator and denominator variance components for
+Weir and Cockerham's FST (theta) for each locus from allele
+frequency or individual genotype data.
+}
+\details{
+Estimation of the variance components from allele frequencies versus genotypes will
+give slightly different values because of the different ways these are calculated.
+Variance components for allele frequencies are calculated as described in
+Weir and Hill (2002), where the numerator = MSP - MSG, and the
+denominator = MSP + (nc - 1)MSG. Variance components for individual genotypes
+are caculated as described in Weir and Cockerham (1984), where the numberator = a,
+and the denominator = a + b + c. The methods are fundamentally similar, except in
+estimation of variance components from individual genotypes, inclusion of observed
+heterozygosity occurs in the calculation. Heterozygosity is not available when
+only frequencies are assayed (e.g. in pool-seq), so its exclusion from calculations
+produces these slight divergences in the variance components from those
+observed if indivdiual genotypes were used. \cr\cr
+The \code{samp_size} matrix can be used to allow for different sample sizes at
+each locus, within a population, when \code{input_type=='freqs'}.
+This facilitates calculation of variance components when there is missing data
+at certain loci. In practise, for pool-seq experiments, it is hard to disentangle
+the number of effectively contributing indivdiuals versus the number of pooled
+diploids used to estimate the frequency at a specific locus in a specific population.
+}
+\examples{
+# FROM ALLELE FREQUENCIES
+data(genomalicious_Freqs)
+freqDat <- genomalicious_Freqs
+
+# Create a sample size matrix (order is important!)
+freqSamps <- matrix(30, nrow=nrow(freqDat), ncol=ncol(freqDat), dimnames=list(NULL, colnames(freqDat)))
+
+# Variance components
+freqVarcomps <- fstWC_varcomps(dat=freqDat, input_type='freqs', samp_size=freqSamps)
+freqVarcomps
+
+# FROM INDIVIDUAL GENOTYPES
+data(genomalicious_4pops)
+
+# Convert to matrix and get the first 8 loci
+genoDat <- DT2Mat_genos(
+    dat=genomalicious_4pops
+    , sampCol='SAMPLE'
+    , locusCol='LOCUS'
+    , genoCol='GT')[, 1:8]
+
+# Must convert genotypes to integers
+genoDat <- apply(genoDat, 2, genoscore_converter)
+
+# Create a population ID vector (order is important!)
+# See that individuals in rows follow naming convention: Ind[pop].[sample].
+# We can strip the characters after the '.' to get the population specific value.
+genoPops <- gsub("\\\\..*", "", rownames(genoDat))
+
+# Variance components
+genoVarcomps <- fstWC_varcomps(
+    dat=genoDat
+    , input_type='genos'
+    , pop_id=genoPops)
+genoVarcomps
+
 }
 \references{
 Weir, Cockerham (1984) Estimating F-statistics for the analysis of population structure. Evol. \cr

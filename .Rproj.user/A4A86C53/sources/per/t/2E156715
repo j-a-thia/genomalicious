@@ -1,21 +1,21 @@
 {
     "collab_server" : "",
     "contents" : "",
-    "created" : 1583923542466.000,
+    "created" : 1585976478156.000,
     "dirty" : false,
     "encoding" : "UTF-8",
     "folds" : "",
     "hash" : "1767952353",
-    "id" : "1DC59085",
+    "id" : "2E156715",
     "lastKnownWriteTime" : 1577659327,
     "last_content_update" : 1577659327,
     "path" : "~/GitHub/genomalicious/DEV.R",
     "project_path" : "DEV.R",
     "properties" : {
-        "cursorPosition" : "24,0",
+        "cursorPosition" : "14,0",
         "scrollLine" : "0"
     },
-    "relative_order" : 2,
+    "relative_order" : 1,
     "source_on_save" : false,
     "source_window" : "",
     "type" : "r_source"

@@ -43,10 +43,10 @@ Default = \code{'LOCUS'}.}
 Default = \code{'GT'}.}
 
 \item{permTest}{Logical: Should a permutation test be conducted?
-Default = \code{TRUE}.}
+Default = \code{FALSE}.}
 
 \item{bootCI}{Logical: Should bootstrap confidence intervals be estimated?
-Default = \code{TRUE}.}
+Default = \code{FALSE}.}
 
 \item{iters}{Integer: The number of permutations or bootstrap replicates.
 Default = 100.}
@@ -64,16 +64,18 @@ Default = \code{FALSE}.}
 Returns a list, the contents vary depending on argument choices. \cr
 When \code{doPairs==FALSE}, the analysis is among populations.
 \enumerate{
-   \item \code{$fst.mean}: the mean FST across loci.
-   \item \code{$fst.locus}: the per locus FST.
-   \item \code{$fst.perm.pval}: the p-value from permutation tests.
-   \item \code{$fst.boot.ci}: the bootstrap confidence intervals.
+   \item \code{$multilocus.mean}: the multilocus FST.
+   \item \code{$multilocus.perms}: a vector of permuted FST values.
+   \item \code{$multilocus.pval}: the p-value from permutation tests.
+   \item \code{$multilocus.ci}: a vector of bootstrap confidence intervals.
+   \item \code{$perlocus}: a data table of the FST for each locus.
 }
 When \code{doPairs==TRUE}, the analysis is between population pairs.
 \enumerate{
-   \item \code{$fst.mean}: data table, population pairs and their statistics for mean FST.
-   \item \code{$fst.locus}: data table, population pairs and per locus FST.
-   \item \code{$fst.dist}: dist, a distance matrix of mean FST values.
+   \item \code{$multilocus.mean}: a data table of multilocus FST.
+   \item \code{$multilocus.ci}: a data table of bootstrap confidence intervals.
+   \item \code{$multilocus.dist}: a distance matrix of multilocus FST values.
+   \item \code{$perlocus}: a data table of the FST for each locus.
 }
 }
 \description{
@@ -83,20 +85,14 @@ also conduct permutation testing and calculate bootstrap
 confidence intervals.
 }
 \details{
-Permutation tests involve random shuffly of individuals
+Permutation tests involve random shuffling of individuals
 among populations, recalculating FST, and testing the hypothesis
 that the permuted FST > observed FST. The p-value represents the
-proportion of iterations that were "TRUE" to this expression.
-NOTE: in personal trials, randomisation of individuals among populations
-consistently produces negative FST, hence, typically any FST > 0
-will be "significant" in the permutation procedure,
-based on these criteria. \cr \cr
+proportion of iterations that were "TRUE" to this expression. \cr \cr
 Bootstrapping randomly samples the loci with replacement
-to estimate the distribution of FST values around the across-locus
-mean FST. Confidence intervals are calculated as the 2.5% and
-97.5% percentiles of the bootstrapped FST values obtained.
-This might be a more conservative test of significance, to
-test the hypothesis that the observed FST is > 0.
+to estimate the distribution of FST values around the multilocus
+FST. Confidence intervals are calculated as the 2.5 and
+97.5 percentiles of the obtained bootstrapped FST values.
 }
 \examples{
 data(genomalicious_4pops)
@@ -105,7 +101,8 @@ data(genomalicious_4pops)
 # and bootstrap confidence intervals.
 fst_among <- fstWC_genos(genomalicious_4pops
                 , permTest=TRUE
-                , bootCI=TRUE, iters=50)
+                , bootCI=TRUE
+                , iters=50)
 
 # Pairwise FST, with per locus estimates
 # and a distance matrix

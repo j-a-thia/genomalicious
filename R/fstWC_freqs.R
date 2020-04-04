@@ -12,22 +12,33 @@
 #' @param doPairs Logical: Should pairwise FST be calculated? Default = \code{FALSE},
 #' which calculates the among population FST.
 #'
+#' @param bootCI Logical: Should bootstrap confidence intervals be estimated?
+#' Default = \code{FALSE}.
+#'
+#' @param boots Integer: The number of bootstrap replicates. Default = 100.
+#'
 #' @param doDist Logical: Should a a distance matrix of FST be returned?
 #' Default = \code{FALSE}. Only applied when \code{doPairs==TRUE}.
 #'
 #' @param perLocus Logical: Should the per locus FST be returned?
 #' Default = \code{FALSE}.
 #'
-#' @return A list with up to three different indices.
+#' @return Returns a list, the contents vary depending on argument choices. \cr
+#' When \code{doPairs==FALSE}, the analysis is among populations.
 #' \enumerate{
-#'    \item \code{$fst.mean}: contains the mean FST across loci. For among populations,
-#'          this is a vector, whereas for pairwise analyses it is a data table
-#'          with a \code{$POP1}, \code{$POP2}, and \code{$FST} column.
-#'    \item \code{$fst.locus}: contains the locus-specific FST values
-#'          if \code{perLocus==TRUE}. For amonong populations, this is a vector,
-#'          but for pairwise analyses, this is a data table with population pairs.
-#'    \item \code{$fst.dist}: will contain a distance matrix of FST values
-#'          if \code{doPairs==TRUE} and \code{doDist==TRUE}.
+#'    \item \code{$multilocus.mean}: the multilocus FST.
+#'    \item \code{$multilocus.ci}: a vector of bootstrap confidence intervals.
+#'    \item \code{$perlocus}: a data table of the FST for each locus.
+#' }
+#' When \code{doPairs==TRUE}, the analysis is between population pairs.
+#' \enumerate{
+#'    \item \code{$multilocus.mean}: a data table of multilocus FST.
+#'    \item \code{$multilocus.perms}: a data table of permuted FST values.
+#'    \item \code{$multilocus.pval}: a data table of p-values from permutation tests.
+#'    \item \code{$multilocus.ci}: a data table of bootstrap confidence intervals.
+#'    \item \code{$multilocus.dist}: a distance matrix of multilocus FST values.
+#'    \item \code{$perlocus}: a data table of the FST for each locus.
+#' }
 #'
 #' @references
 #' Weir, Cockerham (1984) Estimating F-statistics for the analysis of population structure. Evol. \cr
@@ -40,14 +51,15 @@
 #' rownames(sampMat) <- paste0('Pop', 1:4)
 #' colnames(sampMat) <- colnames(freqMat); rownames(sampMat) <- rownames(freqMat)
 #'
-#' fstWC_freqs(freqMat, sampMat, doPairs=FALSE)
-#' fstWC_freqs(freqMat, sampMat, doPairs=TRUE)
-#' fstWC_freqs(freqMat, sampMat, doPairs=TRUE, doDist=TRUE)
+#' fstWC_freqs(freqMat=freqMat, sampMat=sampMat, doPairs=FALSE)
+#' fstWC_freqs(freqMat=freqMat, sampMat=sampMat, doPairs=TRUE)
+#' fstWC_freqs(freqMat=freqMat, sampMat=sampMat, doPairs=TRUE, doDist=TRUE)
 #'
 #' @export
-fstWC_freqs <- function(freqMat, sampMat, doPairs=FALSE, doDist=FALSE, perLocus=FALSE){
+fstWC_freqs <- function(freqMat, sampMat, doPairs=FALSE, bootCI=FALSE, boots=100, doDist=FALSE, perLocus=FALSE){
+
   # --------------------------------------------+
-  # Libraries and assertions
+  # Assertions and environment
   # --------------------------------------------+
   require(data.table)
 
@@ -77,56 +89,87 @@ fstWC_freqs <- function(freqMat, sampMat, doPairs=FALSE, doDist=FALSE, perLocus=
   # Make sure sampMat and freqMat are in the same order row-wise
   sampMat <- sampMat[rownames(freqMat), ]
 
-  # --------------------------------------------+
-  # Code
-  # --------------------------------------------+
-  if(doPairs==FALSE){
-    fst_out <- list()
+  # Output list
+  fstList <- list()
 
+  # --------------------------------------------+
+  # Code: FST among all populations
+  # --------------------------------------------+
+  # Calculate among populations
+  if(doPairs==FALSE){
     # Calculate variance per locus
-    lociVar <- fstWC_varcomps(freqMat, sampMat)
+    lociVar <- fstWC_varcomps(dat=freqMat, input_type='freqs', samp_size=sampMat)
 
     # Theta across loci
-    fst_out$fst.mean <- sum(lociVar$NUMER) / sum(lociVar$DENOM)
+    fstList$multilocus.mean <- sum(lociVar$NUMER) / sum(lociVar$DENOM)
+
+    # Bootstrap theta
+    if(bootCI==TRUE){
+      fst.boot <- fstWC_boot(dat=freqMat, samp_size=sampMat, input_type='freqs')
+      fstList$multilocus.boot <- fst.boot
+      fstList$multilocus.ci <- quantile(fst.boot, c(0.025, 0.975))
+    }
 
     # Theta per locus
     if(perLocus==TRUE){
       fst.locus <- lociVar$NUMER / lociVar$DENOM
       names(fst.locus) <- lociVar$LOCUS
-      fst_out$fst.locus <- fst.locus
+      fstList$perlocus <- fst.locus
     }
 
     # Return among population analyses
-    return(fst_out)
+    return(fstList)
 
-  } else if(doPairs==TRUE){
-    fst_out <- list()
+  }
 
+  # --------------------------------------------+
+  # Code: FST between population pairs
+  # --------------------------------------------+
+  if(doPairs==TRUE){
+    # Population pairs
     pairCombos <- combn(x=rownames(freqMat), m=2)
 
     # For the Xth pair
-    pairLs <- apply(pairCombos, 2, function(X){
+    pairList <- apply(pairCombos, 2, function(X){
+      # Output for each Xth pair
+      Xlist <- list()
+
+      # Pair ID
+      pair_id <- paste(X, collapse='/')
+
       # Calculate variance per locus
-      lociVar <- fstWC_varcomps(freqMat[X,], sampMat[X,])
+      lociVar <- fstWC_varcomps(dat=freqMat[X,], input_type='freqs', samp_size=sampMat[X,])
+
       # Theta across loci
-      thetaMean <- data.table(POP1=X[1], POP2=X[2]
+      Xlist$mean <- data.table(POP1=X[1], POP2=X[2]
                     , FST=sum(lociVar$NUMER) / sum(lociVar$DENOM))
+
+      # Bootstrap theta
+      if(bootCI==TRUE){
+        fst.boot <- fstWC_boot(dat=freqMat[X,], input_type='freqs', samp_size=sampMat[X,], boots=boots)
+        fst.ci <- quantile(fst.boot, c(0.025, 0.975))
+        Xlist$boots <- data.table(PAIR=pair_id, POP1=X[1], POP2=X[2], BOOT=1:boots, FST=fst.boot)
+        Xlist$ci <- data.table(PAIR=pair_id, POP1=X[1], POP2=X[2], CI025=fst.ci[1], CI975=fst.ci[2])
+      }
 
       # Theta per locus
       if(perLocus==TRUE){
-        thetaLocus <- data.table(POP1=X[1], POP2=X[2]
+        Xlist$perlocus <- data.table(POP1=X[1], POP2=X[2]
                                  , LOCUS=lociVar$LOCUS
                                  , FST=lociVar$NUMER / lociVar$DENOM)
-        return(list(mean=thetaMean, bylocus=thetaLocus))
-      } else{ return(list(mean=thetaMean)) }
+      }
+
+      # Return the data for Xth pair
+      return(Xlist)
     })
 
-    # Create a list of objects to return for pairwise analyses
-    if(perLocus==TRUE){
-      outLs <- list(fst.mean=do.call('rbind', lapply(pairLs, function(X){ X$mean}))
-                    , fst.locus=do.call('rbind', lapply(pairLs, function(X){ X$bylocus})))
-    } else{
-      outLs <- list(fst.mean=do.call('rbind', lapply(pairLs, function(X){ X$mean})))
+    # Combine multilocus estimates
+    fstList$multilocus.mean <- do.call('rbind', lapply(pairList, function(xx){ xx$mean }))
+
+    # Combine bootstrap replicates
+    if(bootCI==TRUE){
+      fstList$multilocus.boot <- do.call('rbind', lapply(pairList, function(xx){ xx$boot }))
+      fstList$multilocus.ci <- do.call('rbind', lapply(pairList, function(xx){ xx$ci }))
     }
 
     # If an FST distance matrix was requested:
@@ -138,14 +181,18 @@ fstWC_freqs <- function(freqMat, sampMat, doPairs=FALSE, doDist=FALSE, perLocus=
       for(j in 1:ncol(pairCombos)){
         pop1 <- pairCombos[1,j]
         pop2 <- pairCombos[2,j]
-        fst.dist[pop2, pop1] <- outLs$fst.mean[POP1==pop1 & POP2==pop2]$FST
+        fst.dist[pop2, pop1] <- fstList$multilocus.mean[POP1==pop1 & POP2==pop2]$FST
       }
       # Add to the output list
-      outLs$fst.dist <- as.dist(fst.dist, diag=TRUE)
+      fstList$multilocus.dist <- as.dist(fst.dist, diag=TRUE)
+    }
+
+    # Combine the per locus estimates
+    if(perLocus==TRUE){
+      fstList$perlocus <- do.call('rbind', lapply(pairList, function(xx){ xx$perlocus }))
     }
 
     # Return pairwise analyses
-    return(outLs)
-
+    return(fstList)
   }
 }

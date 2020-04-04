@@ -2,28 +2,40 @@
 % Please edit documentation in R/fstWC_boot.R
 \name{fstWC_boot}
 \alias{fstWC_boot}
-\title{Bootstrap Weir & Cockerham's FST}
+\title{Bootstrapped Weir & Cockerham's FST}
 \usage{
-fstWC_boot(freqMat, sampMat, boots = 100)
+fstWC_boot(dat, input_type, pop_id = NULL, samp_size = NULL, boots = 100)
 }
 \arguments{
-\item{freqMat}{Matrix: Ref allele counts. Rows = populations,
-columns = loci; make sure both are named. Row names used to label output FST matrix.}
+\item{dat}{Matrix: Allele frequencies for populations, or biallelic genotypes
+of individuals scored as integer counts of the Alt allele (0, 1, 2).
+Populations or individuals are in rows, loci are in columns.
+Column names are loci IDs and must exactly match those in argument \code{samp_size}.}
 
-\item{sampMat}{Matrix: Number of sampled individuals. Rows = populations,
-columns = loci.}
+\item{input_type}{Character: One of two possible values: 'genos', calcualte
+variance components from genotype matrix, or 'freqs', calculate variance
+components from an allele frequency matrix.}
+
+\item{pop_id}{Charater: A vector of population IDs. Default is NULL and
+is only required if \code{input_type=='genos'}. Must be the same length
+as \code{nrow(dat)} and the order of values must match the order of rows in \code{dat}.}
+
+\item{samp_size}{Matrix: The sample size for each locus in each population.
+Default is \code{NULL} and is required if \code{input_type=='freqs'}.
+Allows for different sample sizes at each locus, for example, if there
+is missing data. Populations in rows, loci in columns. Rows must be
+in the same order as rows in \code{dat}. Column names are loci IDs
+and must all occur in \code{dat}.}
 
 \item{boots}{Integer: The number of bootstrap replicates. Default = 100.}
 }
 \value{
-Returns a vector bootstrapped mean FST values (estimated across
-bootstrapped resampled loci).
+Returns a vector of bootstrapped multilocus FST values.
 }
 \description{
-Use a bootstrap resampling procedure to estimate the distribution
-of values around observed FST value.
+Generate a vector of bootstrapped Weir and Cockerham's FST from observed
+genotype or allele freuqency data.
 }
 \references{
 Weir, Cockerham (1984) Estimating F-statistics for the analysis of population structure. Evol. \cr
-Weir, Hill (2002) Estimating F-statistics. Annu. Rev. Genet.
 }
