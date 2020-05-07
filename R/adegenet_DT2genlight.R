@@ -36,33 +36,19 @@ adegenet_DT2genlight <- function(dat, sampCol='SAMPLE', locusCol='LOCUS', genoCo
 
   for(lib in c('data.table', 'adegenet')){require(lib, character.only=TRUE)}
 
-  # What is the genotype scoring method?
+  # What is the genotype scoring method? Convert to counts if needed.
   if(class(dat[[genoCol]])=='character'){
-    gt.score <- 'sep'
-  } else if(class(dat[[genoCol]])=='integer'){
-    gt.score <- 'counts'
+    dat[[genoCol]] <- genoscore_converter(dat[[genoCol]])
   }
 
-  # Split data by samples into a list
-  datspl <- split(dat, dat[[sampCol]])
-
-  # Iterate through samples, reorder loci, and get genotypes
-  if(gt.score=='sep'){
-    alleles <- lapply(datspl, function(samp){
-      return(genoscore_converter(samp[order(LOCUS)]$GT))
-    })
-  } else{
-    alleles <- lapply(datspl, function(samp){
-      return(samp[order(LOCUS)]$GT)})
-  }
-
-  # Convert to genlight object
-  genLight <- new('genlight', alleles)
+  # Create a genlight object
+  genoMat <- DT2Mat_genos(dat, 'SAMPLE', 'LOCUS', 'GT')
+  genLight <- new('genlight', as.list(as.data.frame(t(genoMat))))
 
   if(is.null(popCol)==FALSE){
     # The population and samples
     popDat <- unique(dat[, c(sampCol, popCol), with=FALSE])
-    genLight@pop <- as.factor(popDat[[popCol]][match(names(alleles), popDat[[sampCol]])])
+    genLight@pop <- as.factor(popDat[[popCol]][match(genLight@ind.names, popDat[[sampCol]])])
   }
 
   return(genLight)

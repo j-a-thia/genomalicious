@@ -8,7 +8,7 @@ outflank_input_DTfreqs(
   dat,
   popCol = "POP",
   locusCol = "LOCUS",
-  freqCol = "P",
+  freqCol = "FREQ",
   indsCol = "INDS",
   HoCol = NULL
 )
@@ -27,13 +27,13 @@ following columns:
 
 \item{locusCol}{Character: The column name with the locus information. Default = \code{'LOCUS'}.}
 
-\item{freqCol}{Character: The column name with the allele frequency information. Default = \code{'P'}.}
+\item{freqCol}{Character: The column name with the allele frequency information. Default = \code{'FREQ'}.}
 
 \item{indsCol}{Character: The column name with the number of individuals (sample size)
-used to estiamte the allele frequency. Default = \code{'INDS'}.}
+used to estimate the allele frequency. Default = \code{'INDS'}.}
 
 \item{HoCol}{Character: An optional argument. The column name with the observed number of
-heterozygotes. Affects estimation of FST, see details. Default = code{NULL}.}
+heterozygotes. Affects estimation of FST, see details. Default = \code{NULL}.}
 }
 \value{
 A data frame in the required format for analysis by \code{OutFLANK}.

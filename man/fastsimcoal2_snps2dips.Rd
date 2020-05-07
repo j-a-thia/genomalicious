@@ -4,11 +4,14 @@
 \alias{fastsimcoal2_snps2dips}
 \title{Convert \code{fastsimcoal2} SNPs into diploid genotypes}
 \usage{
-fastsimcoal2_snps2dips(arpFile)
+fastsimcoal2_snps2dips(arpFile, padIDs = TRUE)
 }
 \arguments{
 \item{arpFile}{Character: The name of the \code{.arp} file produced from
 the \code{fastsimecoal2} simulations.}
+
+\item{padIDs}{Logical: Should ID numbers be padded with '0'? Useful for
+sorting character values. Defalt is TRUE.}
 }
 \value{
 Returns a data table with the following columns:
@@ -28,7 +31,7 @@ Takes in a \code{.arp} file produced from a \code{fastsimcoal2} (Excoffier et al
 simulation of SNP data and produces diploid genotypes from the sampled haploid genomes.
 NOTE: This function was developed for even sample sizes (i.e. total number
 of haploid genomes per population is divisible by 2) and for simulations where
-all loci are polymorphic. Users should proceed warily if their simulated data
+all loci are polymorphic. Users should proceed with caution if their simulated data
 does not fit these specifications.
 }
 \details{

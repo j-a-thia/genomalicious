@@ -16,18 +16,18 @@
 #'
 #' @param locusCol Character: The column name with the locus information. Default = \code{'LOCUS'}.
 #'
-#' @param freqCol Character: The column name with the allele frequency information. Default = \code{'P'}.
+#' @param freqCol Character: The column name with the allele frequency information. Default = \code{'FREQ'}.
 #'
 #' @param indsCol Character: The column name with the number of individuals (sample size)
-#' used to estiamte the allele frequency. Default = \code{'INDS'}.
+#' used to estimate the allele frequency. Default = \code{'INDS'}.
 #'
 #' @param HoCol Character: An optional argument. The column name with the observed number of
-#' heterozygotes. Affects estimation of FST, see details. Default = code{NULL}.
+#' heterozygotes. Affects estimation of FST, see details. Default = \code{NULL}.
 #'
 #' @details FST is estimated using modified versions of the \code{OutFLANK} functions
 #' code{WC_FST_FiniteSample_Diploids_2Alleles_NoCorr()} and \code{WC_FST_FiniteSample_Diploids_2Alleles().
 #' The observed heterozygosity, Ho, is required to calculate the variance components. However,
-#' allele frequencies alone do not carry this information. Users can specify the a column
+#' allele frequencies alone do not carry this information. Users can specify a column
 #' containing the Ho (argument \code{HoCol}) if this is known, otherwise, a naive assumption
 #' that Ho = He (the expected heterozygosity) is made.
 #'
@@ -46,7 +46,7 @@
 #'
 #' @export
 #'
-outflank_input_DTfreqs <- function(dat, popCol='POP', locusCol='LOCUS', freqCol='P', indsCol='INDS', HoCol=NULL){
+outflank_input_DTfreqs <- function(dat, popCol='POP', locusCol='LOCUS', freqCol='FREQ', indsCol='INDS', HoCol=NULL){
 
   # --------------------------------------------+
   # Libraries and assertions
