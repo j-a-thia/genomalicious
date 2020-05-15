@@ -54,7 +54,7 @@ genomaliciousExtData <- paste0(find.package('genomalicious'), '/extdata')
 pi.data <- poolne_estim_output(stat='pi', datDir=genomaliciousExtData, lociDir=genomaliciousExtData)
 
 # Simulate potential distributions
-pi.sims <- poolne_estim_sim_pi(pi.data, 100)
+pi.sims <- poolne_estim_boot_pi(pi.data, 100)
 pi.sims
 
 }
