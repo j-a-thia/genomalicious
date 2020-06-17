@@ -41,23 +41,23 @@
 #'
 #' @examples
 #' # Load in the pool metadata and reads
-#' data(genomalicious_PoolInfo)
-#' data(genomalicious_PoolReads)
+#' data(data_PoolInfo)
+#' data(data_PoolReads)
 #'
 #' # Have a look at the data: the samples are populations
 #' # ('Pop') and replicate library preps ('Rep').
-#' genomalicious_PoolReads$SAMPLE
+#' data_PoolReads$SAMPLE
 #'
 #' # You need to make sure there is a column that contains
 #' # the pool ID. Split the SAMPLE column and return the first value:
-#' X <- genomalicious_PoolReads
+#' X <- data_PoolReads
 #' X$POOL <- unlist(lapply(strsplit(X$SAMPLE, '_'), function(X){ return(X[1]) }))
 #'
 #' # Check
 #' X
 #'
 #' # Now make inputs
-#' poolne_estim_input(dat=X, pool.info=genomalicious_PoolInfo, runID='genomalicious')
+#' poolne_estim_input(dat=X, pool.info=data_PoolInfo, runID='genomalicious')
 #'
 #' @export
 poolne_estim_input <- function(dat, pool.info, runID, mcmc.sampling=c(1000, 25, 5000, 20, 50, sample(as.integer(1000:9999),1))) {

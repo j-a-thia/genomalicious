@@ -38,12 +38,12 @@ create a \code{genind} object, as per the \code{adegenet} package
 (Jombart 2008 Bioinformatics). Does not have to be biallelic.
 }
 \examples{
-data(genomalicious_4pops)
+data(data_4pops)
 
-genomalicious_4pops
+data_4pops
 
-adegenet_DT2genind(genomalicious_4pops)
-adegenet_DT2genind(genomalicious_4pops, popCol='POP')
+adegenet_DT2genind(data_4pops)
+adegenet_DT2genind(data_4pops, popCol='POP')
 
 }
 \references{

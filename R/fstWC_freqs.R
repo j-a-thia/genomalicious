@@ -45,8 +45,8 @@
 #' Weir, Hill (2002) Estimating F-statistics. Annu. Rev. Genet
 #'
 #' @examples
-#' data(genomalicious_Freqs)
-#' freqMat <- genomalicious_Freqs
+#' data(data_Freqs)
+#' freqMat <- data_Freqs
 #' sampMat <- matrix(rep(30, 32), nrow=4, ncol=8)
 #' rownames(sampMat) <- paste0('Pop', 1:4)
 #' colnames(sampMat) <- colnames(freqMat); rownames(sampMat) <- rownames(freqMat)

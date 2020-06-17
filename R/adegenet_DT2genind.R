@@ -25,12 +25,12 @@
 #' Jombart (2008) adegenet: a R package for the multivariate analysis of genetic markers. Bioinformatics.
 #'
 #' @examples
-#' data(genomalicious_4pops)
+#' data(data_4pops)
 #'
-#' genomalicious_4pops
+#' data_4pops
 #'
-#' adegenet_DT2genind(genomalicious_4pops)
-#' adegenet_DT2genind(genomalicious_4pops, popCol='POP')
+#' adegenet_DT2genind(data_4pops)
+#' adegenet_DT2genind(data_4pops, popCol='POP')
 #'
 #' @export
 adegenet_DT2genind <- function(dat, sampCol='SAMPLE', locusCol='LOCUS', genoCol='GT', popCol=NULL, n=2L){

@@ -63,8 +63,8 @@
 #'
 #' @examples
 #' ####   MISSING GENOTYPE DATA   ####
-#' data(genomalicious_4pops)
-#' datGt <- genomalicious_4pops
+#' data(data_4pops)
+#' datGt <- data_4pops
 #'
 #' # Add missing values
 #' datGt <- do.call('rbind'

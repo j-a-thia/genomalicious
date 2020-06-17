@@ -18,9 +18,9 @@
 #' contig in \code{dat$CHROM}.
 #'
 #' @examples
-#' data(genomalicious_4pops)
+#' data(data_4pops)
 #'
-#' filter_unlink(genomalicious_4pops)
+#' filter_unlink(data_4pops)
 #'
 #' @export
 filter_unlink <- function(dat, chromCol='CHROM', locusCol='LOCUS'){

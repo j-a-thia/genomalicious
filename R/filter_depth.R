@@ -24,8 +24,8 @@
 #' to the read depth values specified, i.e. 'good' loci.
 #'
 #' @examples
-#' data(genomalicious_PoolReads)
-#' datReads <- genomalicious_PoolReads
+#' data(data_PoolReads)
+#' datReads <- data_PoolReads
 #'
 #' # Look at the sequencing coverage
 #' datReads

@@ -38,9 +38,9 @@
 #' of FST. The American Naturalist 186.
 #'
 #' @examples
-#' data('genomalicious_PoolPi')
+#' data('data_PoolPi')
 #'
-#' freqs <- genomalicious_PoolPi
+#' freqs <- data_PoolPi
 #'
 #' ofDF <- outflank_input_DTfreqs(freqs, 'POOL', 'LOCUS', 'PI', 'INDS')
 #'

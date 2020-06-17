@@ -32,8 +32,8 @@
 #' the Ref allele frequency.
 #'
 #' @examples
-#' data(genomalicious_PoolPi)
-#' datFreq <- genomalicious_PoolPi
+#' data(data_PoolPi)
+#' datFreq <- data_PoolPi
 #' datFreq
 #'
 #' # Convert a long data table to a wide matrix

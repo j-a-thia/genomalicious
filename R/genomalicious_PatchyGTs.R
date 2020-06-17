@@ -2,15 +2,15 @@
 #'
 #' A matrix matrix of genotypes with missing data.
 #'
-#' @usage data(genomalicious_PatchyMat)
+#' @usage data(data_PatchyMat)
 #'
 #' @format A matrix with 100 rows and 100 columns.
 #'
-#' @details Samples IDs are in \code{rownames(genomalicious_PatchyGTs)}, and locus
-#' IDs are in \code{colnames(genomalicious_PatchyGTs)}. Missing data are
+#' @details Samples IDs are in \code{rownames(data_PatchyGTs)}, and locus
+#' IDs are in \code{colnames(data_PatchyGTs)}. Missing data are
 #' coded by \code{NA.}
 #'
 #' @docType data
 #' @keywords datasets
-#' @name genomalicious_PatchyGTs
+#' @name data_PatchyGTs
 NULL

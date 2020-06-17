@@ -40,11 +40,11 @@ q = the Alt allele frequency.
 }
 \examples{
 # Data as matrix
-data(genomalicious_Freqs)
-He1 <- He_freqs(genomalicious_Freqs)
+data(data_Freqs)
+He1 <- He_freqs(data_Freqs)
 
 # Data as long data table
-data(genomalicious_PoolPi)
-He2 <- He_freqs(genomalicious_PoolPi, popCol='POOL', locusCol='LOCUS', freqCol='PI')
+data(data_PoolPi)
+He2 <- He_freqs(data_PoolPi, popCol='POOL', locusCol='LOCUS', freqCol='PI')
 
 }

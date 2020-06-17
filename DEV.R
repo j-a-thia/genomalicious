@@ -15,54 +15,54 @@ roxygenise()
 library(genomalicious)
 
 # Make pool info data
-genomalicious_PoolInfo <- data.table(POOL=paste0('Pop', 1:4), INDS=30)
-save(genomalicious_PoolInfo, file='data/genomalicious_PoolInfo.RData')
+data_PoolInfo <- data.table(POOL=paste0('Pop', 1:4), INDS=30)
+save(data_PoolInfo, file='data/data_PoolInfo.RData')
 
 # Make pool reads data
-genomalicious_PoolReads <- fread('inst/extdata/genomalicious_PoolReads.csv')
-save(genomalicious_PoolReads, file='data/genomalicious_PoolReads.RData')
-refalt <- unique(genomalicious_PoolReads[, c('LOCUS', 'REF', 'ALT')])
+data_PoolReads <- fread('inst/extdata/data_PoolReads.csv')
+save(data_PoolReads, file='data/data_PoolReads.RData')
+refalt <- unique(data_PoolReads[, c('LOCUS', 'REF', 'ALT')])
 
 # Make pool ref allele (pi) frequency estimate data
-genomalicious_PoolPi <- fread('inst/extdata/genomalicious_PoolPi.csv')
-genomalicious_PoolPi <- cbind(genomalicious_PoolPi, refalt[match(genomalicious_PoolPi$LOCUS, refalt$LOCUS), c('REF', 'ALT')]
-                         , INDS=genomalicious_PoolInfo$INDS[match(genomalicious_PoolPi$POOL, genomalicious_PoolInfo$POOL)]
+data_PoolPi <- fread('inst/extdata/data_PoolPi.csv')
+data_PoolPi <- cbind(data_PoolPi, refalt[match(data_PoolPi$LOCUS, refalt$LOCUS), c('REF', 'ALT')]
+                         , INDS=data_PoolInfo$INDS[match(data_PoolPi$POOL, data_PoolInfo$POOL)]
                          )
-save(genomalicious_PoolPi, file='data/genomalicious_PoolPi.RData')
+save(data_PoolPi, file='data/data_PoolPi.RData')
 
 # Make a wide matrix of allele frequencies
-genomalicious_Freqs <- as.data.frame(
-                          spread(fread('inst/extdata/genomalicious_PoolPi.csv')[, c('POOL', 'LOCUS', 'PI')]
+data_Freqs <- as.data.frame(
+                          spread(fread('inst/extdata/data_PoolPi.csv')[, c('POOL', 'LOCUS', 'PI')]
                             , key=LOCUS, value=PI))
-rownames(genomalicious_Freqs) <- genomalicious_Freqs$POOL
-genomalicious_Freqs <- as.matrix(genomalicious_Freqs[, -which(colnames(genomalicious_Freqs)=='POOL')])
-save(genomalicious_Freqs, file='data/genomalicious_Freqs.RData')
+rownames(data_Freqs) <- data_Freqs$POOL
+data_Freqs <- as.matrix(data_Freqs[, -which(colnames(data_Freqs)=='POOL')])
+save(data_Freqs, file='data/data_Freqs.RData')
 
-# genomalicious_FreqsLong <- as.data.table(genomalicious_Freqs)
-# genomalicious_FreqsLong$POP <- rownames(genomalicious_Freqs)
-# genomalicious_FreqsLong <- melt(genomalicious_FreqsLong, id='POP', variable.name='LOCUS', value.name='FREQ')
-# save(genomalicious_FreqsLong, file='data/genomalicious_FreqsLong.RData')
+# data_FreqsLong <- as.data.table(data_Freqs)
+# data_FreqsLong$POP <- rownames(data_Freqs)
+# data_FreqsLong <- melt(data_FreqsLong, id='POP', variable.name='LOCUS', value.name='FREQ')
+# save(data_FreqsLong, file='data/data_FreqsLong.RData')
 
 # Make the 4 pop genotype dataset
-genomalicious_4pops <- readRDS('inst/extdata/genomalicious_FastSimCoal_30Diploids.RDS')
-setnames(genomalicious_4pops, c('IND', 'GENO'), c('SAMPLE', 'GT'))
-genomalicious_4pops$GT[genomalicious_4pops$GT=='1/0'] <- '0/1'
-goodloci <- filter_maf(genomalicious_4pops, 0.01, 'genos')
-genomalicious_4pops <- genomalicious_4pops[LOCUS %in% goodloci]
-save(genomalicious_4pops, file='data/genomalicious_4pops.RData')
+data_4pops <- readRDS('inst/extdata/data_FastSimCoal_30Diploids.RDS')
+setnames(data_4pops, c('IND', 'GENO'), c('SAMPLE', 'GT'))
+data_4pops$GT[data_4pops$GT=='1/0'] <- '0/1'
+goodloci <- filter_maf(data_4pops, 0.01, 'genos')
+data_4pops <- data_4pops[LOCUS %in% goodloci]
+save(data_4pops, file='data/data_4pops.RData')
 
 # Make a VCF from 4 pop genotypes
-data("genomalicious_4pops")
+data("data_4pops")
 
-sub4pops <- genomalicious_4pops[
-  LOCUS %in% sample(x=unique(genomalicious_4pops$LOCUS), size=8, replace=FALSE)
-  & SAMPLE %in% genomalicious_4pops[, unique(SAMPLE)[1:8], by=POP]$V1, ]
+sub4pops <- data_4pops[
+  LOCUS %in% sample(x=unique(data_4pops$LOCUS), size=8, replace=FALSE)
+  & SAMPLE %in% data_4pops[, unique(SAMPLE)[1:8], by=POP]$V1, ]
 
-sub4pops[, DP:=rnbinom(nrow(sub4pops), mu=30, size=1)]
+sub4pops[, DP:=rnbinom(nrow(sub4pops), mu=30, size=2)]
 
 hist(sub4pops$DP)
 
-sub4pops[, RO:=sum(rbinom(DP, size=1, prob=0.5)), by=c('SAMPLE', 'LOCUS')]
+sub4pops[, RO:=sum(rbinom(DP, size=1, prob=1)), by=c('SAMPLE', 'LOCUS')]
 sub4pops[, AO:=DP-RO]
 
 badDP4pops <- which(sub4pops$DP==0 | sub4pops$DP==1)
@@ -92,7 +92,7 @@ vcf4pops <- do.call('rbind', lapply(unique(sub4pops$LOCUS), function(locus){
   return(vcfRow)
 }))
 
-fwrite(vcf4pops, 'inst/extdata/genomalicious_indseq.vcf', sep='\t')
+fwrite(vcf4pops, 'inst/extdata/data_indseq.vcf', sep='\t')
 
 ##This is a toy dataset for the R package genomalicious - it emulates a VCF file for individually genotyped data
 ##INFO=<ID=DP,Number=1,Type=Integer,Description='The total depth across samples'>

@@ -46,9 +46,9 @@ a data frame fit for analysis by OutFLANK (Whitlock & Lotterhos 2015).
 
 }
 \examples{
-data('genomalicious_PoolPi')
+data('data_PoolPi')
 
-freqs <- genomalicious_PoolPi
+freqs <- data_PoolPi
 
 ofDF <- outflank_input_DTfreqs(freqs, 'POOL', 'LOCUS', 'PI', 'INDS')
 

@@ -9,7 +9,7 @@
 #' \cr
 #' The product of this workflow is exemplified in this dataset. \cr
 #'
-#' @usage data(genomalicious_PoolPi)
+#' @usage data(data_PoolPi)
 #'
 #' @format A data table with 32 rows and 10 columns.
 #'
@@ -38,5 +38,5 @@
 #'
 #' @docType data
 #' @keywords datasets
-#' @name genomalicious_PoolPi
+#' @name data_PoolPi
 NULL

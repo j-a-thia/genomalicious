@@ -39,11 +39,11 @@
 #' for both dominant and codominant markers: A Bayesian perspective. Genetics 180: 977-993.
 #'
 #' @examples
-#' data(genomalicious_PoolPi)
-#' data(genomalicious_PoolInfo)
+#' data(data_PoolPi)
+#' data(data_PoolInfo)
 #'
-#' bayescan_inputs_pool(dat=genomalicious_PoolPi
-#'                      , pool.info=genomalicious_PoolInfo
+#' bayescan_inputs_pool(dat=data_PoolPi
+#'                      , pool.info=data_PoolInfo
 #'                      , file.bayescan='Bayescan_input.txt'
 #'                      , file.loci='Bayescan_loci.txt'
 #'                      , poolCol='POOL', locusCol='LOCUS', freqCol='PI')

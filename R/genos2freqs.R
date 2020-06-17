@@ -27,11 +27,11 @@
 #'
 #' @examples
 #' # Import genotype data
-#' data(genomalicious_4pops)
-#' genomalicious_4pops
+#' data(data_4pops)
+#' data_4pops
 #'
 #' # Convert to frequency matrix
-#' genos2freqs(genomalicious_4pops)
+#' genos2freqs(data_4pops)
 #'
 #' @export
 genos2freqs <- function(dat

@@ -38,16 +38,16 @@
 #'
 #' @examples
 #' # MATRIX OF ALLELE FREQUENCIES
-#' data(genomalicious_Freqs)
+#' data(data_Freqs)
 #'
 #' # Filter for MAF=0.20
-#' filter_maf(genomalicious_Freqs, maf=0.20, type='freqs')
+#' filter_maf(data_Freqs, maf=0.20, type='freqs')
 #'
 #' # LONG TABLE OF GENOTYPES
-#' data(genomalicious_4pops)
+#' data(data_4pops)
 #'
 #' # Filter for MAF=0.05
-#' filter_maf(genomalicious_4pops, maf=0.05, type='genos')
+#' filter_maf(data_4pops, maf=0.05, type='genos')
 #'
 #'
 #' @export

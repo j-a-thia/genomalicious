@@ -33,8 +33,8 @@ Parses a data table of sequencing read information to determine which loci
 conform to desired sequencing depth values.
 }
 \examples{
-data(genomalicious_PoolReads)
-datReads <- genomalicious_PoolReads
+data(data_PoolReads)
+datReads <- data_PoolReads
 
 # Look at the sequencing coverage
 datReads

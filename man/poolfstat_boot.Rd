@@ -29,17 +29,17 @@ pool size information.
 }
 \examples{
 # Load in the pool metadata and reads
-data(genomalicious_PoolInfo)
-data(genomalicious_PoolReads)
+data(data_PoolInfo)
+data(data_PoolReads)
 
 # Subset to keep only Rep1 reads.
-X <- genomalicious_PoolReads[grep(pattern='Rep1', x=genomalicious_PoolReads$SAMPLE)]
+X <- data_PoolReads[grep(pattern='Rep1', x=data_PoolReads$SAMPLE)]
 
 # Need to add pool ID.
 X$POOL <- unlist(lapply(strsplit(X$SAMPLE, '_'), function(X){ return(X[1]) }))
 
 # Use poolfstat_DT to compute FST for this dataset and create a pooldata object
-Y <- poolfstat_DT(X, genomalicious_PoolInfo)
+Y <- poolfstat_DT(X, data_PoolInfo)
 
 # Bootstrap FST, using pooldata object from poolFst
 Yboot <- poolfstat_boot(Y$pooldat, 100)

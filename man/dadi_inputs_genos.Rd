@@ -49,8 +49,8 @@ Returns a data table in the dadi input format.
 Creates an input file for the program dadi, described in Gutenkunst et al. (2009).
 }
 \examples{
-data(genomalicious_4pops)
-datGt <- copy(genomalicious_4pops)
+data(data_4pops)
+datGt <- copy(data_4pops)
 
 # Subset data for example (10 loci) and create artificial Ref and Alt
 # nucleotides for the purpose of illustration

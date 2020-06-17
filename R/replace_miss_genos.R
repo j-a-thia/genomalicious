@@ -44,7 +44,7 @@
 #' genomaliciousExtData <- paste0(find.package('genomalicious'), '/inst/extdata')
 #'
 #' # Use this to create a path to the genomalicious ind-seq VCF
-#' vcfPath <- paste0(genomaliciousExtData, '/genomalicious_indseq.vcf')
+#' vcfPath <- paste0(genomaliciousExtData, '/data_indseq.vcf')
 #'
 #' # Import the VCF
 #' indseq <- vcf2DT(vcfPath)

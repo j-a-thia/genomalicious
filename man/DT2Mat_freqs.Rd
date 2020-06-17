@@ -41,8 +41,8 @@ a matrix in wide format (loci in columns and populations in rows). The reverse
 can also be done. See also \code{DT2Mat_genos} for converting matrix of genotypes.
 }
 \examples{
-data(genomalicious_PoolPi)
-datFreq <- genomalicious_PoolPi
+data(data_PoolPi)
+datFreq <- data_PoolPi
 datFreq
 
 # Convert a long data table to a wide matrix

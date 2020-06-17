@@ -24,12 +24,12 @@
 #' Jombart (2008) adegenet 1.3-1: new tools for the analysis of genome-wide SNP data. Bioinformatics.
 #'
 #' @examples
-#' data(genomalicious_4pops)
+#' data(data_4pops)
 #'
-#' genomalicious_4pops
+#' data_4pops
 #'
-#' adegenet_DT2genlight(genomalicious_4pops)
-#' adegenet_DT2genlight(genomalicious_4pops, popCol='POP')
+#' adegenet_DT2genlight(data_4pops)
+#' adegenet_DT2genlight(data_4pops, popCol='POP')
 #'
 #' @export
 adegenet_DT2genlight <- function(dat, sampCol='SAMPLE', locusCol='LOCUS', genoCol='GT', popCol=NULL){

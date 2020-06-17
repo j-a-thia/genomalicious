@@ -58,16 +58,16 @@ all the simulated subsets.
 }
 \examples{
 library(data.table)
-data(genomalicious_PatchyGTs)
-data(genomalicious_4pops)
+data(data_PatchyGTs)
+data(data_4pops)
 
 # Take a look at the patchy dataset
-genomalicious_PatchyGTs
+data_PatchyGTs
 
 # Simulate missing data structure
 patchy4pops <- miss_sim_structure(
-    dat_clean=genomalicious_4pops
-    , mat_patchy=genomalicious_PatchyGTs
+    dat_clean=data_4pops
+    , mat_patchy=data_PatchyGTs
     , sampCol='SAMPLE'
     , locusCol='LOCUS'
     , genoCol='GT'
@@ -80,7 +80,7 @@ patchy4pops <- miss_sim_structure(
 # is the simulated missing data, and the thir column
 # is the missing data in the patchy guide matrix.
 par(mfrow=c(2,3))
-hist(genomalicious_4pops[, sum(GT=='./.')/length(GT), by=SAMPLE]$V1
+hist(data_4pops[, sum(GT=='./.')/length(GT), by=SAMPLE]$V1
     , 100, xlim=c(0,1), main='Obs clean: Samples', xlab='\% missing')
 
 hist(patchy4pops[, sum(GT=='./.')/length(GT), by=SAMPLE]$V1
@@ -88,12 +88,12 @@ hist(patchy4pops[, sum(GT=='./.')/length(GT), by=SAMPLE]$V1
 
 hist(
     unlist(
-        apply(genomalicious_PatchyGTs
+        apply(data_PatchyGTs
            , 1
            , function(i){sum(is.na(i))/length(i)}))
     , 100, xlim=c(0,1), main='Guide patchy: Samples', xlab='\% missing')
 
-hist(genomalicious_4pops[, sum(GT=='./.')/length(GT), by=LOCUS]$V1
+hist(data_4pops[, sum(GT=='./.')/length(GT), by=LOCUS]$V1
     , 100, xlim=c(0,1), main='Obs clean: Loci', xlab='\% missing')
 
 hist(patchy4pops[, sum(GT=='./.')/length(GT), by=LOCUS]$V1
@@ -101,7 +101,7 @@ hist(patchy4pops[, sum(GT=='./.')/length(GT), by=LOCUS]$V1
 
 hist(
     unlist(
-        apply(genomalicious_PatchyGTs
+        apply(data_PatchyGTs
            , 2
            , function(i){sum(is.na(i))/length(i)}))
     , 100, xlim=c(0,1), main='Guide patchy: Loci', xlab='\% missing')

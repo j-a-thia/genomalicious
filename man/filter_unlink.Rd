@@ -27,8 +27,8 @@ Parses a data table of sequence read information to randomly draw one locus
 per contig.
 }
 \examples{
-data(genomalicious_4pops)
+data(data_4pops)
 
-filter_unlink(genomalicious_4pops)
+filter_unlink(data_4pops)
 
 }

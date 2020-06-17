@@ -58,8 +58,8 @@ diploids used to estimate the frequency at a specific locus in a specific popula
 }
 \examples{
 # FROM ALLELE FREQUENCIES
-data(genomalicious_Freqs)
-freqDat <- genomalicious_Freqs
+data(data_Freqs)
+freqDat <- data_Freqs
 
 # Create a sample size matrix (order is important!)
 freqSamps <- matrix(30, nrow=nrow(freqDat), ncol=ncol(freqDat), dimnames=list(NULL, colnames(freqDat)))
@@ -69,11 +69,11 @@ freqVarcomps <- fstWC_varcomps(dat=freqDat, input_type='freqs', samp_size=freqSa
 freqVarcomps
 
 # FROM INDIVIDUAL GENOTYPES
-data(genomalicious_4pops)
+data(data_4pops)
 
 # Convert to matrix and get the first 8 loci
 genoDat <- DT2Mat_genos(
-    dat=genomalicious_4pops
+    dat=data_4pops
     , sampCol='SAMPLE'
     , locusCol='LOCUS'
     , genoCol='GT')[, 1:8]

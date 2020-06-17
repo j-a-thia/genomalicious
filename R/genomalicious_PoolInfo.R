@@ -7,7 +7,7 @@
 #' function \code{genomalicious::poolne_estim_input}, which prepares pooled replicate sequencing
 #' data for analysis by Gautier et al.'s (2013) \code{poolne_estim}.
 #'
-#' @usage data(genomalicious_PoolInfo)
+#' @usage data(data_PoolInfo)
 #'
 #' @format A data table with 2 rows and 2 columns.
 #'
@@ -24,5 +24,5 @@
 #'
 #' @docType data
 #' @keywords datasets
-#' @name genomalicious_PoolInfo
+#' @name data_PoolInfo
 NULL

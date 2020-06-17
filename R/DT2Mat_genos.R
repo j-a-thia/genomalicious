@@ -34,8 +34,8 @@
 #' the Ref allele frequency.
 #'
 #' @examples
-#' data(genomalicious_4pops)
-#' datGt <- genomalicious_4pops[LOCUS %in% unique(genomalicious_4pops$LOCUS)[1:8]]
+#' data(data_4pops)
+#' datGt <- data_4pops[LOCUS %in% unique(data_4pops$LOCUS)[1:8]]
 #'
 #' # Convert a long data table to a wide matrix
 #' genoMat <- DT2Mat_genos(datGt

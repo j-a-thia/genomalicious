@@ -3,7 +3,7 @@
 #' A dataset containing individual genotypes for 4 populations, each with 30
 #' individuals, and 1205 biallelic SNP loci. Simulated with FastSimCoal2 (Excoffier et al., 2013).
 #'
-#' @usage data(genomalicious_4pops)
+#' @usage data(data_4pops)
 #'
 #' @format A data table with 144600 rows and 5 columns.
 #'
@@ -21,5 +21,5 @@
 #'
 #' @docType data
 #' @keywords datasets
-#' @name genomalicious_4pops
+#' @name data_4pops
 NULL

@@ -95,18 +95,18 @@ FST. Confidence intervals are calculated as the 2.5 and
 97.5 percentiles of the obtained bootstrapped FST values.
 }
 \examples{
-data(genomalicious_4pops)
+data(data_4pops)
 
 # Among popuation FST, with permutation tests
 # and bootstrap confidence intervals.
-fst_among <- fstWC_genos(genomalicious_4pops
+fst_among <- fstWC_genos(data_4pops
                 , permTest=TRUE
                 , bootCI=TRUE
                 , iters=50)
 
 # Pairwise FST, with per locus estimates
 # and a distance matrix
-fst_pairs <- fstWC_genos(genomalicious_4pops
+fst_pairs <- fstWC_genos(data_4pops
                 , doPairs=TRUE
                 , doDist=TRUE
                 , perLocus=TRUE)

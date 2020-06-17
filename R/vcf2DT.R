@@ -42,13 +42,13 @@
 #'
 #' @examples
 #' # Create a link to raw external datasets in genomalicious
-#' genomaliciousExtData <- paste0(find.package('genomalicious'), 'inst/extdata')
+#' genomaliciousExtData <- paste0(find.package('genomalicious'), '/extdata')
 #'
 #' # This command here shows you the VCF file that comes with genomalicious
-#' list.files(genomaliciousExtData, pattern='_poolseq.vcf')
+#' list.files(path=genomaliciousExtData, pattern='indseq.vcf')
 #'
 #' # Use this to create a path to that file
-#' vcfPath <- paste0(genomaliciousExtData, '/genomalicious_poolseq.vcf')
+#' vcfPath <- paste0(genomaliciousExtData, '/data_poolseq.vcf')
 #'
 #' # You can read the file in as lines to see what it
 #' # looks like:
@@ -71,17 +71,7 @@
 #' attr(readVcf2, 'vcf_info')
 #'
 #' @export
-vcf2DT <- function(vcfFile
-                   , dropCols=NULL
-                   , keepComments=FALSE
-                   , keepInfo=FALSE
-                   , flip=FALSE
-                   , dat
-                   , vcfValues=list(loci='LOCUS'
-                         , variants=c('CHROM', 'POS', 'REF', 'ALT')
-                         , format=c('GT', 'DP', 'RO', 'AO')
-                         , samples='SAMPLE'))
-{
+vcf2DT <- function(vcfFile, dropCols=NULL, keepComments=FALSE, keepInfo=FALSE){
 
   # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   # #### Libraries and assertions            ####
@@ -128,10 +118,7 @@ vcf2DT <- function(vcfFile
   formatDat <- t(vcfDT[, strsplit(DATA, ':')])
   formatDat[which(formatDat=='.')] <- NA
   colnames(formatDat) <- unlist(strsplit(vcfDT$FORMAT[1], ':'))
-  vcfDT <- cbind(vcfDT, as.data.table(formatDat))
-
-  # Drop FORMAT and DATA
-  vcfDT <- vcfDT[, !c('FORMAT','DATA'), with=FALSE]
+  vcfDT <- cbind(vcfDT[, !c('FORMAT','DATA'), with=FALSE], as.data.table(formatDat))
 
   # Make sure DP, RO, and AO are integers
   for(i in c('DP', 'RO', 'AO')){
