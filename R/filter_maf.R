@@ -3,13 +3,13 @@
 #' Parses a matrix of allele frequencies to determine which loci conform to the
 #' desired minor allele frequency.
 #'
-#' @param dat Matrix or data table: Default expectation is that user is supplying a matrix of Ref allele
-#' frequencies; i.e., loci in columns, populations in rows, and allele frequencies in cells. Alternatively,
-#' a data table of genotypes can be supplied and allele frequencies will be calculated. It is expected that
-#' there are only two alleles, and therefore, only three possible genotypes: 0/0, 0/1 (or 1/0), and 1/1, where
-#' the Ref allele is '0'. This data table needs the following columns:
+#' @param dat Matrix or data.table: Default expectation is that user is supplying a matrix of allele
+#' frequencies; i.e., loci in columns, populations in rows, and allele frequencies in cells (i.e.
+#' \code{type=='freqs'}). \n\n
+#' Alternatively, #' a data table of genotypes (i.e. \code{type=='genos'}). Loci are
+#' expected to be biallelic. Recorded either as '/' separated alleles (0/0, 0/1 1/1),
+#' or as counts of the Alt allele (0, 1, 2). For a data.table, expecting the columns:
 #' \enumerate{
-#'    \item The population ID (see param \code{popCol}).
 #'    \item The sample ID (see param \code{sampCol})
 #'    \item The locus ID (see param \code{locusCol}).
 #'    \item The genotypes (see param \code{genoCol}).
@@ -21,7 +21,7 @@
 #' @param type Character: Default = 'freqs', expected that \code{dat} is a matrix of allele frequencies.
 #' Alternatively, if \code{dat} is a data table of of genotypes, set \code{type} to 'genos'.
 #'
-#' @param popCol Character: The column name with the sampled individual information. Default = \code{'POP'}.
+#' @param popCol Character: The column name with the sampled population information. Default = \code{'POP'}.
 #' Only needed when \code{dat} is a long-format data table of genotypes.
 #'
 #' @param sampCol Character: The column name with the sampled individual information. Default = \code{'SAMPLE'}.
@@ -51,7 +51,7 @@
 #'
 #'
 #' @export
-filter_maf <- function(dat, maf=0.05, type='freqs', popCol='POP', sampCol='SAMPLE', locusCol='LOCUS', genoCol='GT'){
+filter_maf <- function(dat, maf=0.05, type='freqs', sampCol='SAMPLE', locusCol='LOCUS', genoCol='GT'){
 
   # BEGIN ...........
 
@@ -64,16 +64,23 @@ filter_maf <- function(dat, maf=0.05, type='freqs', popCol='POP', sampCol='SAMPL
   # Make sure the class of dat matches the type of data specified.
   if('matrix'%in%class(dat) & type!='freqs'){
     stop("Argument dat is a matrix. Check this is a matrix of allele frequencies
-         and set argument type to 'freqs'.")
+         and set argument type to 'freqs'. See ?filter_maf.")
   }
   if ("data.table" %in% class(dat) & type!="genos") {
-    stop("Argument dat is a data table. Check this is a data table of genotypes\n
-         and set argument type to 'genos'.")
+    stop("Argument dat is a data table. Check this is a data.table of genotypes
+         and set argument type to 'genos'. See ?filter_maf.")
+  }
+
+  # Check columns for data.table
+  if('data.table' %in% class(dat)){
+    if(sum(sampCol, locusCol, genoCol) %in% colnames(dat)!=3){
+      stop("Not all specified columns (sampCol, locusCol, genoCol) are in data.table dat. See ?filter_maf.")
+    }
   }
 
   # Check that the MAF is between 0 and 1.
   if(maf < 0 | maf > 1){
-    stop("Argument maf needs to be a numeric between 0 and 1.")
+    stop("Argument maf needs to be a numeric between 0 and 1. See ?filter_maf.")
   }
 
   # --------------------------------------------+
@@ -94,11 +101,11 @@ filter_maf <- function(dat, maf=0.05, type='freqs', popCol='POP', sampCol='SAMPL
     return(names(which(test=='Yes')))
   }
 
-  # If the input if a data.table of indiviudals and genotypes.
+  # If the input if a data.table of individuals and genotypes.
   if(type=='genos'){
     # Reassign column names
-    colReass <- match(c(popCol, sampCol, locusCol, genoCol), colnames(dat))
-    colnames(dat)[colReass] <- c('POP', 'SAMPLE', 'LOCUS', 'GT')
+    colReass <- match(c(sampCol, locusCol, genoCol), colnames(dat))
+    colnames(dat)[colReass] <- c('SAMPLE', 'LOCUS', 'GT')
 
     # Frequencies
     freqs <- genos2freqs(dat)

@@ -5,7 +5,7 @@ Version: 0.4
 Author: Joshua Thia
 Maintainer: Joshua Thia <joshua.a.thia@gmail.com>
 Description: Functions for importing, manipulating, and reformatting pooled and individually sequenced RAD-seq data in R.
-Depends: data.table, gridExtra, MASS, pbapply, tidyverse
+Depends: data.table, gridExtra, MASS, pbapply, tidyverse, doParallel
 License: GNU GPL v3
 Encoding: UTF-8
 LazyData: true

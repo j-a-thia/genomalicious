@@ -16,7 +16,7 @@ Only relevant when argument \code{flip==FALSE}.}
 \item{keepComments}{Logical: Should the VCF comments be kept?
 Default = \code{FALSE}. See Details for parameterisation.}
 
-\item{keepInfo:}{Logical: Should the VCF info for each locus be kept?
+\item{keepInfo}{Logical: Should the VCF info for each locus be kept?
 Default = \code{FALSE}.}
 }
 \value{
@@ -55,14 +55,14 @@ genomaliciousExtData <- paste0(find.package('genomalicious'), '/extdata')
 list.files(path=genomaliciousExtData, pattern='indseq.vcf')
 
 # Use this to create a path to that file
-vcfPath <- paste0(genomaliciousExtData, '/data_poolseq.vcf')
+vcfPath <- paste0(genomaliciousExtData, '/data_indseq.vcf')
 
 # You can read the file in as lines to see what it
 # looks like:
 readLines(vcfPath)
 
 # Now read it in as a data table
-readVcf1 <- vcf2DT(vcfPath)
+readVcf1 <- vcf2DT(vcfFile=vcfPath)
 readVcf1
 
 # Read in VCF, but drop some columns,

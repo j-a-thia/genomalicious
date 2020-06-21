@@ -11,7 +11,7 @@
 #' @param keepComments Logical: Should the VCF comments be kept?
 #' Default = \code{FALSE}. See Details for parameterisation.
 #'
-#' @param keepInfo: Logical: Should the VCF info for each locus be kept?
+#' @param keepInfo Logical: Should the VCF info for each locus be kept?
 #' Default = \code{FALSE}.
 #'
 #' @details Firstly, it should be noted that while data tables are a really
@@ -48,14 +48,14 @@
 #' list.files(path=genomaliciousExtData, pattern='indseq.vcf')
 #'
 #' # Use this to create a path to that file
-#' vcfPath <- paste0(genomaliciousExtData, '/data_poolseq.vcf')
+#' vcfPath <- paste0(genomaliciousExtData, '/data_indseq.vcf')
 #'
 #' # You can read the file in as lines to see what it
 #' # looks like:
 #' readLines(vcfPath)
 #'
 #' # Now read it in as a data table
-#' readVcf1 <- vcf2DT(vcfPath)
+#' readVcf1 <- vcf2DT(vcfFile=vcfPath)
 #' readVcf1
 #'
 #' # Read in VCF, but drop some columns,
@@ -76,7 +76,7 @@ vcf2DT <- function(vcfFile, dropCols=NULL, keepComments=FALSE, keepInfo=FALSE){
   # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   # #### Libraries and assertions            ####
   # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-  require(data.table)
+  require(data.table); require(tidyverse)
 
   # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   # #### Code: VCF to data table             ####
@@ -94,11 +94,14 @@ vcf2DT <- function(vcfFile, dropCols=NULL, keepComments=FALSE, keepInfo=FALSE){
 
   # Generate a $LOCUS column, place at the start of the data table
   cat('(2/4) Generating locus IDs', sep='\n')
-  vcfDT <- cbind(LOCUS=vcfDT[, paste(CHROM, POS, sep='_')], vcfDT)
+  vcfDT <- vcfDT[, paste(CHROM, POS, sep='_')] %>%
+    data.table(LOCUS=., vcfDT)
 
   # Get the locus info as a vector and drop from data table
-  vcfInfo <- vcfDT$INFO
-  names(vcfInfo) <- vcfDT$LOCUS
+  if(keepInfo==TRUE){
+    vcfInfo <- vcfDT$INFO
+    names(vcfInfo) <- vcfDT$LOCUS
+  }
   vcfDT <- vcfDT[, !'INFO']
 
   # Which columns are the sample? The ones after the FORMAT column.
@@ -109,21 +112,25 @@ vcf2DT <- function(vcfFile, dropCols=NULL, keepComments=FALSE, keepInfo=FALSE){
   vcfDT <- melt(data=vcfDT, id.vars=1:(sampCols[1]-1), measure.vars=sampCols, variable.name='SAMPLE', value.name='DATA')
 
   # Make sure SAMPLE is a character
-  vcfDT$SAMPLE <- as.character(vcfDT$SAMPLE)
+  vcfDT[, SAMPLE:=as.character(SAMPLE)]
 
-  # Add the $FORMAT data into the data table
-  cat('(4/4) Collecting and organising FORMAT data', sep='\n')
+  # Separate out the FORMAT data components into their own columns
+  cat('(4/4) Parsing data for each sample', sep='\n')
+  formatNames <- unlist(strsplit(vcfDT$FORMAT[1], split=':'))
 
-  # Split the $FORMAT column, identify NAs, rotate, rename columns, and bind.
-  formatDat <- t(vcfDT[, strsplit(DATA, ':')])
-  formatDat[which(formatDat=='.')] <- NA
-  colnames(formatDat) <- unlist(strsplit(vcfDT$FORMAT[1], ':'))
-  vcfDT <- cbind(vcfDT[, !c('FORMAT','DATA'), with=FALSE], as.data.table(formatDat))
+  vcfDT <- vcfDT %>%
+    separate(col='DATA', into=formatNames, sep=':') %>%
+    .[, !'FORMAT']
+
+  # Replace '.' values in the data columns with NA
+  for(f in formatNames){
+    vcfDT[[f]][vcfDT[[f]]=='.'] <- NA
+  }
 
   # Make sure DP, RO, and AO are integers
-  for(i in c('DP', 'RO', 'AO')){
-    if(i %in% colnames(vcfDT)){ vcfDT[[i]] <- as.integer(vcfDT[[i]]) }
-  }
+  vcfDT[, DP:=as.integer(DP)]
+  vcfDT[, RO:=as.integer(RO)]
+  vcfDT[, AO:=as.integer(AO)]
 
   # Attach header as an attribute, if specified.
   if(keepComments==TRUE){

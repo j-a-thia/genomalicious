@@ -48,14 +48,14 @@
 #'
 #' # Conduct the PCA with Patterson et al.'s (2006) normalisation, and
 #' # population specified
-#' pca <- pca_DTgenos(dat=datGt, scaling='patterson', popCol='POP')
+#' pca <- pca_genos(dat=datGt, scaling='patterson', popCol='POP')
 #'
 #' # Plot the PCA
 #' pca_plot(pca)
 #'
 #' @export
 
-pca_DTgenos <- function(dat, scaling='covar', sampCol='SAMPLE'
+pca_genos <- function(dat, scaling='covar', sampCol='SAMPLE'
                        , locusCol='LOCUS', genoCol='GT', popCol=NULL){
 
   # BEGIN ...........
@@ -67,7 +67,7 @@ pca_DTgenos <- function(dat, scaling='covar', sampCol='SAMPLE'
 
   # Check that scaling is specified
   if(!scaling %in% c('covar', 'corr', 'patterson', 'none')){
-    stop('Argument `scaling`` is invalid. See: ?pca_DTgenos')
+    stop('Argument `scaling`` is invalid. See: ?pca_genos')
   }
 
   # Get the class of the genotypes
@@ -76,7 +76,7 @@ pca_DTgenos <- function(dat, scaling='covar', sampCol='SAMPLE'
   # Check that genotypes are characters or counts
   if(!gtClass %in% c('character', 'numeric', 'integer')){
     stop("Check that genotypes are coded as '/' separated characters or as
-         counts of the Alt allele. See: ?pca_DTgenos")
+         counts of the Alt allele. See: ?pca_genos")
   }
 
   # Convert characters of separated alleles to counts

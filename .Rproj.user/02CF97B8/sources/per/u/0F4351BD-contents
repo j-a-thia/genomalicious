@@ -1,7 +1,0 @@
-setwd('../genomalicious/inst/extdata/')
-
-f <- list.files()
-
-n <- gsub('genomalicious_', 'data_', f)
-
-file.rename(from=f, to=n)

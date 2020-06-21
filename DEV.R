@@ -4,7 +4,7 @@
 #   http://tinyheero.github.io/jekyll/update/2015/07/26/making-your-first-R-package.html
 
 # Developer libraries
-libs <- c('devtools', 'roxygen2', 'testthat', 'knitr', 'data.table', 'tidyr')
+libs <- c('devtools', 'roxygen2', 'testthat', 'knitr', 'data.table', 'tidyverse')
 for(L in libs){require(L, character.only=TRUE)}
 
 # Make documents
@@ -62,11 +62,22 @@ sub4pops[, DP:=rnbinom(nrow(sub4pops), mu=30, size=2)]
 
 hist(sub4pops$DP)
 
-sub4pops[, RO:=sum(rbinom(DP, size=1, prob=1)), by=c('SAMPLE', 'LOCUS')]
-sub4pops[, AO:=DP-RO]
-
-badDP4pops <- which(sub4pops$DP==0 | sub4pops$DP==1)
-sub4pops$GT[badDP4pops] <- './.'
+sub4pops <-
+  apply(sub4pops, 1, function(xx){
+    dp <- as.integer(xx['DP'])
+    if(xx['GT']=='0/0'){
+      ro <- dp; ao <- 0
+    } else if(xx['GT']=='0/1'){
+      ro <- sum(rbinom(dp/2, size=1, prob=1))
+      ao <- dp - ro
+    } else{
+      ro <- 0; ao <- dp
+    }
+    return(data.table(RO=ro, AO=ao))
+  }) %>%
+  do.call('rbind', .) %>%
+  cbind(sub4pops, .) %>%
+  as.data.table()
 
 vcf4pops <- do.call('rbind', lapply(unique(sub4pops$LOCUS), function(locus){
   X <- sub4pops[LOCUS==locus]
@@ -89,10 +100,14 @@ vcf4pops <- do.call('rbind', lapply(unique(sub4pops$LOCUS), function(locus){
     vcfRow[, samp] <- paste(xsamp, collapse=':')
   }
 
+  vcfRow <- as.data.table(vcfRow)
+
+  setnames(vcfRow, 'CHROM', '#CHROM')
+
   return(vcfRow)
 }))
 
-fwrite(vcf4pops, 'inst/extdata/data_indseq.vcf', sep='\t')
+fwrite(vcf4pops, 'inst/extdata/data_indseq.vcf', sep='\t', quote=FALSE)
 
 ##This is a toy dataset for the R package genomalicious - it emulates a VCF file for individually genotyped data
 ##INFO=<ID=DP,Number=1,Type=Integer,Description='The total depth across samples'>
