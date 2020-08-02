@@ -1,0 +1,25 @@
+{
+    "id": "4059DDDC",
+    "path": "~/GitHub/genomalicious/R/genoDT2alleleDF.R",
+    "project_path": "R/genoDT2alleleDF.R",
+    "type": "r_source",
+    "hash": "4101692254",
+    "contents": "",
+    "dirty": false,
+    "created": 1596347903250.0,
+    "source_on_save": false,
+    "relative_order": 3,
+    "properties": {
+        "tempName": "Untitled1",
+        "cursorPosition": "9,2",
+        "scrollLine": "0"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1596348363,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1596348363292,
+    "read_only": false,
+    "read_only_alternatives": []
+}

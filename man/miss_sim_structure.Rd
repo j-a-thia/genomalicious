@@ -6,7 +6,7 @@
 \usage{
 miss_sim_structure(
   dat_clean,
-  mat_patchy,
+  miss_loci,
   sampCol = "SAMPLE",
   locusCol = "LOCUS",
   genoCol = "GT"
@@ -23,10 +23,8 @@ columns:
    \item The genotype (see param \code{genoCol}).
 }}
 
-\item{mat_patchy}{Matrix: Samples in rows, loci in columns.
-This is meant to simulate a genotype matrix with missing data
-(i.e. it is "patchy"), but the the actual contents of the matrix
-can be anything, as long as missing values are coded by \code{NA}.}
+\item{miss_loci}{Numeric: Vector of proportions. Each value represents the
+proportion of missing data at a locus.}
 
 \item{sampCol}{Character: The column name with the sampled individual information.
 Default is \code{'SAMPLE'}.}
@@ -39,14 +37,14 @@ Default is \code{'GT'}.}
 }
 \description{
 Takes a long format data table of genotypes that
-has no missing data (clean) and simulates a missing data
-analogous to a pathcy matrix used as a guide.
+has no missing data (clean) and simulates missing data following
+specified per locus proportions.
 }
 \details{
-The number of samples and loci in the guide matrix, \code{mat_patchy}
-does not have to be equal \code{dat_clean}. In the simulations, the rows and
-columns of \code{mat_patchy} are randomly sampled (with replacement) to create
-a bootstrap simulated  missing data structure of the same dimensions as the
+The number of values in \code{miss_loci} does not have to be equal to
+\code{dat_clean}. In the simulations, the values in \code{miss_loci}
+are randomly sampled (with replacement) to create a bootstrap simulated
+missing data structure of the same dimensions (loci and samples) as the
 observed clean data. This simulated missing data structure is then used to
 modify the observed clean data. \cr
 \cr
@@ -58,53 +56,23 @@ all the simulated subsets.
 }
 \examples{
 library(data.table)
-data(data_PatchyGTs)
+library(tidyverse)
 data(data_4pops)
 
-# Take a look at the patchy dataset
-data_PatchyGTs
+# Create a vector of proportions
+prop_miss <- rbeta(1000, 0.5, 10)
+hist(prop_miss, main='Input missing proportions')
 
 # Simulate missing data structure
 patchy4pops <- miss_sim_structure(
     dat_clean=data_4pops
-    , mat_patchy=data_PatchyGTs
+    , miss_loci=prop_miss
     , sampCol='SAMPLE'
     , locusCol='LOCUS'
     , genoCol='GT'
 )
 
-# Take a look at the output.
-# Histograms are ordered with samples in the first
-# row and loci in the second row. The first column
-# is the observed clean data, the second column
-# is the simulated missing data, and the thir column
-# is the missing data in the patchy guide matrix.
-par(mfrow=c(2,3))
-hist(data_4pops[, sum(GT=='./.')/length(GT), by=SAMPLE]$V1
-    , 100, xlim=c(0,1), main='Obs clean: Samples', xlab='\% missing')
-
-hist(patchy4pops[, sum(GT=='./.')/length(GT), by=SAMPLE]$V1
-    , 100, xlim=c(0,1), main='Sim patchy: Samples', xlab='\% missing')
-
-hist(
-    unlist(
-        apply(data_PatchyGTs
-           , 1
-           , function(i){sum(is.na(i))/length(i)}))
-    , 100, xlim=c(0,1), main='Guide patchy: Samples', xlab='\% missing')
-
-hist(data_4pops[, sum(GT=='./.')/length(GT), by=LOCUS]$V1
-    , 100, xlim=c(0,1), main='Obs clean: Loci', xlab='\% missing')
-
-hist(patchy4pops[, sum(GT=='./.')/length(GT), by=LOCUS]$V1
-    , 100, xlim=c(0,1), main='Sim patchy: Loci', xlab='\% missing')
-
-hist(
-    unlist(
-        apply(data_PatchyGTs
-           , 2
-           , function(i){sum(is.na(i))/length(i)}))
-    , 100, xlim=c(0,1), main='Guide patchy: Loci', xlab='\% missing')
-par(mfrow=c(1,1))
+patchy4pops[, sum(GT=='./.')/length(GT), by=LOCUS]$V1 \%>\%
+hist(main='Simulated missing distribution')
 
 }
