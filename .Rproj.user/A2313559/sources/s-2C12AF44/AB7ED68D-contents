@@ -1,0 +1,119 @@
+# CODE FOR BUILDING PACKAGE #
+
+# Good website:
+#   http://tinyheero.github.io/jekyll/update/2015/07/26/making-your-first-R-package.html
+
+# Developer libraries
+libs <- c('devtools', 'roxygen2', 'testthat', 'knitr', 'data.table', 'tidyverse')
+for(L in libs){require(L, character.only=TRUE)}
+
+# Make documents
+roxygenise(clean=TRUE) # Sometimes this throws an error?
+roxygenise()
+
+# Load currently installed genomalicious
+library(genomalicious)
+
+# Make pool info data
+data_PoolInfo <- data.table(POOL=paste0('Pop', 1:4), INDS=30)
+save(data_PoolInfo, file='data/data_PoolInfo.RData')
+
+# Make pool reads data
+data_PoolReads <- fread('inst/extdata/data_PoolReads.csv')
+save(data_PoolReads, file='data/data_PoolReads.RData')
+refalt <- unique(data_PoolReads[, c('LOCUS', 'REF', 'ALT')])
+
+# Make pool ref allele (pi) frequency estimate data
+data_PoolPi <- fread('inst/extdata/data_PoolPi.csv')
+data_PoolPi <- cbind(data_PoolPi, refalt[match(data_PoolPi$LOCUS, refalt$LOCUS), c('REF', 'ALT')]
+                         , INDS=data_PoolInfo$INDS[match(data_PoolPi$POOL, data_PoolInfo$POOL)]
+                         )
+save(data_PoolPi, file='data/data_PoolPi.RData')
+
+# Make a wide matrix of allele frequencies
+data_Freqs <- as.data.frame(
+                          spread(fread('inst/extdata/data_PoolPi.csv')[, c('POOL', 'LOCUS', 'PI')]
+                            , key=LOCUS, value=PI))
+rownames(data_Freqs) <- data_Freqs$POOL
+data_Freqs <- as.matrix(data_Freqs[, -which(colnames(data_Freqs)=='POOL')])
+save(data_Freqs, file='data/data_Freqs.RData')
+
+# data_FreqsLong <- as.data.table(data_Freqs)
+# data_FreqsLong$POP <- rownames(data_Freqs)
+# data_FreqsLong <- melt(data_FreqsLong, id='POP', variable.name='LOCUS', value.name='FREQ')
+# save(data_FreqsLong, file='data/data_FreqsLong.RData')
+
+# Make the 4 pop genotype dataset
+data_4pops <- readRDS('inst/extdata/data_FastSimCoal_30Diploids.RDS')
+setnames(data_4pops, c('IND', 'GENO'), c('SAMPLE', 'GT'))
+data_4pops$GT[data_4pops$GT=='1/0'] <- '0/1'
+goodloci <- filter_maf(data_4pops, 0.01, 'genos')
+data_4pops <- data_4pops[LOCUS %in% goodloci]
+save(data_4pops, file='data/data_4pops.RData')
+
+# Make a VCF from 4 pop genotypes
+data("data_4pops")
+
+sub4pops <- data_4pops[
+  LOCUS %in% sample(x=unique(data_4pops$LOCUS), size=8, replace=FALSE)
+  & SAMPLE %in% data_4pops[, unique(SAMPLE)[1:8], by=POP]$V1, ]
+
+sub4pops[, DP:=rnbinom(nrow(sub4pops), mu=30, size=2)]
+
+hist(sub4pops$DP)
+
+sub4pops <-
+  apply(sub4pops, 1, function(xx){
+    dp <- as.integer(xx['DP'])
+    if(xx['GT']=='0/0'){
+      ro <- dp; ao <- 0
+    } else if(xx['GT']=='0/1'){
+      ro <- sum(rbinom(dp/2, size=1, prob=1))
+      ao <- dp - ro
+    } else{
+      ro <- 0; ao <- dp
+    }
+    return(data.table(RO=ro, AO=ao))
+  }) %>%
+  do.call('rbind', .) %>%
+  cbind(sub4pops, .) %>%
+  as.data.table()
+
+vcf4pops <- do.call('rbind', lapply(unique(sub4pops$LOCUS), function(locus){
+  X <- sub4pops[LOCUS==locus]
+  alleles <- sample(size=2, x=c('G', 'A', 'T', 'C'), replace=FALSE)
+
+  col_names <- c('CHROM', 'POS', 'ID', 'REF', 'ALT', 'QUAL', 'FILTER', 'INFO', 'FORMAT', X$SAMPLE)
+
+  vcfRow <- matrix('.', nrow=1, ncol=9+nrow(X), dimnames=list(NULL, col_names))
+
+  vcfRow[,'CHROM'] <- X$CHROM[1]
+  vcfRow[1,'POS'] <- strsplit(locus, '_')[[1]][3]
+  vcfRow[1,'REF'] <- alleles[1]
+  vcfRow[1,'ALT'] <- alleles[2]
+  vcfRow[1,'INFO'] <- paste0('DP=', sum(X$DP))
+  vcfRow[1,'QUAL'] <- 30
+  vcfRow[1,'FORMAT'] <- 'GT:DP:RO:AO'
+
+  for(samp in unique(X$SAMPLE)){
+    xsamp <- unlist(X[SAMPLE==samp, c('GT', 'DP', 'RO', 'AO')])
+    vcfRow[, samp] <- paste(xsamp, collapse=':')
+  }
+
+  vcfRow <- as.data.table(vcfRow)
+
+  setnames(vcfRow, 'CHROM', '#CHROM')
+
+  return(vcfRow)
+}))
+
+fwrite(vcf4pops, 'inst/extdata/data_indseq.vcf', sep='\t', quote=FALSE)
+
+##This is a toy dataset for the R package genomalicious - it emulates a VCF file for individually genotyped data
+##INFO=<ID=DP,Number=1,Type=Integer,Description='The total depth across samples'>
+##FORMAT=<ID=GT,Number=1,Type=String,Description='Genotype'>
+##FORMAT=<ID=DP,Number=1,Type=Integer,Description='The total depth in a sample'>
+##FORMAT=<ID=RO,Number=1,Type=Integer,Description='The reference allele counts in a sample'>
+##FORMAT=<ID=AO,Number=1,Type=Integer,Description='The alternate allele counts in a sample'>
+
+
