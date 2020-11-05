@@ -93,7 +93,7 @@ dadi_inputs_pools <- function(dat
   for(lib in c('data.table', 'dplyr', 'tidyr')){ require(lib, character.only = TRUE)}
 
   # Check that the `methodSFS` argument has been assigned properly.
-  if((methodSFS %in% c('count', 'probs'))==FALSE){
+  if((methodSFS %in% c('counts', 'probs'))==FALSE){
     stop("Argument `methodSFS` must be 'counts' or 'probs'. See ?dadi_inputs_pools.")
   }
 

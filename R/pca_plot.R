@@ -145,8 +145,18 @@ pca_plot <- function(dat, type='scatter', axisIndex=c(1,2)
     axX <- colnames(plot.tab)[axisIndex[1]]
     axY <- colnames(plot.tab)[axisIndex[2]]
 
+    # Percent explained variance
+    eigvals <- dat$sdev^2
+    varX <- round(eigvals[axisIndex[1]]/sum(eigvals) * 100, 2)
+    varY <- round(eigvals[axisIndex[2]]/sum(eigvals) * 100, 2)
+
     # Create skeleton of plot
-    gg <- ggplot(plot.tab, aes_string(x=axX, y=axY)) + plotTheme
+    gg <- ggplot(plot.tab, aes_string(x=axX, y=axY)) +
+      plotTheme +
+      labs(
+        x=paste0('PC', axisIndex[1], ' (', varX, '%)')
+        , y=paste0('PC', axisIndex[2], ' (', varY, '%)')
+      )
 
     # Add points and population colours if specified
     if(is.null(pops)==TRUE){ gg <- gg + geom_point()
