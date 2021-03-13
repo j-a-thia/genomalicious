@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1615600426419.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "E8CCDA7B",
+    "lastKnownWriteTime" : 1615600798,
+    "last_content_update" : 1615600798077,
+    "path" : "C:/Users/thiaj/Documents/GitHub/genomalicious/R/decircularise_longread.R",
+    "project_path" : "R/decircularise_longread.R",
+    "properties" : {
+        "cursorPosition" : "69,0",
+        "scrollLine" : "45"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

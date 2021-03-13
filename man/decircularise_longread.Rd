@@ -16,10 +16,10 @@ one sequence.}
 circular chromosome and to remove replicated regions. See Details.}
 }
 \description{
-Long-read technologies can provide complete read throughs of circular 
-chromosomes. However, when the number of bases sequenced is greater than the 
+Long-read technologies can provide complete read throughs of circular
+chromosomes. However, when the number of bases sequenced is greater than the
 chromosome size, this can lead to sequence replication within the long reads.
-This function makes the circule readthrough linear. It requires a 
+This function makes the circule readthrough linear. It requires a
 user-specified motif to identify replicated regions and remove them.
 }
 \details{
