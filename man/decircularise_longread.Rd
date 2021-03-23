@@ -4,7 +4,7 @@
 \alias{decircularise_longread}
 \title{Decircularise a circular chromosome generated from long reads}
 \usage{
-decircularise_longread(fastaIn, fastaOut, motif)
+decircularise_longread(fastaIn, fastaOut, motif, newHead = NULL)
 }
 \arguments{
 \item{fastaIn}{Character, the path to a FASTA file. Must only contain
@@ -14,6 +14,10 @@ one sequence.}
 
 \item{motif}{Character, the sequence used to identify cut points in the
 circular chromosome and to remove replicated regions. See Details.}
+
+\item{newHead}{Character, an optional new header to use for the cut FASTA
+sequence. Default is NULL, in which case, the same header is used as per
+the first line in \code{fastaIn}. You do not need to specify ">".}
 }
 \description{
 Long-read technologies can provide complete read throughs of circular

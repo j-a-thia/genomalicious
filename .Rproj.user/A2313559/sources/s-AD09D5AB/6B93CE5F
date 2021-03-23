@@ -1,24 +1,24 @@
 {
     "collab_server" : "",
     "contents" : "",
-    "created" : 1600642317134.000,
+    "created" : 1616483587671.000,
     "dirty" : false,
     "encoding" : "UTF-8",
     "folds" : "",
     "hash" : "0",
-    "id" : "AB7ED68D",
-    "lastKnownWriteTime" : 1600640881,
-    "last_content_update" : 1600640881,
-    "path" : "C:/Users/thiaj/Documents/GitHub/genomalicious/DEV.R",
-    "project_path" : "DEV.R",
+    "id" : "6B93CE5F",
+    "lastKnownWriteTime" : 1616483744,
+    "last_content_update" : 1616483744359,
+    "path" : "C:/Users/thiaj/Documents/GitHub/genomalicious/R/mitoGbk2DT.R",
+    "project_path" : "R/mitoGbk2DT.R",
     "properties" : {
-        "cursorPosition" : "2,0",
+        "cursorPosition" : "79,22",
         "scrollLine" : "0"
     },
     "read_only" : false,
     "read_only_alternatives" : [
     ],
-    "relative_order" : 2,
+    "relative_order" : 3,
     "source_on_save" : false,
     "source_window" : "",
     "type" : "r_source"
