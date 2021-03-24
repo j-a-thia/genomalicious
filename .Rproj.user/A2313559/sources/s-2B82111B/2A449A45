@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1616564826116.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "2A449A45",
+    "lastKnownWriteTime" : 1616564875,
+    "last_content_update" : 1616564875790,
+    "path" : "C:/Users/thiaj/Documents/GitHub/genomalicious/R/mitogenome_plot.R",
+    "project_path" : "R/mitogenome_plot.R",
+    "properties" : {
+        "cursorPosition" : "162,31",
+        "scrollLine" : "145"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

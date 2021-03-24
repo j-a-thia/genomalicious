@@ -10,8 +10,11 @@ mitogenome_plot(
   gene_colour = NULL,
   gene_type = c("gene", "rRNA"),
   extra_type = c("tRNA", "D-loop"),
+  plot_xmax = genome_len,
   extra_ypos = 3,
-  plot_ymax = 5
+  plot_ymax = 5,
+  gene_txt_size = 4,
+  extra_txt_size = 4
 )
 }
 \arguments{
@@ -40,11 +43,20 @@ See Details for parameterisation.}
 that will be plotted as small grey bars. For plotting purposes, "extra elements".
 Default = \code{c('tRNA', 'D-loop')}. See Details for parameterisation.}
 
+\item{plot_xmax}{Numeric: a single value, the maximum x-axis limit.
+Default is the genome length, as per \code{genome_len}.}
+
 \item{extra_ypos}{Numeric: a single value, the starting y-axis position for
 extra elements. See Details for parameterisation.}
 
 \item{plot_ymax}{Numeric: a single value, the maximum y-axis limit.
 See Details for parameterisation.}
+
+\item{gene_txt_size}{Integer: a single value, the size for gene element labels.
+Default is 4.}
+
+\item{extra_txt_size}{Integer: a single value, the size for extra element labels.
+Default is 4.}
 }
 \value{
 Plots the mitogenome and returns a gg object.
