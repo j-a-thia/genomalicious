@@ -9,7 +9,7 @@
 #' @param type_vec Chracter: a vector of features to extract. The default value
 #' has been set to extract the major elements of mitochondrial genomes, but
 #' it could be edited to extract other features. Default is
-#' \code{c('gene', 'CDS', 'tRNA', 'rRNA', 'D-loop')}.
+#' \code{c('gene', 'CDS', 'tRNA', 'rRNA', 'D-loop', 'misc_feature')}.
 #'
 #' @return Returns a data.table with the following columns: \cr
 #' \enumerate{
@@ -22,7 +22,9 @@
 #' }
 #'
 #' @export
-mitoGbk2DT <- function(genbankFile, type_vec=c('gene', 'CDS', 'tRNA', 'rRNA', 'D-loop')){
+mitoGbk2DT <- function(
+  genbankFile,
+  type_vec=c('gene', 'CDS', 'tRNA', 'rRNA', 'D-loop', 'misc_feature')){
   require(data.table)
   require(tidyverse)
   require(stringr)
@@ -38,7 +40,7 @@ mitoGbk2DT <- function(genbankFile, type_vec=c('gene', 'CDS', 'tRNA', 'rRNA', 'D
   ft.data <- gbk[ft.st:(ft.end-1)]
 
   # The positions of the elements
-  ele.pos <- lapply(paste0(' ', type_vec, ' '), grep, x=ft.data) %>%
+  ele.pos <- lapply(paste0('  ', type_vec, '  '), grep, x=ft.data) %>%
     unlist() %>% sort()
 
   # List of elements
@@ -70,21 +72,41 @@ mitoGbk2DT <- function(genbankFile, type_vec=c('gene', 'CDS', 'tRNA', 'rRNA', 'D
       trimws() %>%
       .[2]
 
-    # The strand
-    if(grepl('complement', x=sub.st.end)){
-      sub.strand <- -1L
+    # This removes a join(), or order(), when the element spans both
+    # ends of the sequence.
+    if(grepl('join', sub.st.end)){
+      sub.st.end <- str_split(sub.st.end,',')[[1]] %>%
+        gsub('join', '', .) %>%
+        gsub('\\(', '', .) %>%
+        gsub('\\)', '', .)
+    } else if(grepl('order', sub.st.end)){
+      sub.st.end <- str_split(sub.st.end,',')[[1]] %>%
+        gsub('order', '', .) %>%
+        gsub('\\(', '', .) %>%
+        gsub('\\)', '', .)
+    }
+
+    # The strand, -1 is 'complement' is present
+    sub.strand <- if_else(
+      lapply(sub.st.end, function(x){
+        grepl('complement', x=x)}) %>%
+        unlist() %>% sum() == 0,
+      1, -1)
+
+    # The strand is -1, remove 'complement'.
+    if(sub.strand==-1){
       sub.st.end <- gsub('complement', '', sub.st.end) %>%
         gsub('\\(', '', .) %>%
         gsub('\\)', '', .)
-    } else{
-      sub.strand <- 1L
     }
 
     # Adjust the start and stop bases
-    sub.st.end <- strsplit(sub.st.end, '\\.\\.')[[1]] %>% as.integer()
+    sub.st.end <- strsplit(sub.st.end, '\\.\\.') %>%
+      lapply(., gsub, pattern='>', replacement='') %>%
+      lapply(., as.integer)
 
     # The gene
-    if(sub.type=='tRNA'){
+    if(sub.type %in% c('tRNA','rRNA','misc_feature')){
       sub.name <- ft.sub[grep('product=', ft.sub)] %>%
         strsplit(., '/product=') %>%
         unlist() %>%
@@ -105,7 +127,9 @@ mitoGbk2DT <- function(genbankFile, type_vec=c('gene', 'CDS', 'tRNA', 'rRNA', 'D
     # Add to list
     elementList[[i]] <- data.table(
       NAME=sub.name, TYPE=sub.type, STRAND=sub.strand,
-      START=sub.st.end[1], END=sub.st.end[2])
+      START=sub.st.end %>% lapply(., function(x) x[1]) %>% unlist(),
+      END=sub.st.end %>% lapply(., function(x) x[2]) %>% unlist()
+    )
   }
 
   # Output

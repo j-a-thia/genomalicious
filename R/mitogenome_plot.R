@@ -44,6 +44,9 @@
 #' @param extra_txt_size Integer: a single value, the size for extra element labels.
 #' Default is 4.
 #'
+#' @param font Character: a single value, the font family to use.
+#' Default is \code{'Arial'}.
+#'
 #' @details There are two major elements plotted, "gene elements" and
 #' "extra elements". These names are just for convention: gene elements are
 #' plotted as large coloured bars in center or the plot, whereas extra elements are
@@ -74,7 +77,7 @@ mitogenome_plot <- function(
   mitoDT, genome_len=NULL, gene_colour=NULL,
   gene_type=c('gene', 'rRNA'), extra_type=c('tRNA', 'D-loop'),
   plot_xmax=genome_len, extra_ypos=3, plot_ymax=5,
-  gene_txt_size=4, extra_txt_size=4
+  gene_txt_size=4, extra_txt_size=4, font='Arial'
   ){
 
   require(data.table); require(tidyverse); require(ggrepel)
@@ -130,15 +133,18 @@ mitogenome_plot <- function(
   # Plot
   ggMito <- (ggplot()
              # Theme
-             + theme(axis.line.y=element_blank(),
-                     axis.text.y=element_blank(),
-                     axis.ticks.y=element_blank(),
-                     axis.title.y=element_blank(),
-                     panel.grid.minor.y=element_blank(),
-                     panel.grid.major.y=element_blank(),
-                     axis.ticks.length.x=unit(2, 'mm'),
-                     axis.title.x=element_blank(),
-                     legend.position='none')
+             + theme(
+               axis.line.y=element_blank(),
+               axis.text.y=element_blank(),
+               axis.ticks.y=element_blank(),
+               axis.title.y=element_blank(),
+               axis.ticks.length.x=unit(2, 'mm'),
+               axis.title.x=element_blank(),
+               legend.position='none',
+               panel.grid.minor.y=element_blank(),
+               panel.grid.major.y=element_blank(),
+               text=element_text(family=font)
+               )
              # The genes and labels for each strand
              + geom_rect(
                data=genesDT,
@@ -151,12 +157,12 @@ mitogenome_plot <- function(
              + geom_text(
                data=genesDT[STRAND==1],
                mapping=aes(x=X.MID, y=1.2, label=NAME, colour=NAME),
-               angle=45, hjust='left', size=gene_txt_size
+               angle=45, hjust='left', size=gene_txt_size, family=font
              )
              + geom_text(
                data=genesDT[STRAND==-1],
                mapping=aes(x=X.MID, y=-1.2, label=NAME, colour=NAME),
-               angle=45, hjust='right', size=gene_txt_size
+               angle=45, hjust='right', size=gene_txt_size, family=font
              )
              # Sort colour
              + scale_colour_manual(values=gene_colour)
@@ -183,7 +189,7 @@ mitogenome_plot <- function(
         mapping=aes(x=START, y=extra_ypos+0.2, label=NAME),
         angle=45, min.segment.length = unit(0, 'lines'),
         ylim=c(extra_ypos+0.5,plot_ymax), nudge_y=extra_ypos+0.5,
-        size=extra_txt_size
+        size=extra_txt_size, family=font
       )
 
       + geom_text_repel(
@@ -191,7 +197,7 @@ mitogenome_plot <- function(
         mapping=aes(x=START, y=-extra_ypos-0.2, label=NAME),
         angle=45, min.segment.length = unit(0, 'lines'),
         ylim=c(-plot_ymax,-extra_ypos-0.5), nudge_y=-extra_ypos-0.5,
-        size=extra_txt_size
+        size=extra_txt_size, family=font
       )
                )
 

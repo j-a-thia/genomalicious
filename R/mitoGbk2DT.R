@@ -9,7 +9,7 @@
 #' @param type_vec Chracter: a vector of features to extract. The default value
 #' has been set to extract the major elements of mitochondrial genomes, but
 #' it could be edited to extract other features. Default is
-#' \code{c('gene', 'CDS', 'tRNA', 'rRNA', 'D-loop')}.
+#' \code{c('gene', 'CDS', 'tRNA', 'rRNA', 'D-loop', 'misc_feature')}.
 #'
 #' @return Returns a data.table with the following columns: \cr
 #' \enumerate{

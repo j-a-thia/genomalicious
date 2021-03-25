@@ -20,7 +20,7 @@ Reads a FASTA file and converts to a data table.
 genomaliciousExtData <- paste0(find.package('genomalicious'), '/extdata')
 
 # Path to the demo FASTA file
-fasta <- paste0(genomaliciousExtData, '/genomaliciousCOI.fasta')
+fasta <- paste0(genomaliciousExtData, '/data_COI.fasta')
 
 # The FASTA file, printed as lines
 readLines(fasta)
