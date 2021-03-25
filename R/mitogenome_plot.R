@@ -47,6 +47,9 @@
 #' @param font Character: a single value, the font family to use.
 #' Default is \code{'Arial'}.
 #'
+#' @param gene_border Character: a single value, the colour for borders around
+#' gene elements. Default is NA, no border.
+#'
 #' @details There are two major elements plotted, "gene elements" and
 #' "extra elements". These names are just for convention: gene elements are
 #' plotted as large coloured bars in center or the plot, whereas extra elements are
@@ -77,7 +80,7 @@ mitogenome_plot <- function(
   mitoDT, genome_len=NULL, gene_colour=NULL,
   gene_type=c('gene', 'rRNA'), extra_type=c('tRNA', 'D-loop'),
   plot_xmax=genome_len, extra_ypos=3, plot_ymax=5,
-  gene_txt_size=4, extra_txt_size=4, font='Arial'
+  gene_txt_size=4, extra_txt_size=4, font='Arial', gene_border=NA
   ){
 
   require(data.table); require(tidyverse); require(ggrepel)
@@ -148,11 +151,8 @@ mitogenome_plot <- function(
              # The genes and labels for each strand
              + geom_rect(
                data=genesDT,
-               mapping=aes(xmin=START, xmax=END, ymin=Y.MIN, ymax=Y.MAX, fill=NAME)
-             )
-             + geom_rect(
-               data=data.table(START=0, END=genome_len, Y.MIN=-0.1, Y.MAX=0.1),
-               mapping=aes(xmin=START, xmax=END, ymin=Y.MIN, ymax=Y.MAX)
+               mapping=aes(xmin=START, xmax=END, ymin=Y.MIN, ymax=Y.MAX, fill=NAME),
+               colour=gene_border
              )
              + geom_text(
                data=genesDT[STRAND==1],
@@ -163,6 +163,11 @@ mitogenome_plot <- function(
                data=genesDT[STRAND==-1],
                mapping=aes(x=X.MID, y=-1.2, label=NAME, colour=NAME),
                angle=45, hjust='right', size=gene_txt_size, family=font
+             )
+             # The central genome line
+             + geom_rect(
+               data=data.table(START=0, END=genome_len, Y.MIN=-0.1, Y.MAX=0.1),
+               mapping=aes(xmin=START, xmax=END, ymin=Y.MIN, ymax=Y.MAX),
              )
              # Sort colour
              + scale_colour_manual(values=gene_colour)
