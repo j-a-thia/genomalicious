@@ -15,7 +15,8 @@ mitogenome_plot(
   plot_ymax = 5,
   gene_txt_size = 4,
   extra_txt_size = 4,
-  font = "Arial"
+  font = "Arial",
+  gene_border = NA
 )
 }
 \arguments{
@@ -61,6 +62,9 @@ Default is 4.}
 
 \item{font}{Character: a single value, the font family to use.
 Default is \code{'Arial'}.}
+
+\item{gene_border}{Character: a single value, the colour for borders around
+gene elements. Default is NA, no border.}
 }
 \value{
 Plots the mitogenome and returns a gg object.

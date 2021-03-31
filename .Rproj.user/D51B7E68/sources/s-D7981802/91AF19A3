@@ -1,0 +1,24 @@
+{
+    "id": "91AF19A3",
+    "path": "~/GitHub/genomalicious/R/filter_maf.R",
+    "project_path": "R/filter_maf.R",
+    "type": "r_source",
+    "hash": "3444167489",
+    "contents": "",
+    "dirty": false,
+    "created": 1617159507623.0,
+    "source_on_save": false,
+    "relative_order": 2,
+    "properties": {
+        "cursorPosition": "7,32",
+        "scrollLine": "12"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1617159531,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1617159531390,
+    "read_only": false,
+    "read_only_alternatives": []
+}

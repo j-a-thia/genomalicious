@@ -16,7 +16,7 @@ filter_maf(
 \arguments{
 \item{dat}{Matrix or data.table: Default expectation is that user is supplying a matrix of allele
 frequencies; i.e., loci in columns, populations in rows, and allele frequencies in cells (i.e.
-\code{type=='freqs'}). \n\n
+\code{type=='freqs'}). \cr\cr
 Alternatively, #' a data table of genotypes (i.e. \code{type=='genos'}). Loci are
 expected to be biallelic. Recorded either as '/' separated alleles (0/0, 0/1 1/1),
 or as counts of the Alt allele (0, 1, 2). For a data.table, expecting the columns:
