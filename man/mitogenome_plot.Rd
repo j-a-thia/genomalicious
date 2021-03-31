@@ -22,15 +22,15 @@ mitogenome_plot(
 \arguments{
 \item{mitoDT}{Data.table: mitogenome information. Requires the columns: \cr
 \enumerate{
-   \item $NAME = Character, the name of the genetic element.
-   \item $TYPE = Character, the type of genetic element.
+   \item $NAME = Character, the name of the genetic feature.
+   \item $TYPE = Character, the type of genetic feature.
    \item $STRAND = Integer, the starnd, either 1 or -1.
    \item $START = Integer, the starting base position.
    \item $END = Integer, the ending base position.
 }}
 
 \item{genome_len}{Integer: the genome length. Default = NULL. If unspecified,
-will be assigned the length of the last genetic element in \code{mitoDT}.}
+will be assigned the length of the last genetic feature in \code{mitoDT}.}
 
 \item{gene_colour}{Character: a vector of colours to plot genes. Each item
 is a colour, with the gene accessible through \code{names(gene_colour)}.
@@ -38,62 +38,80 @@ See Details for parameterisation.}
 
 \item{gene_type}{Character: a vector of values present in \code{mitoDT$TYPE}
 that will be plotted as large coloured bars. For plotting purposes,
-"gene elements". Default = \code{c('gene', 'rRNA')}.
+"gene features". Default = \code{c('gene', 'rRNA')}.
 See Details for parameterisation.}
 
 \item{extra_type}{Character: a vector of values present in \code{mitoDT$TYPE}
-that will be plotted as small grey bars. For plotting purposes, "extra elements".
+that will be plotted as small grey bars. For plotting purposes, "extra features".
 Default = \code{c('tRNA', 'D-loop')}. See Details for parameterisation.}
 
 \item{plot_xmax}{Numeric: a single value, the maximum x-axis limit.
 Default is the genome length, as per \code{genome_len}.}
 
 \item{extra_ypos}{Numeric: a single value, the starting y-axis position for
-extra elements. See Details for parameterisation.}
+extra features. See Details for parameterisation.}
 
 \item{plot_ymax}{Numeric: a single value, the maximum y-axis limit.
 See Details for parameterisation.}
 
-\item{gene_txt_size}{Integer: a single value, the size for gene element labels.
+\item{gene_txt_size}{Integer: a single value, the size for gene feature labels.
 Default is 4.}
 
-\item{extra_txt_size}{Integer: a single value, the size for extra element labels.
+\item{extra_txt_size}{Integer: a single value, the size for extra feature labels.
 Default is 4.}
 
 \item{font}{Character: a single value, the font family to use.
 Default is \code{'Arial'}.}
 
 \item{gene_border}{Character: a single value, the colour for borders around
-gene elements. Default is NA, no border.}
+gene features. Default is NA, no border.}
 }
 \value{
-Plots the mitogenome and returns a gg object.
+Returns a gg object.
 }
 \description{
-Uses base positions information to make a linear plot of genetic elements.
+Uses base positions information to make a linear plot of genetic features.
 Optimised to illustrate mitogenomes, but could be used for other genomic
 regions (not rigorously tested).
 }
 \details{
-There are two major elements plotted, "gene elements" and
-"extra elements". These names are just for convention: gene elements are
-plotted as large coloured bars in center or the plot, whereas extra elements are
-plotted as small grey bars above/below the gene elements.
-Anything could be plotted as a gene or extra element, and these are
+There are two major features plotted, "gene features" and
+"extra features". These names are just for convention: gene features are
+plotted as large coloured bars in center of the plot, whereas extra features are
+plotted as small grey bars above/below the gene features.
+Anything could be plotted as a gene or extra feature, and these are
 specified through \code{gene_type} and \code{extra_type}.
 
 The value of \code{mitoDT$STRAND} dictates the position of the coloured bars.
 A value of 1 places "genes" on the top of the genomic strand, whereas a value
 of -1 places "genes" below the genomic strand.
 
-The colour of the gene elements is specified throuigh \code{gene_colour} as
+The colour of the gene features is specified through \code{gene_colour} as
 a named vector. If there are two genes, 'COX1' and 'COX2', specification of
 their colours can be done like so: \code{c(COX1='pink', COX2='blue')}.
-If colours are not specified, one colours is automatically assigned to each
+If colours are not specified, one colour is automatically assigned to each
 unique "gene".
 
-The value of \code{extra_ypos} specifies that distance of the extra elements
-from the gene elements. Set larger if things are looking squashed.
+The value of \code{extra_ypos} specifies that distance of the extra features
+from the gene features. Set larger if things are looking squashed.
 Additionally, \code{plot_ymax} sets the maximal plotting area, so set this
 value larger if things are not fitting well.
+}
+\examples{
+library(genomalicious)
+
+# Create a link to raw external datasets in genomalicious
+genomaliciousExtData <- paste0(find.package('genomalicious'), '/extdata')
+
+# Read in a GENBANK file of the Bathygobius cocosensis mitogenome
+gbk.read <- mitoGbk2DT(paste(genomaliciousExtData, 'data_Bcocosensis.gbk', sep='/'))
+head(gbk.read)
+
+# Subset out the "CDS" types and plot genes, rRNA, tRNA, and D-loop.
+# Rename rRNAs for nicer plotting.
+gbk.read[TYPE!='CDS'] \%>\%
+.[NAME=='12S ribosomal RNA', NAME:='12S rRNA'] \%>\%
+.[NAME=='16S ribosomal RNA', NAME:='16S rRNA'] \%>\%
+mitogenome_plot(mitoDT=., genome_len=16692, extra_txt_size=3)
+
 }

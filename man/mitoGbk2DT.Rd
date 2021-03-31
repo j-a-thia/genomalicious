@@ -33,3 +33,12 @@ This function reads in a GENBANK file and outputs an R data.table object.
 It has been written for the import of mitogenome data into R, but could be
 used for importing other GENBANK files (not rigorously tested).
 }
+\examples{
+# Create a link to raw external datasets in genomalicious
+genomaliciousExtData <- paste0(find.package('genomalicious'), '/extdata')
+
+# Read in a GENBANK file
+gbk.read <- mitoGbk2DT(paste(genomaliciousExtData, 'data_Bcocosensis.gbk', sep='/'))
+head(gbk.read)
+
+}

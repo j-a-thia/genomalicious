@@ -1,0 +1,24 @@
+{
+    "id": "D7FE791A",
+    "path": "~/GitHub/genomalicious/R/mitogenome_plot.R",
+    "project_path": "R/mitogenome_plot.R",
+    "type": "r_source",
+    "hash": "3034858506",
+    "contents": "",
+    "dirty": false,
+    "created": 1617163613904.0,
+    "source_on_save": false,
+    "relative_order": 4,
+    "properties": {
+        "cursorPosition": "77,0",
+        "scrollLine": "74"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1617174443,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1617174443600,
+    "read_only": false,
+    "read_only_alternatives": []
+}

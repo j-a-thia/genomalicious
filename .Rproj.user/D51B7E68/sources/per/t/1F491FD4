@@ -1,0 +1,24 @@
+{
+    "id": "1F491FD4",
+    "path": "~/GitHub/genomalicious/R/mitoGbk2DT.R",
+    "project_path": "R/mitoGbk2DT.R",
+    "type": "r_source",
+    "hash": "2092609319",
+    "contents": "",
+    "dirty": false,
+    "created": 1617163586090.0,
+    "source_on_save": false,
+    "relative_order": 3,
+    "properties": {
+        "cursorPosition": "24,0",
+        "scrollLine": "23"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1617173865,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1617173865895,
+    "read_only": false,
+    "read_only_alternatives": []
+}
