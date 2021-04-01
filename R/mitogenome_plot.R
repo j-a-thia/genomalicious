@@ -91,6 +91,21 @@
 #' .[NAME=='16S ribosomal RNA', NAME:='16S rRNA'] %>%
 #' mitogenome_plot(mitoDT=., genome_len=16692, extra_txt_size=3)
 #'
+#' # Plot just the COX genes and the D-loop as "gene features" with
+#' # custom colours and a border.
+#' gene.col.vec <- c(
+#' 'COX1'='royalblue',
+#' 'COX2'='firebrick3',
+#' 'COX3'='mediumpurple2',
+#' 'CYTB'='plum3',
+#' 'D-loop'='grey40')
+#'
+#' gbk.read[NAME %in% c('COX1','COX2','COX3','CYTB','D-loop')] %>%
+#'   mitogenome_plot(
+#'     mitoDT=., genome_len=16692,
+#'     gene_type=c('gene', 'D-loop'), gene_colour=gene.col.vec,
+#'     extra_type=NULL, gene_border=TRUE)
+#'
 #' @export
 
 mitogenome_plot <- function(
@@ -100,6 +115,9 @@ mitogenome_plot <- function(
   gene_txt_size=4, extra_txt_size=4, font='Arial', gene_border=NA
   ){
 
+  # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  ####   ENVIRONMENT AND CHECKS   ####
+  # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   require(data.table); require(tidyverse); require(ggrepel)
 
   # Check position variables
@@ -150,81 +168,105 @@ mitogenome_plot <- function(
     genome_len <- mitoDT$END %>% max()
   }
 
-  # Plot
-  ggMito <- (ggplot()
-             # Theme
-             + theme(
-               axis.line.y=element_blank(),
-               axis.text.y=element_blank(),
-               axis.ticks.y=element_blank(),
-               axis.title.y=element_blank(),
-               axis.ticks.length.x=unit(2, 'mm'),
-               axis.title.x=element_blank(),
-               legend.position='none',
-               panel.grid.minor.y=element_blank(),
-               panel.grid.major.y=element_blank(),
-               text=element_text(family=font)
-               )
-             # The genes and labels for each strand
-             + geom_rect(
-               data=genesDT,
-               mapping=aes(xmin=START, xmax=END, ymin=Y.MIN, ymax=Y.MAX, fill=NAME),
-               colour=gene_border
-             )
-             + geom_text(
-               data=genesDT[STRAND==1],
-               mapping=aes(x=X.MID, y=1.2, label=NAME, colour=NAME),
-               angle=45, hjust='left', size=gene_txt_size, family=font
-             )
-             + geom_text(
-               data=genesDT[STRAND==-1],
-               mapping=aes(x=X.MID, y=-1.2, label=NAME, colour=NAME),
-               angle=45, hjust='right', size=gene_txt_size, family=font
-             )
-             # The central genome line
-             + geom_rect(
-               data=data.table(START=0, END=genome_len, Y.MIN=-0.1, Y.MAX=0.1),
-               mapping=aes(xmin=START, xmax=END, ymin=Y.MIN, ymax=Y.MAX),
-             )
-             # Sort colour
-             + scale_colour_manual(values=gene_colour)
-             + scale_fill_manual(values=gene_colour)
-
-             # Axis limits
-             + xlim(0, plot_xmax)
-             + ylim(-plot_ymax,plot_ymax)
+  # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  ####    PLOT GENE FEATURES   ####
+  # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  # Base plot
+  ggMito <- (
+    ggplot()
+     # Theme
+     + theme(
+       axis.line.y=element_blank(),
+       axis.text.y=element_blank(),
+       axis.ticks.y=element_blank(),
+       axis.title.y=element_blank(),
+       axis.ticks.length.x=unit(2, 'mm'),
+       axis.title.x=element_blank(),
+       legend.position='none',
+       panel.grid.minor.y=element_blank(),
+       panel.grid.major.y=element_blank(),
+       text=element_text(family=font)
+      )
+     # Gene features
+     + geom_rect(
+       data=genesDT,
+       mapping=aes(xmin=START, xmax=END, ymin=Y.MIN, ymax=Y.MAX, fill=NAME),
+       colour=gene_border
+     )
+     # The central genome line
+     + geom_rect(
+       data=data.table(START=0, END=genome_len, Y.MIN=-0.1, Y.MAX=0.1),
+       mapping=aes(xmin=START, xmax=END, ymin=Y.MIN, ymax=Y.MAX),
+     )
+     # Colours
+     + scale_colour_manual(values=gene_colour)
+     + scale_fill_manual(values=gene_colour)
+     # Axis limits
+     + xlim(0, plot_xmax)
+     + ylim(-plot_ymax,plot_ymax)
   )
-
-  if(nrow(extraDT)>0){
+  # Text for genes features on positive and negative strands
+  if(nrow(genesDT[STRAND==1]) > 0){
     ggMito <- (
       ggMito
-      # The extra items and labels for each strand
-      + geom_rect(
-        data=extraDT[STRAND==1],
-        mapping=aes(xmin=START, xmax=END, ymin=extra_ypos, ymax=extra_ypos+0.2)
-      )
-      + geom_rect(
-        data=extraDT[STRAND==-1],
-        mapping=aes(xmin=START, xmax=END, ymin=-extra_ypos, ymax=-extra_ypos-0.2)
-      )
-      + geom_text_repel(
-        data=extraDT[STRAND==1],
-        mapping=aes(x=START, y=extra_ypos+0.2, label=NAME),
-        angle=45, min.segment.length = unit(0, 'lines'),
-        ylim=c(extra_ypos+0.5,plot_ymax), nudge_y=extra_ypos+0.5,
-        size=extra_txt_size, family=font
-      )
-      + geom_text_repel(
-        data=extraDT[STRAND==-1],
-        mapping=aes(x=START, y=-extra_ypos-0.2, label=NAME),
-        angle=45, min.segment.length = unit(0, 'lines'),
-        ylim=c(-plot_ymax,-extra_ypos-0.5), nudge_y=-extra_ypos-0.5,
-        size=extra_txt_size, family=font
-      )
+      + geom_text(
+          data=genesDT[STRAND==1],
+          mapping=aes(x=X.MID, y=1.2, label=NAME, colour=NAME),
+          angle=45, hjust='left', size=gene_txt_size, family=font
                )
-
+    )
+  }
+  if(nrow(genesDT[STRAND==-1]) > 0){
+    ggMito <- (
+      ggMito
+      + geom_text(
+          data=genesDT[STRAND==-1],
+          mapping=aes(x=X.MID, y=-1.2, label=NAME, colour=NAME),
+          angle=45, hjust='right', size=gene_txt_size, family=font
+               )
+    )
   }
 
-  #Output
+  # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  ####   PLOT EXTRA FEATURES   ####
+  # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  if(nrow(extraDT)>0){
+    if(nrow(extraDT[STRAND==1]) > 0){
+      ggMito <- (
+        ggMito
+          + geom_rect(
+            data=extraDT[STRAND==1],
+            mapping=aes(xmin=START, xmax=END, ymin=extra_ypos, ymax=extra_ypos+0.2)
+          )
+          + geom_rect(
+            data=extraDT[STRAND==-1],
+            mapping=aes(xmin=START, xmax=END, ymin=-extra_ypos, ymax=-extra_ypos-0.2)
+          )
+      )
+    }
+    if(nrow(extraDT[STRAND==-1] > 0)){
+      ggMito <- (
+        ggMito
+          + geom_text_repel(
+            data=extraDT[STRAND==1],
+            mapping=aes(x=START, y=extra_ypos+0.2, label=NAME),
+            angle=45, min.segment.length = unit(0, 'lines'),
+            ylim=c(extra_ypos+0.5,plot_ymax), nudge_y=extra_ypos+0.5,
+            size=extra_txt_size, family=font
+          )
+          + geom_text_repel(
+            data=extraDT[STRAND==-1],
+            mapping=aes(x=START, y=-extra_ypos-0.2, label=NAME),
+            angle=45, min.segment.length = unit(0, 'lines'),
+            ylim=c(-plot_ymax,-extra_ypos-0.5), nudge_y=-extra_ypos-0.5,
+            size=extra_txt_size, family=font
+          )
+      )
+    }
+  }
+
+  # >>>>>>>>>>>>>>>>>>
+  ####   OUTPUT   ####
+  # >>>>>>>>>>>>>>>>>>
   return(ggMito)
 }

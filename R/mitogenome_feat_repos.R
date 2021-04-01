@@ -2,7 +2,7 @@
 #'
 #' Takes a data table of mitogenome features a reposisitions it relative to a
 #' new start position. Could be used to reposition genomic features of any
-#' circular chromosomes.
+#' circular chromosome.
 #'
 #' @param featuresDT Data.table: Contains the genomic features. Requires only
 #' two columns: \code{$START} and \code{$END}, which are the start and end base
@@ -36,7 +36,7 @@
 #'
 #' @return Returns a data.table with same structure as \code{featuresDT}, but
 #' features have new start and end positions as specified by the repositioning
-#' value of \code{new_start_pos}. If the \code{feat_base_zero==TRUE}, then the
+#' value of \code{new_start_pos}. If\code{feat_base_zero==TRUE}, then the
 #' values are returned as base 0, otherwise they are returned as base 1.
 #'
 #' @examples
@@ -59,6 +59,8 @@
 #'   genome_len=16692
 #' )
 #'
+#' reposCOX1[NAME=='COX1']
+#'
 #' # Reposition in the middle of COX1
 #' reposMidCOX1 <- mitogenome_feat_repos(
 #'   featuresDT=gbk.read,
@@ -66,6 +68,8 @@
 #'   feat_base_zero=FALSE,
 #'   genome_len=16692
 #' )
+#'
+#' reposMidCOX1[NAME=='COX1']
 #'
 #' @export
 

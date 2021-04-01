@@ -114,4 +114,19 @@ gbk.read[TYPE!='CDS'] \%>\%
 .[NAME=='16S ribosomal RNA', NAME:='16S rRNA'] \%>\%
 mitogenome_plot(mitoDT=., genome_len=16692, extra_txt_size=3)
 
+# Plot just the COX genes and the D-loop as "gene features" with
+# custom colours and a border.
+gene.col.vec <- c(
+'COX1'='royalblue',
+'COX2'='firebrick3',
+'COX3'='mediumpurple2',
+'CYTB'='plum3',
+'D-loop'='grey40')
+
+gbk.read[NAME \%in\% c('COX1','COX2','COX3','CYTB','D-loop')] \%>\%
+  mitogenome_plot(
+    mitoDT=., genome_len=16692,
+    gene_type=c('gene', 'D-loop'), gene_colour=gene.col.vec,
+    extra_type=NULL, gene_border=TRUE)
+
 }

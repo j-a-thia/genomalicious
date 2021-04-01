@@ -31,13 +31,13 @@ It must be one the same scale as \code{feat_base_zero}. Default is NULL.}
 \value{
 Returns a data.table with same structure as \code{featuresDT}, but
 features have new start and end positions as specified by the repositioning
-value of \code{new_start_pos}. If the \code{feat_base_zero==TRUE}, then the
+value of \code{new_start_pos}. If\code{feat_base_zero==TRUE}, then the
 values are returned as base 0, otherwise they are returned as base 1.
 }
 \description{
 Takes a data table of mitogenome features a reposisitions it relative to a
 new start position. Could be used to reposition genomic features of any
-circular chromosomes.
+circular chromosome.
 }
 \details{
 Consider the sequence: ATATAGCCG. The first base 'A', would have have
@@ -74,6 +74,8 @@ reposCOX1 <- mitogenome_feat_repos(
   genome_len=16692
 )
 
+reposCOX1[NAME=='COX1']
+
 # Reposition in the middle of COX1
 reposMidCOX1 <- mitogenome_feat_repos(
   featuresDT=gbk.read,
@@ -81,5 +83,7 @@ reposMidCOX1 <- mitogenome_feat_repos(
   feat_base_zero=FALSE,
   genome_len=16692
 )
+
+reposMidCOX1[NAME=='COX1']
 
 }

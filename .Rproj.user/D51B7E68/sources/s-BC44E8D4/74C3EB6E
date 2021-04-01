@@ -3,7 +3,7 @@
     "path": "~/GitHub/genomalicious/R/mitogenome_feat_repos.R",
     "project_path": "R/mitogenome_feat_repos.R",
     "type": "r_source",
-    "hash": "4233946823",
+    "hash": "0",
     "contents": "",
     "dirty": false,
     "created": 1617170757350.0,
@@ -11,15 +11,15 @@
     "relative_order": 5,
     "properties": {
         "tempName": "Untitled1",
-        "cursorPosition": "34,31",
-        "scrollLine": "21"
+        "cursorPosition": "66,24",
+        "scrollLine": "62"
     },
     "folds": "",
-    "lastKnownWriteTime": 1617177144,
+    "lastKnownWriteTime": 1617223759,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1617177144703,
+    "last_content_update": 1617223759761,
     "read_only": false,
     "read_only_alternatives": []
 }
