@@ -16,7 +16,8 @@ mitogenome_plot(
   gene_txt_size = 4,
   extra_txt_size = 4,
   font = "Arial",
-  gene_border = NA
+  gene_border = NA,
+  gene_size = 2
 )
 }
 \arguments{
@@ -65,6 +66,9 @@ Default is \code{'Arial'}.}
 
 \item{gene_border}{Character: a single value, the colour for borders around
 gene features. Default is NA, no border.}
+
+\item{gene_size}{Numeric: a single value, the thickness of borders around
+gene features, if a colour if specified in \code{gene_border}. Default is 1.}
 }
 \value{
 Returns a gg object.
@@ -96,37 +100,4 @@ The value of \code{extra_ypos} specifies that distance of the extra features
 from the gene features. Set larger if things are looking squashed.
 Additionally, \code{plot_ymax} sets the maximal plotting area, so set this
 value larger if things are not fitting well.
-}
-\examples{
-library(genomalicious)
-
-# Create a link to raw external datasets in genomalicious
-genomaliciousExtData <- paste0(find.package('genomalicious'), '/extdata')
-
-# Read in a GENBANK file of the Bathygobius cocosensis mitogenome
-gbk.read <- mitoGbk2DT(paste(genomaliciousExtData, 'data_Bcocosensis.gbk', sep='/'))
-head(gbk.read)
-
-# Subset out the "CDS" types and plot genes, rRNA, tRNA, and D-loop.
-# Rename rRNAs for nicer plotting.
-gbk.read[TYPE!='CDS'] \%>\%
-.[NAME=='12S ribosomal RNA', NAME:='12S rRNA'] \%>\%
-.[NAME=='16S ribosomal RNA', NAME:='16S rRNA'] \%>\%
-mitogenome_plot(mitoDT=., genome_len=16692, extra_txt_size=3)
-
-# Plot just the COX genes and the D-loop as "gene features" with
-# custom colours and a border.
-gene.col.vec <- c(
-'COX1'='royalblue',
-'COX2'='firebrick3',
-'COX3'='mediumpurple2',
-'CYTB'='plum3',
-'D-loop'='grey40')
-
-gbk.read[NAME \%in\% c('COX1','COX2','COX3','CYTB','D-loop')] \%>\%
-  mitogenome_plot(
-    mitoDT=., genome_len=16692,
-    gene_type=c('gene', 'D-loop'), gene_colour=gene.col.vec,
-    extra_type=NULL, gene_border=TRUE)
-
 }

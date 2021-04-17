@@ -50,6 +50,9 @@
 #' @param gene_border Character: a single value, the colour for borders around
 #' gene features. Default is NA, no border.
 #'
+#' @param gene_size Numeric: a single value, the thickness of borders around
+#' gene features, if a colour if specified in \code{gene_border}. Default is 1.
+#'
 #' @details There are two major features plotted, "gene features" and
 #' "extra features". These names are just for convention: gene features are
 #' plotted as large coloured bars in center of the plot, whereas extra features are
@@ -104,7 +107,7 @@
 #'   mitogenome_plot(
 #'     mitoDT=., genome_len=16692,
 #'     gene_type=c('gene', 'D-loop'), gene_colour=gene.col.vec,
-#'     extra_type=NULL, gene_border=TRUE)
+#'     extra_type=NULL, gene_border='black)
 #'
 #' @export
 
@@ -112,7 +115,8 @@ mitogenome_plot <- function(
   mitoDT, genome_len=NULL, gene_colour=NULL,
   gene_type=c('gene', 'rRNA'), extra_type=c('tRNA', 'D-loop'),
   plot_xmax=genome_len, extra_ypos=3, plot_ymax=5,
-  gene_txt_size=4, extra_txt_size=4, font='Arial', gene_border=NA
+  gene_txt_size=4, extra_txt_size=4, font='Arial',
+  gene_border=NA, gene_size=2
   ){
 
   # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -191,7 +195,7 @@ mitogenome_plot <- function(
      + geom_rect(
        data=genesDT,
        mapping=aes(xmin=START, xmax=END, ymin=Y.MIN, ymax=Y.MAX, fill=NAME),
-       colour=gene_border
+       colour=gene_border, size=gene_size
      )
      # The central genome line
      + geom_rect(
