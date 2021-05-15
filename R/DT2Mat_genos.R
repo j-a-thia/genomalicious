@@ -53,22 +53,22 @@ DT2Mat_genos <- function(dat, sampCol=NA, locusCol=NA, genoCol=NA, flip=FALSE){
   for(lib in c('tidyr', 'data.table')){require(lib, character.only=TRUE)}
 
   # If going from long data table to wide matrix, make sure dat is a data table.
-  if(flip==FALSE & !'data.table' %in% class(dat)){
+  if(flip==FALSE & !'data.table'%in%class(dat)){
     stop("Argument flip==FALSE, but class(dat) isn't 'data.table': see ?DT2Mat_genos")
   }
 
   # If going from a wide matrix to long data table, make sure dat is a matrix.
-  if(flip==TRUE & !'matrix' %in% class(dat)){
+  if(flip==TRUE & !'matrix'%in%class(dat)){
     stop("Argument flip==TRUE, but class(dat) isn't 'matrix': see ?DT2Mat_genos")
   }
 
   # If providing a matrix, check that there are row names.
-  if(class(dat)[1]=='matrix' & is.null(rownames(dat))==TRUE){
+  if('matrix'%in%class(dat) & is.null(rownames(dat))==TRUE){
     stop("Argument dat is a genotype matrix, but has no individual IDs in the row names: see ?DT2Mat_genos")
   }
 
   # If providing a data table, check that sampCol, locusCol, and genoCol are in dat.
-  if(class(dat)[1]=='data.table'){
+  if('data.table'%in%class(dat)){
     if(length(which((c(sampCol, locusCol, genoCol) %in% colnames(dat))==FALSE)) > 0){
       stop("Argument dat does not have columns specified in arguments sampCol, locusCol, or genoCol: see ?DT2Mat_genos")
     }
@@ -105,7 +105,7 @@ DT2Mat_genos <- function(dat, sampCol=NA, locusCol=NA, genoCol=NA, flip=FALSE){
   if(genoInitClass=='numeric'){
     if(class(dat)[1]=='data.table'){
       dat[[genoCol]] <- as.integer(dat[[genoCol]])
-    } else if(class(dat=='matirx')){
+    } else if('matirx' %in% class(dat)){
       dat <- apply(dat, 2, as.integer)
     }
   }
