@@ -1,0 +1,24 @@
+{
+    "id": "35F0C1D8",
+    "path": "~/GitHub/genomalicious/R/mrbayes_input.R",
+    "project_path": "R/mrbayes_input.R",
+    "type": "r_source",
+    "hash": "3901624922",
+    "contents": "",
+    "dirty": false,
+    "created": 1621508543958.0,
+    "source_on_save": false,
+    "relative_order": 1,
+    "properties": {
+        "cursorPosition": "0,41",
+        "scrollLine": "0"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1621508720,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1621508720987,
+    "read_only": false,
+    "read_only_alternatives": []
+}
