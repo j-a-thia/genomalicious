@@ -85,8 +85,11 @@ mrbayes_input <- function(dat.list, type.vec, set.vec, out.file){
   # Unique data types
   type.uniq <- unique(type.vec)
 
-  # If a mixed data type, get the breaks of each data partition and position ranges
-  if(length(type.uniq)>1){
+  # Number of data partitions
+  num.set <- length(set.vec)
+
+  # If a mixed data type and multiple partitions
+  if(length(type.uniq)>1 & num.set>1){
     # Get the partition breakpoints
     part.n <- lapply(1:length(dat.list), function(i){
       data.table(PART=i, TYPE=type.vec[i], SET=set.vec[[i]], CHAR=1:ncol(dat.list[[i]]))
@@ -114,7 +117,33 @@ mrbayes_input <- function(dat.list, type.vec, set.vec, out.file){
     type.out <- type.ranges %>%
       paste(., collapse=',') %>%
       paste0('mixed(', ., ')')
-  } else{
+  }
+  # If a single data type
+  if(length(type.uniq)==1){
+    # Get the partition breakpoints
+    part.n <- lapply(1:length(dat.list), function(i){
+      data.table(PART=i, TYPE=type.vec[i], SET=set.vec[[i]], CHAR=1:ncol(dat.list[[i]]))
+    }) %>%
+      do.call('rbind', .) %>%
+      .[, POS:=1:.N] %>%
+      .[, RANGE:='0'] %>%
+      .[CHAR==1] %>%
+      setorder(., PART)
+
+    # Get partition ranges as character vector
+    type.ranges <- lapply(1:nrow(part.n), function(i){
+      if(i!=nrow(part.n)){
+        x <- paste0(part.n$TYPE[i],':',part.n$POS[i],'-',part.n$POS[i+1]-1)
+      } else{
+        x <- paste0(part.n$TYPE[i],':',part.n$POS[i],'-',num.chars)
+      }
+    }) %>%
+      unlist()
+
+    # Add ranges into partition table
+    part.n$RANGE <- gsub("^[^:]*:", '', type.ranges)
+
+    # The character vector to write out
     type.out <- type.uniq
   }
 
