@@ -88,6 +88,12 @@ gene features, offset from the main chromosome. Anything could be plotted as
 a gene or extra feature, and these are specified through \code{gene_type}
 and \code{extra_type}.
 
+The name of the genetic feature being plotted is the value of \code{mapDT$NAME}.
+This value is effectively evaluated as a mathematical expression to allow
+italics for gene names and mixed formatting in gene names. The internal function
+call is the evaluation of values by \code{geom_text(..., parse=TRUE)} and
+\code{geom_text_repel(..., parse=TRUE)}.
+
 The value of \code{mapDT$STRAND} dictates the position of the coloured bars.
 A value of 1 places "genes" on the top of the genomic strand, whereas a value
 of -1 places "genes" below the genomic strand.
