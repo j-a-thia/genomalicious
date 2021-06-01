@@ -218,7 +218,7 @@ gene_map_plot <- function(
       + geom_text(
         data=genesDT[STRAND==1],
         mapping=aes(x=X.MID, y=1.2, label=NAME, colour=NAME),
-        angle=45, hjust='left', size=gene_txt_size, family=font
+        angle=45, hjust='left', size=gene_txt_size, family=font, parse=TRUE
       )
     )
   }
@@ -228,7 +228,7 @@ gene_map_plot <- function(
       + geom_text(
         data=genesDT[STRAND==-1],
         mapping=aes(x=X.MID, y=-1.2, label=NAME, colour=NAME),
-        angle=45, hjust='right', size=gene_txt_size, family=font
+        angle=45, hjust='right', size=gene_txt_size, family=font, parse=TRUE
       )
     )
   }
@@ -258,14 +258,14 @@ gene_map_plot <- function(
           mapping=aes(x=START, y=extra_ypos+0.2, label=NAME),
           angle=45, min.segment.length = unit(0, 'lines'),
           ylim=c(extra_ypos+0.5,plot_ymax), nudge_y=extra_ypos+0.5,
-          size=extra_txt_size, family=font
+          size=extra_txt_size, family=font, parse=TRUE
         )
         + geom_text_repel(
           data=extraDT[STRAND==-1],
           mapping=aes(x=START, y=-extra_ypos-0.2, label=NAME),
           angle=45, min.segment.length = unit(0, 'lines'),
           ylim=c(-plot_ymax,-extra_ypos-0.5), nudge_y=-extra_ypos-0.5,
-          size=extra_txt_size, family=font
+          size=extra_txt_size, family=font, parse=TRUE
         )
       )
     }
