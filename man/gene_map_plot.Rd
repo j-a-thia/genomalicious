@@ -120,25 +120,38 @@ gbk.read <- mitoGbk2DT(paste(genomaliciousExtData, 'data_Bcocosensis.gbk', sep='
 head(gbk.read)
 
 # Subset out the "CDS" types and plot genes, rRNA, tRNA, and D-loop.
-# Rename rRNAs for nicer plotting.
+# Rename rRNAs for nicer plotting. Because $NAME is evaluated by the
+# expression() function, it is useful to put single quotations around characters
+to have them read as characters internally by gene_map_plot().
 gbk.read[TYPE!='CDS'] \%>\%
-.[NAME=='12S ribosomal RNA', NAME:='12S rRNA'] \%>\%
-.[NAME=='16S ribosomal RNA', NAME:='16S rRNA'] \%>\%
+.[NAME=='12S ribosomal RNA', NAME:='12S'] \%>\%
+.[NAME=='16S ribosomal RNA', NAME:='16S'] \%>\%
+.[, NAME:=paste0("'", NAME, "'")] \%>\%
 gene_map_plot(mapDT=., genome_len=16692, extra_txt_size=3)
 
 # Plot just the COX genes and the D-loop as "gene features" with
-# custom colours and a border.
+# custom colours and a border. Again, not the use of single quotes nested in
+double quotes, which will match up to the edited gene $NAME column below.
 gene.col.vec <- c(
-'COX1'='royalblue',
-'COX2'='firebrick3',
-'COX3'='mediumpurple2',
-'CYTB'='plum3',
-'D-loop'='grey40')
+"'COX1'"='royalblue',
+"'COX2'"='firebrick3',
+"'COX3'"='mediumpurple2',
+"'CYTB'"='plum3',
+"'D-loop'"='grey40')
 
+# Subset focal genes, add quotes to ensure characters are parsed as characters.
 gbk.read[NAME \%in\% c('COX1','COX2','COX3','CYTB','D-loop')] \%>\%
+.[, NAME:=paste0("'", NAME, "'")] \%>\%
   gene_map_plot(
     mapDT=., genome_len=16692,
     gene_type=c('gene', 'D-loop'), gene_colour=gene.col.vec,
+    extra_type=NULL, gene_border='black')
+
+# It is possible to parse characters without the double quotes, but note how
+# the '-' character in 'D-loop' has been parsed as a minus symbol.
+gbk.read[NAME \%in\% c('COX1','COX2','COX3','CYTB','D-loop')] \%>\%
+  gene_map_plot(
+    mapDT=., genome_len=16692, gene_type=c('gene', 'D-loop'),
     extra_type=NULL, gene_border='black')
 
 }

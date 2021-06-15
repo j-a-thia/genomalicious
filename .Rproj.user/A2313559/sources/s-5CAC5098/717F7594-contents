@@ -1,0 +1,6 @@
+#' Prepare genetic featre names for \code{gene_map_plot}
+#' 
+#' Takes a vector of characters
+gene_map_names <- function(name.vec, char.left, char.right){
+  
+}

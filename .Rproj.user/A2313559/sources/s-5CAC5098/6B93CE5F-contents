@@ -21,6 +21,14 @@
 #'   \item \code{$END} = The end base position.
 #' }
 #'
+#' @examples
+#' # Create a link to raw external datasets in genomalicious
+#' genomaliciousExtData <- paste0(find.package('genomalicious'), '/extdata')
+#'
+#' # Read in a GENBANK file
+#' gbk.read <- mitoGbk2DT(paste(genomaliciousExtData, 'data_Bcocosensis.gbk', sep='/'))
+#' head(gbk.read)
+#'
 #' @export
 mitoGbk2DT <- function(
   genbankFile,
