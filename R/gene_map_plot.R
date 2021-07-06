@@ -256,43 +256,43 @@ gene_map_plot <- function(
   ####   PLOT EXTRA FEATURES   ####
   # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   if(nrow(extraDT)>0){
-    if(nrow(extraDT[STRAND==1]) > 0){
-      extraPos <- extraDT[STRAND==1]
-      extraNeg <- extraDT[STRAND==-1]
+    # Subset out extra features on positive vs negative strand
+    extraPos <- extraDT[STRAND==1]
+    extraNeg <- extraDT[STRAND==-1]
 
+    # Vector of colours: alternating between successive features
+    extra.colour <- c('grey20', 'grey50')
+    extra.pos.colour <- extra.colour[1:nrow(extraPos)%%2 + 1]
+    extra.neg.colour <- extra.colour[1:nrow(extraNeg)%%2 + 1]
 
-
-      ggMito <- (
-        ggMito
-        + geom_rect(
-          data=extraPos,
-          mapping=aes(xmin=START, xmax=END, ymin=extra_ypos, ymax=extra_ypos+0.3)
-        )
-        + geom_rect(
-          data=extraNeg,
-          mapping=aes(xmin=START, xmax=END, ymin=-extra_ypos, ymax=-extra_ypos-0.3)
-        )
+    # Add in features and their labels
+    ggMito <- (
+      ggMito
+      + geom_rect(
+        data=extraPos,
+        mapping=aes(xmin=START, xmax=END, ymin=extra_ypos, ymax=extra_ypos+0.3),
+        fill=extra.pos.colour, colour=NA
       )
-    }
-    if(nrow(extraDT[STRAND==-1] > 0)){
-      ggMito <- (
-        ggMito
-        + geom_text_repel(
-          data=extraDT[STRAND==1],
-          mapping=aes(x=START, y=extra_ypos+0.3, label=NAME),
-          angle=45, min.segment.length = unit(0, 'lines'),
-          ylim=c(extra_ypos+0.5,plot_ymax), nudge_y=extra_ypos+0.5,
-          size=extra_txt_size, family=font, parse=TRUE
-        )
-        + geom_text_repel(
-          data=extraDT[STRAND==-1],
-          mapping=aes(x=START, y=-extra_ypos-0.3, label=NAME),
-          angle=45, min.segment.length = unit(0, 'lines'),
-          ylim=c(-plot_ymax,-extra_ypos-0.5), nudge_y=-extra_ypos-0.5,
-          size=extra_txt_size, family=font, parse=TRUE
-        )
+      + geom_rect(
+        data=extraNeg,
+        mapping=aes(xmin=START, xmax=END, ymin=-extra_ypos, ymax=-extra_ypos-0.3),
+        fill=extra.neg.colour, colour=NA
       )
-    }
+      + geom_text_repel(
+        data=extraPos,
+        mapping=aes(x=X.MID, y=extra_ypos+0.3, label=NAME),
+        angle=45, min.segment.length = unit(0, 'lines'),
+        ylim=c(extra_ypos+0.5,plot_ymax), nudge_y=extra_ypos+0.5,
+        size=extra_txt_size, family=font, parse=TRUE, segment.size=0.25
+      )
+      + geom_text_repel(
+        data=extraNeg,
+        mapping=aes(x=X.MID, y=-extra_ypos-0.3, label=NAME),
+        angle=45, min.segment.length = unit(0, 'lines'),
+        ylim=c(-plot_ymax,-extra_ypos-0.5), nudge_y=-extra_ypos-0.5,
+        size=extra_txt_size, family=font, parse=TRUE, segment.size=0.25
+      )
+    )
   }
 
   # >>>>>>>>>>>>>>>>>>

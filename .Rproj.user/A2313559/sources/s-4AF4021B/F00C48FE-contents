@@ -1,0 +1,140 @@
+#' Alignment of many genes (DNA sequences)
+#'
+#' Reads in multiple FASTA files of different genes, performs an alignment,
+#' and tests the best evolutionary model. Specifically for DNA sequences.
+#'
+#' @param fasta.files Character, vector of paths to FASTA files. Each one
+#' containing seuqences for a specific gene for multiple taxa.
+#'
+#' @param method Character, one of "ClustalW", "ClustalOmega", "Muscle".
+#' Is passed to the function \code{msa::msa(... method=method)}.
+#'
+#' @param model.model Character, evolutionary models to test. Any one, or all of
+#' "JC", "F81", "K80", "HKY", "SYM", "GTR". Passed to function
+#' \code{phangorn::modelTest(... model=model.model)}. Default is to test all.
+#'
+#' @param model.G Logical, whether a gamma distribution of rates should be
+#' tested in evolutionary models. Passed to function
+#' \code{phangorn::modelTest(... G=model.G)}. Default is TRUE.
+#'
+#' @param model.I Logical, whether invariant rates should be tested in
+#' evolutionary models. Passed to function
+#' \code{phangorn::modelTest(... I=model.I)}. Default is TRUE.
+#'
+#' @param cores Integer, number of parallel jobs to run. Default is 1.
+#'
+#' @details The top evolutionary models per gene are identified using
+#' AIC criteria. First, the model with the smallest AIC value is identified,
+#' then the delta AIC is calculated for all models as focal model AIC minus the
+#' AIC of the best model. Those models with delta AIC <= 10 are cosnidered
+#' the top models and non-differentiable.
+#'
+#' @return Returns a list. Each index is one of the genes from the vector of
+#' FASTA files specified in \code{fasta.files}. For each indexed gene, there
+#' are additional slots:
+#' \enumerate{
+#'    \item \code{$gene} = DNAStringSet, the imported FASTA sequences.
+#'    \item \code{$align} = msa, the multiple sequence alignment for the gene.
+#'    \item \code{$model.test} = Data.table, the output of
+#'       \code{phangorn::modelTest}.
+#'    \item \code{$model.top} = Data.table, the top evolutionary models.
+#' }
+#'
+#' @examples
+#' # Create a link to raw external datasets in genomalicious
+#' genomaliciousExtData <- paste0(find.package('genomalicious'), '/extdata')
+#'
+#' # Path to the demo FASTA file
+#' fasta <- paste0(genomaliciousExtData, '/data_COI.fasta')
+#'
+#' # Multi sequence alignmnet of demo COI data.
+#' co1 <- align_many_genes(fasta)
+#'
+align_many_genes_dna <- function(
+  fasta.files, method='ClustalW',
+  model.model=c("JC", "F81", "K80", "HKY", "SYM", "GTR"),
+  model.G=TRUE, model.I=TRUE, cores=1){
+
+  require(ape)
+  require(doParallel)
+  require(data.table)
+  require(phangorn)
+  require(msa)
+  require(tidyverse)
+
+  if(cores==1){
+    alignList <- lapply(fasta.files, function(fa){
+      # Read in gene FASTA
+      gene <- readDNAStringSet(fa)
+
+      # Align
+      align <- msa(gene, method = method)
+
+      # Test evolutionary models
+      model.test <- modelTest(
+        align %>% as.phyDat(),
+        model=model.model, G=model.G, I=model.I) %>%
+        as.data.table()
+
+      # Best model
+      best.mod <- model.test %>%
+        as.data.table() %>%
+        setorder(AIC) %>%
+        .[1,'Model'] %>%
+        unlist()
+
+      # AIC of best model
+      best.aic <- model.test[Model==best.mod]$AIC
+
+      # Top models based on deltaAIC <= 10
+      model.top <- model.test %>%
+        as.data.table() %>%
+        .[, deltaAIC:=AIC-best.aic] %>%
+        .[deltaAIC <= 10] %>%
+        setorder(., AIC)
+
+      # Output
+      list(gene=gene, align=align, model.test=model.test, model.top=model.top) %>%
+        return()
+    })
+  } else if(cores>1){
+    my.clust <- makeCluster(cores)
+    registerDoParallel(my.clust)
+    foreach(fa=fasta.files) %dopar% {
+      # Read in gene FASTA
+      gene <- readDNAStringSet(fa)
+
+      # Align
+      align <- msa(gene, method = method)
+
+      # Test evolutionary models
+      model.test <- modelTest(
+        align %>% as.phyDat(),
+        model=model.model, G=model.G, I=model.I) %>%
+        as.data.table()
+
+      # Best model
+      best.mod <- model.test %>%
+        as.data.table() %>%
+        setorder(AIC) %>%
+        .[1,'Model'] %>%
+        unlist()
+
+      # AIC of best model
+      best.aic <- model.test[Model==best.mod]$AIC
+
+      # Top models based on deltaAIC <= 10
+      model.top <- model.test %>%
+        as.data.table() %>%
+        .[, deltaAIC:=AIC-best.aic] %>%
+        .[deltaAIC <= 10] %>%
+        setorder(., AIC)
+
+      # Output
+      list(gene=gene, align=align, model.test=model.test, model.top=model.top)
+    }
+  }
+
+  # Return
+  return(alignList) %>% return()
+}

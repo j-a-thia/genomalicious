@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1625450508931.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "54CBB79F",
+    "lastKnownWriteTime" : 1625452933,
+    "last_content_update" : 1625452933037,
+    "path" : "C:/Users/thiaj/Documents/GitHub/genomalicious/R/align_many_genes_dna.R",
+    "project_path" : "R/align_many_genes_dna.R",
+    "properties" : {
+        "cursorPosition" : "57,13",
+        "scrollLine" : "50"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 5,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
