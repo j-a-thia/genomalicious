@@ -72,86 +72,96 @@
 #'
 #' @export
 vcf2DT <- function(vcfFile, dropCols=NULL, keepComments=FALSE, keepInfo=FALSE){
-
+  
   # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   # #### Libraries and assertions            ####
   # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   require(data.table); require(tidyverse)
-
+  
   # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   # #### Code: VCF to data table             ####
   # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
+  
   # What is the position of the header?
   headPos <- grep('#CHROM', readLines(vcfFile), value=FALSE)
-
+  
   # Read file from header
   cat('(1/4) Reading in VCF as a data table', sep='\n')
   vcfDT <- fread(vcfFile, skip=headPos-1, sep='\t', header=TRUE)
-
+  
   # Adjust header
   colnames(vcfDT) <- gsub(pattern='#', replace='', x=colnames(vcfDT))
-
+  
   # Generate a $LOCUS column, place at the start of the data table
   cat('(2/4) Generating locus IDs', sep='\n')
   vcfDT <- vcfDT[, paste(CHROM, POS, sep='_')] %>%
     data.table(LOCUS=., vcfDT)
-
+  
   # Get the locus info as a vector and drop from data table
   if(keepInfo==TRUE){
     vcfInfo <- vcfDT$INFO
     names(vcfInfo) <- vcfDT$LOCUS
   }
   vcfDT <- vcfDT[, !'INFO']
-
+  
   # Which columns are the sample? The ones after the FORMAT column.
   sampCols <- (which(colnames(vcfDT)=='FORMAT')+1):ncol(vcfDT)
-
+  
   # Now convert the data from wide to long
   cat('(3/4) Converting from wide to long format', sep='\n')
-  vcfDT <- melt(data=vcfDT, id.vars=1:(sampCols[1]-1), measure.vars=sampCols, variable.name='SAMPLE', value.name='DATA')
-
+  vcfDT <- melt(
+    data=vcfDT,
+    id.vars=1:(sampCols[1]-1),
+    measure.vars=sampCols,
+    variable.name='SAMPLE',
+    value.name='DATA')
+  
   # Make sure SAMPLE is a character
   vcfDT[, SAMPLE:=as.character(SAMPLE)]
-
+  
   # Separate out the FORMAT data components into their own columns
   cat('(4/4) Parsing data for each sample', sep='\n')
+  
+  # ... Get the format names
   formatNames <- unlist(strsplit(vcfDT$FORMAT[1], split=':'))
-
+  
+  # ... If the $DATA column is '.', add in NA
+  vcfDT[DATA=='.', DATA:=NA]
+  
+  # ... Separate by $FORMAT names
   vcfDT <- vcfDT %>%
     separate(col='DATA', into=formatNames, sep=':') %>%
     .[, !'FORMAT']
-
-  # Replace '.' values in the data columns with NA
+  
+  # .... Replace '.' values in the data columns with NA
   for(f in formatNames){
     vcfDT[[f]][vcfDT[[f]]=='.'] <- NA
   }
-
-  # Make sure DP, RO, and AO are integers
+  
+  # Make sure DP and RO integers
   if('DP' %in% colnames(vcfDT)){ vcfDT[, DP:=as.integer(DP)] }
   if('RO' %in% colnames(vcfDT)){ vcfDT[, RO:=as.integer(RO)] }
-  if('AO' %in% colnames(vcfDT)){ vcfDT[, AO:=as.integer(AO)] }
-
+  
   # Attach header as an attribute, if specified.
   if(keepComments==TRUE){
     attr(vcfDT, 'vcf_comments') <- readLines(vcfFile, n=headPos-1)
   }
-
+  
   # Attach info as an attribute if, if specified.
   if(keepInfo==TRUE){
     attr(vcfDT, 'vcf_info') <- vcfInfo
   }
-
+  
   # Finish
   cat('All done! <3', '\n')
-
+  
   # Return the data.table, drop any columns if specified.
   if(is.null(dropCols)){
     return(vcfDT)
   } else{
     return(vcfDT[, !dropCols, with=FALSE])
   }
-
+  
 }
 
 
