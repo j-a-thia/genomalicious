@@ -39,7 +39,7 @@ dna2codonDT <- function(cds.seq){
     amino <- seqinr::translate(cod %>% s2c)
     data.table(
       CODON=i,
-      NUC=paste(n-2, n-1, n, sep=','),
+      NUC=paste(n-2, n-1, n, sep='|'),
       AMINO=amino,
       DNA=cod
     )
