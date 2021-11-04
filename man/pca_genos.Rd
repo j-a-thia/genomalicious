@@ -46,7 +46,7 @@ population information. Default is \code{NULL}. If specified, population
 membership is stored in the returned object.}
 }
 \value{
-Returns a \code{prcomp} object. If argumet \code{popCols} was specified,
+Returns a \code{prcomp} object. If argument \code{popCols} was specified,
 and additional index of \code{$pops} is also also present.
 }
 \description{
