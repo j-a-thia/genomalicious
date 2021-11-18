@@ -10,9 +10,10 @@ gene_map_plot(
   gene_colour = NULL,
   gene_type = c("gene", "rRNA"),
   extra_type = c("tRNA", "D-loop"),
+  plot_xmin = 0,
   plot_xmax = genome_len,
-  extra_ypos = 3,
   plot_ymax = 5,
+  extra_ypos = 3,
   gene_txt_size = 4,
   extra_txt_size = 4,
   font = "Arial",
@@ -46,14 +47,17 @@ See Details for parameterisation.}
 that will be plotted as small grey bars. For plotting purposes, "extra features".
 Default = \code{c('tRNA', 'D-loop')}. See Details for parameterisation.}
 
+\item{plot_xmin}{Numeric: a single value, the minimum x-axis limit.
+Default is 0.}
+
 \item{plot_xmax}{Numeric: a single value, the maximum x-axis limit.
 Default is the genome length, as per \code{genome_len}.}
 
-\item{extra_ypos}{Numeric: a single value, the starting y-axis position for
-extra features. See Details for parameterisation.}
-
 \item{plot_ymax}{Numeric: a single value, the maximum y-axis limit.
 See Details for parameterisation.}
+
+\item{extra_ypos}{Numeric: a single value, the starting y-axis position for
+extra features. See Details for parameterisation.}
 
 \item{gene_txt_size}{Integer: a single value, the size for gene feature labels.
 Default is 4.}
