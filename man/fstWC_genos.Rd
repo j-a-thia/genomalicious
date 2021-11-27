@@ -10,6 +10,7 @@ fstWC_genos(
   sampCol = "SAMPLE",
   locusCol = "LOCUS",
   genoCol = "GT",
+  num.cores = 1,
   permTest = FALSE,
   bootCI = FALSE,
   iters = 100,
@@ -41,6 +42,8 @@ Default = \code{'LOCUS'}.}
 
 \item{genoCol}{Character: The column name with the genotype information.
 Default = \code{'GT'}.}
+
+\item{num.cores}{Integer: Number of cores. Default is 1.}
 
 \item{permTest}{Logical: Should a permutation test be conducted?
 Default = \code{FALSE}.}

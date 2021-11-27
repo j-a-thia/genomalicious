@@ -4,13 +4,22 @@
 \alias{fstWC_boot}
 \title{Bootstrapped Weir & Cockerham's FST}
 \usage{
-fstWC_boot(dat, input_type, pop_id = NULL, samp_size = NULL, boots = 100)
+fstWC_boot(
+  dat,
+  num.cores = 1,
+  input_type,
+  pop_id = NULL,
+  samp_size = NULL,
+  boots = 100
+)
 }
 \arguments{
 \item{dat}{Matrix: Allele frequencies for populations, or biallelic genotypes
 of individuals scored as integer counts of the Alt allele (0, 1, 2).
 Populations or individuals are in rows, loci are in columns.
 Column names are loci IDs and must exactly match those in argument \code{samp_size}.}
+
+\item{num.cores}{Integer: Number of cores. Default is 1.}
 
 \item{input_type}{Character: One of two possible values: 'genos', calcualte
 variance components from genotype matrix, or 'freqs', calculate variance

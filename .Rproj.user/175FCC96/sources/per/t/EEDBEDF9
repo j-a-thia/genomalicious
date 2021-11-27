@@ -1,0 +1,26 @@
+{
+    "id": "EEDBEDF9",
+    "path": "~/GitHub/genomalicious/R/fstWC_perm.R",
+    "project_path": "R/fstWC_perm.R",
+    "type": "r_source",
+    "hash": "2746625386",
+    "contents": "",
+    "dirty": false,
+    "created": 1637984946488.0,
+    "source_on_save": false,
+    "relative_order": 6,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "30,3",
+        "scrollLine": "14"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1637986284,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1637986284014,
+    "read_only": false,
+    "read_only_alternatives": []
+}

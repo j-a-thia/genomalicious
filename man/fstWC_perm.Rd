@@ -4,11 +4,13 @@
 \alias{fstWC_perm}
 \title{Permutated Weir & Cockerham's FST}
 \usage{
-fstWC_perm(genoMat, pop_id, perms = 100)
+fstWC_perm(genoMat, num.cores = 1, pop_id, perms = 100)
 }
 \arguments{
 \item{genoMat}{Matrix: A genotype matrix with samples in rows, loci in
 columns, and Alt allele counts in cells (biallelic only: 0, 1, 2).}
+
+\item{num.cores}{Integer: Number of cores. Default is 1.}
 
 \item{pop_id}{Charater: A vector of population IDs. Must be the same length
 as \code{nrow(genoMat)} and the order of values must match the order

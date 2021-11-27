@@ -8,6 +8,7 @@ fstWC_freqs(
   freqMat,
   sampMat,
   doPairs = FALSE,
+  num.cores = 1,
   bootCI = FALSE,
   boots = 100,
   doDist = FALSE,
@@ -23,6 +24,8 @@ columns = loci.}
 
 \item{doPairs}{Logical: Should pairwise FST be calculated? Default = \code{FALSE},
 which calculates the among population FST.}
+
+\item{num.cores}{Integer: Number of cores. Default is 1.}
 
 \item{bootCI}{Logical: Should bootstrap confidence intervals be estimated?
 Default = \code{FALSE}.}

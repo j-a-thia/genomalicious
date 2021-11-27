@@ -1,0 +1,26 @@
+{
+    "id": "F6048369",
+    "path": "~/GitHub/genomalicious/R/fstWC_boot.R",
+    "project_path": "R/fstWC_boot.R",
+    "type": "r_source",
+    "hash": "3686220499",
+    "contents": "",
+    "dirty": false,
+    "created": 1637984797328.0,
+    "source_on_save": false,
+    "relative_order": 5,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "39,0",
+        "scrollLine": "29"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1637986279,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1637986279680,
+    "read_only": false,
+    "read_only_alternatives": []
+}

@@ -1,0 +1,26 @@
+{
+    "id": "A336763E",
+    "path": "~/GitHub/genomalicious/R/fstWC_varcomps.R",
+    "project_path": "R/fstWC_varcomps.R",
+    "type": "r_source",
+    "hash": "3257916778",
+    "contents": "",
+    "dirty": false,
+    "created": 1637984098537.0,
+    "source_on_save": false,
+    "relative_order": 3,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "295,7",
+        "scrollLine": "278"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1637986190,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1637986190734,
+    "read_only": false,
+    "read_only_alternatives": []
+}

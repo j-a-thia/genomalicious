@@ -4,7 +4,7 @@
 \alias{fstWC_varcomps}
 \title{Calculate the variance components of Weir & Cockerham's FST}
 \usage{
-fstWC_varcomps(dat, input_type, samp_size = NULL, pop_id = NULL)
+fstWC_varcomps(dat, input_type, samp_size = NULL, pop_id = NULL, num.cores = 1)
 }
 \arguments{
 \item{dat}{Matrix: Allele frequencies for populations, or biallelic genotypes
@@ -26,6 +26,8 @@ and must all occur in \code{dat}.}
 \item{pop_id}{Charater: A vector of population IDs. Default is NULL and
 is only required if \code{input_type=='genos'}. Must be the same length
 as \code{nrow(dat)} and the order of values must match the order of rows in \code{dat}.}
+
+\item{num.cores}{Integer: Number of cores to use for estimation. Default is 1.}
 }
 \value{
 A data table with columns \code{$LOCUS} (locus ID),
