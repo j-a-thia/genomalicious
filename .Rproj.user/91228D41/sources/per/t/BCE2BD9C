@@ -1,0 +1,26 @@
+{
+    "id": "BCE2BD9C",
+    "path": "~/GitHub/genomalicious/R/adegenet_DT2genlight.R",
+    "project_path": "R/adegenet_DT2genlight.R",
+    "type": "r_source",
+    "hash": "1831654408",
+    "contents": "",
+    "dirty": false,
+    "created": 1639079340537.0,
+    "source_on_save": false,
+    "relative_order": 4,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "58,0",
+        "scrollLine": "29"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1639079469,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1639079469717,
+    "read_only": false,
+    "read_only_alternatives": []
+}
