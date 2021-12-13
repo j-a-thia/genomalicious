@@ -99,7 +99,7 @@ poolne_estim_boot_pi <- function(dat, num.sims=100){
     .[, BOOT.NUM:=1:.N, by=c('POOL','LOCUS')]
 
   # Return final dataset
-  return(do.call('rbind', freq.sims))
+  return(freq.sims)
   # ................... END
 }
 
