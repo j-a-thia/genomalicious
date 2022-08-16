@@ -11,7 +11,6 @@
 #'    \item \code{$POS} The variant position on the chromosome.
 #'    \item \code{$REF} The reference allele.
 #'    \item \code{$ALT} The alternate allele.
-#'    \item \code{$LOCUS} The locus ID.
 #'    \item \code{$POOL} The pool ID.
 #'    \item \code{$AO} The number of reads supporting the alternate allele.
 #'    \item \code{$RO} The number of reads supporting the reference allele.
@@ -27,9 +26,6 @@
 #' @param method Character: Either 'Anova' (default) or 'Identity'. Passed to \code{method} argument
 #' in \code{poolfstat::computeFST}.
 #'
-#' @param snp.index List: A list of SNPs to consider. Default = \code{NA}.
-#' Passed to \code{snp.index} argument in \code{poolfstat::computeFST}.
-#'
 #' @return Returns a list with two indices: \code{$Fst} is the calculated FST among the
 #' pools using a function call of \code{poolfstat::computeFST}, whereas \code{$pooldat} is the
 #' \code{poolfstat} object used to generate said FST values.
@@ -39,14 +35,20 @@
 #' data(data_PoolInfo)
 #' data(data_PoolReads)
 #'
-#' # Subset to keep only Rep1 reads.
-#' X <- data_PoolReads[grep(pattern='Rep1', x=data_PoolReads$SAMPLE)]
+#' # Pool info
+#' data_PoolInfo
 #'
-#' # Need to add pool ID.
-#' X$POOL <- unlist(lapply(strsplit(X$SAMPLE, '_'), function(X){ return(X[1]) }))
+#' # Replicate samples for each pool
+#' data_PoolReads
+#'
+#' # Subset to keep only Rep1 reads.
+#' subReads <- data_PoolReads[grep(pattern='Rep1', x=data_PoolReads$SAMPLE)]
+#'
+#' # Need to add pool ID: the ID used to match $POOL in data_PoolInfo
+#' subReads$POOL <- unlist(lapply(strsplit(subReads$SAMPLE, '_'), function(X){ return(X[1]) }))
 #'
 #' # Calculate FST using poolfstat
-#' Y <- poolfstat_DT(X, data_PoolInfo)
+#' Y <- poolfstat_DT2Fst(subReads, data_PoolInfo)
 #'
 #' # Output is a list
 #' class(Y)
@@ -59,14 +61,14 @@
 #' Y$pooldat
 #'
 #'@export
-poolfstat_DT <- function(dat, pool.info, method='Anova', snp.index=NA){
+poolfstat_DT2Fst <- function(dat, pool.info, method='Anova'){
   # --------------------------------------------+
   # Libraries and assertions
   # --------------------------------------------+
   for(i in c('tidyr', 'data.table', 'poolfstat')){ require(i, character.only=TRUE); rm(i)}
 
-  if(sum(c('CHROM', 'POS', 'REF', 'ALT', 'LOCUS', 'POOL', 'AO', 'RO') %in% colnames(dat)) != 8){
-    stop('Argument dat needs the columns $CHROM, $POS, $REF, $ALT, $LOCUS, $POOL, $AO, and $RO.')
+  if(sum(c('CHROM', 'POS', 'REF', 'ALT', 'POOL', 'AO', 'RO') %in% colnames(dat)) != 7){
+    stop('Argument dat needs the columns $CHROM, $POS, $REF, $ALT, $POOL, $AO, and $RO.')
   }
 
   if(sum(c('POOL', 'INDS') %in% colnames(pool.info)) != 2){
@@ -77,25 +79,11 @@ poolfstat_DT <- function(dat, pool.info, method='Anova', snp.index=NA){
     stop('The pools in argument dat are not all present in argument pool.info.')
   }
 
-  setorderv(dat, cols=c('LOCUS', 'POOL'))
-  setorder(pool.info, POOL)
+  # --------------------------------------------+
+  # Code
+  # --------------------------------------------+
+  X <- poolfstat_DT2pooldata(dat=dat, pool.info=pool.info)
 
-  dat$DP <- dat$AO + dat$RO
-
-  dpMat <- spread(data=dat[, c('LOCUS', 'POOL', 'DP')], key=POOL, value=DP)
-  roMat <- spread(data=dat[, c('LOCUS', 'POOL', 'RO')], key=POOL, value=RO)
-  loci <- dat[, c('CHROM', 'POS', 'REF', 'ALT')]; loci <- loci[!duplicated(loci),]
-
-  X <- new("pooldata")
-  X@npools <- length(unique(dat$POOL))
-  X@nsnp <- nrow(loci)
-  X@refallele.readcount <- as.matrix(roMat[, !'LOCUS'], rownames=roMat$LOCUS)
-  X@readcoverage <- as.matrix(dpMat[, !'LOCUS'], rownames=dpMat$LOCUS)
-  X@snp.info <- as.matrix(loci)
-  X@poolsizes <- pool.info[which(pool.info$POOL %in% colnames(dpMat[, !'LOCUS']))]$INDS * 2
-  X@poolnames <- pool.info[which(pool.info$POOL %in% colnames(dpMat[, !'LOCUS']))]$POOL
-
-  return(list(Fst=computeFST(X, method=method, snp.index=snp.index), pooldat=X))
-
-  rm(X)
+  # Output
+  return(list(Fst=computeFST(X, method=method), pooldat=X))
 }
