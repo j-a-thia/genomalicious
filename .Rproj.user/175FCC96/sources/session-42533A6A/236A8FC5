@@ -1,26 +1,26 @@
 {
-    "id": "51FBF6BC",
-    "path": "~/GitHub/genomalicious/R/poolne_estim_boot_pi.R",
-    "project_path": "R/poolne_estim_boot_pi.R",
+    "id": "236A8FC5",
+    "path": "~/GitHub/genomalicious/R/poolfstat_pooldata2DT.R",
+    "project_path": "R/poolfstat_pooldata2DT.R",
     "type": "r_source",
-    "hash": "851745442",
+    "hash": "0",
     "contents": "",
     "dirty": false,
-    "created": 1639369676125.0,
+    "created": 1660784269078.0,
     "source_on_save": false,
     "relative_order": 2,
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "95,28",
-        "scrollLine": "76"
+        "cursorPosition": "21,9",
+        "scrollLine": "0"
     },
     "folds": "",
-    "lastKnownWriteTime": 1639370158,
+    "lastKnownWriteTime": 1660784276,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1639370158,
+    "last_content_update": 1660784276936,
     "read_only": false,
     "read_only_alternatives": []
 }

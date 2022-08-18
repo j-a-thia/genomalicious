@@ -47,8 +47,8 @@ save(data_Freqs, file='data/data_Freqs.RData')
 data_4pops <- readRDS('inst/extdata/data_FastSimCoal_30Diploids.RDS')
 setnames(data_4pops, c('IND', 'GENO'), c('SAMPLE', 'GT'))
 data_4pops$GT[data_4pops$GT=='1/0'] <- '0/1'
-goodloci <- filter_maf(data_4pops, 0.01, 'genos')
-data_4pops <- data_4pops[LOCUS %in% goodloci]
+# goodloci <- filter_maf(data_4pops, 0.01, 'genos')
+# data_4pops <- data_4pops[LOCUS %in% goodloci]
 save(data_4pops, file='data/data_4pops.RData')
 
 # Make a VCF from 4 pop genotypes
