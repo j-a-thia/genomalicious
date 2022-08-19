@@ -55,4 +55,7 @@ subReads$POOL <- unlist(lapply(strsplit(subReads$SAMPLE, '_'), function(X){ retu
 # Make pooldata object
 pooldataObj <-poolfstat_DT2pooldata(subReads, data_PoolInfo)
 
+# And go back to data table
+pooldataTab <- poolfstat_pooldata2DT(pooldataObj)
+
 }

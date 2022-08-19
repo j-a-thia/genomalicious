@@ -46,6 +46,9 @@
 #' # Make pooldata object
 #' pooldataObj <-poolfstat_DT2pooldata(subReads, data_PoolInfo)
 #'
+#' # And go back to data table
+#' pooldataTab <- poolfstat_pooldata2DT(pooldataObj)
+#'
 #' @export
 
 poolfstat_DT2pooldata <- function(dat, pool.info){
