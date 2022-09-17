@@ -16,7 +16,7 @@ align_many_genes_dna(
 }
 \arguments{
 \item{fasta.files}{Character, vector of paths to FASTA files. Each one
-containing seuqences for a specific gene for multiple taxa.}
+containing sequences for a specific gene for multiple taxa.}
 
 \item{method}{Character, one of "ClustalW", "ClustalOmega", "Muscle".
 Is passed to the function \code{msa::msa(... method=method)}.}

@@ -1,9 +1,6 @@
 #' Generate \code{bayescan} input files
 #'
 #' Generates an input file for Bayescan (Foll & Gaggiotti, 2008) from pooled allele frequencies. \cr
-#' \cr
-#' It assumes that these pooled allele frequencies have been estimated from Gautier et al. (2013)'s
-#' \code{poolne_estim}, and have been imported into \code{R} with \code{genomalicious}.
 #'
 #' @param dat Data table: The biallelic SNP data. Requires all of the following columns: \cr
 #'              \enumerate{

@@ -5,44 +5,40 @@
 \title{Plot PCA results}
 \usage{
 pca_plot(
-  dat,
+  pcaObj,
   type = "scatter",
-  axisIndex = c(1, 2),
+  axisIndex = NULL,
   pops = NULL,
-  popColours = NULL,
+  plotColours = NULL,
   look = "ggplot"
 )
 }
 \arguments{
-\item{dat}{Prcomp/Data table/Data frame/Matrix or Numeric: The class of this
-object depends on what plot you want to make, as specified by \code{type}.
-If making a...
-\itemize{
-\item \strong{Scatter plot}: \code{dat} contains the PCA scores for
-each individual. If not using a \code{prcomp} object, the tabular data must
-be wide-format: rows are indivdiuals, columns are PC axes.
-\item \strong{Scree plot} of eigenvalues, or plotting the \strong{cumulative
-explained variance}: \code{dat} can be a \code{prcomp} object, or simply
-a numeric vector containing the eigenvalues of the PCA.
-}}
+\item{pcaObj}{Prcomp object: A PCA of genotype data fitted using the
+\code{prcomp} function. Either manually fitted, or using \code{genomalicious::pca_genos}.}
 
-\item{type}{Character: What type of plot to make: scatter (\code{'scatter'})
-the scree plot of eigenvalues (\code{'scree'}), or the cumulative explained
-variance (\code{'expvar'}).}
+\item{type}{Character: What type of plot to make: a scatterplot (\code{'scatter'}),
+a screeplot of eigenvalues (\code{'scree'}), or the cumulative explained
+variance (\code{'cumvar'}).}
 
-\item{axisIndex}{Integer: Vector of lenght = 2. Corresponds to the column
-index to plots, i.e. the PC axes. Default = \code{c(1,2)}, the first and second
-PC axis column tabulated in \code{dat}. Only valid when \code{type=='scatter'}.}
+\item{axisIndex}{Integer: The PC axes to plot. If \code{type=='scatter'},
+then must be exactly 2 values, the two PC axes to plot as a scatterplot.
+If either \code{type=='scree'} or \code{type=='cumvar'}, then can be of
+length from 1 to p, where p is the number of PC axes, and values again
+represent the desired PC axes to plot.}
 
-\item{pops}{Character: A vector of population ID, should match the
-rows in \code{dat}, but is an optional argument. Default = \code{NULL}.
-If \code{dat} is a \code{prcomp} object, function will search for \code{dat$pops}
-to assign to this argument. Only valid when \code{type=='scatter'}.}
+\item{pops}{Character: A vector of population IDs, should match the
+rows in \code{pcaObj$x}, but is an optional argument. Default = \code{NULL}.
+The function will search for \code{pcaObj$pops} to assign to this argument
+if not specified. Only valid when \code{type=='scatter'}.}
 
-\item{popColours}{Character: A vector of colours to use for each unique population
-in \code{pops}, but is an optional argument. Default = \code{NULL}.
-The name of each colour must correspond to a population in \code{pops}.
-Only valid when \code{type=='scatter'}.}
+\item{plotColours}{Character: A vector of colours to use for plotting,
+but is an optional argument. Default = \code{NULL}.
+When \code{type=='scatter'}, this must be a named list with one colour
+per population. When \code{type=='scree'} or \code{type=='cumvar'}, only
+a single colour is required, which is the colour of bars in the screeplot
+or cumulative variance plot, respectively, and will default to 'grey20'
+if unspecified.}
 
 \item{look}{Character: The look of the plot. Default = \code{'ggplot'}, the
 typical gray background with gridlines produced by \code{ggplot2}. Alternatively,
@@ -53,8 +49,8 @@ Prints the plot to screen, and also returns an object of
 \code{gg}/\code{ggplot} class.
 }
 \description{
-Plots different results of a PCA, e.g.: scatter, scree, and cumulative
-explained vairance plots. See also \code{pca_DTinds()} to perform PCA on SNP genotypes.
+Plots results of a PCA, e.g., scatterplot, screeplot, and cumulative
+explained variance plots. Takes \code{prcomp} object as the main PCA fit.
 }
 \examples{
 # Data
@@ -63,7 +59,7 @@ datGt <- data_4pops
 
 # Conduct the PCA with Patterson et al.'s (2006) normalisation, and
 # population specified
-pca <- pca_DTgenos(dat=datGt, scaling='patterson', popCol='POP')
+pca <- pca_DTgenos(pcaObj=datGt, scaling='patterson', popCol='POP')
 
 # Plot the PCA
 pca_plot(pca)
@@ -72,15 +68,8 @@ pca_plot(pca)
 pca_plot(pca
             , axisIndex=c(2,3)
             , pops=pca$pops
-            , popColours=c(Pop1='gray30', Pop2='royalblue', Pop3='palevioletred3', Pop4='plum2')
+            , plotColours=c(Pop1='gray30', Pop2='royalblue', Pop3='palevioletred3', Pop4='plum2')
             , look='classic')
 
-# Plot scree of eigenvalues, using prcomp or numeric object
-pca_plot(pca, type='scree')
-pca_plot(pca$sdev^2, type='scree')
-
-# Plot cumulative explained variance, using prcomp or numeric object
-pca_plot(pca, type='expvar', look='classic')
-pca_plot(pca$sdev^2, type='expvar', look='classic')
 
 }

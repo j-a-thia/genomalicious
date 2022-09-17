@@ -1,7 +1,7 @@
 #' Convert a genotype data table to an allele data frame
 #'
 #' A long-format data table of genotypes is converted into a wide-format
-#' data frame of alleles, where each locus is represented by two columns:
+#' data table of alleles, where each locus is represented by two columns:
 #' one for the first allele, the other for the second allele.
 #'
 #' @param dat Data.table: Contains samples and loci in rows, with a
@@ -24,12 +24,12 @@
 #'
 #' data_4pops
 #'
-#' alle_df <- genoDT2alleleDF(data_4pops)
+#' alle_dt <- genos2indAlleles(data_4pops)
 #'
-#' alle_df[1:4, 1:6]
+#' alle_dt[1:4, 1:6]
 #'
 #' @export
-genoDT2alleleDF <- function(dat, sampCol='SAMPLE', locusCol='LOCUS', genoCol='GT'){
+genos2indAlleles <- function(dat, sampCol='SAMPLE', locusCol='LOCUS', genoCol='GT'){
 
   require(data.table); require(tidyverse)
 
@@ -64,8 +64,8 @@ genoDT2alleleDF <- function(dat, sampCol='SAMPLE', locusCol='LOCUS', genoCol='GT
     return(alle)
   }) %>%
     do.call('cbind', .) %>%
-    as.data.frame() %>%
-    data.frame(SAMPLE=rownames(mat), .)
+    as.data.table() %>%
+    data.table(SAMPLE=rownames(mat), .)
 
   return(alleDF)
 }

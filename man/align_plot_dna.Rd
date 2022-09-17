@@ -10,8 +10,9 @@ align_plot_dna(
   other_colours = NA,
   gap_colour = NA,
   border_colour = NA,
-  pos_vec = NA,
+  pos_vec = NULL,
   show_bases = TRUE,
+  base_size = 3,
   show_legend = FALSE
 )
 }
@@ -35,11 +36,13 @@ automated colours.}
 \item{border_colour}{Character: single value, the colour of borders around
 base positions. Default is NA, no assigned border colour.}
 
-\item{pos_vec}{Integer: a vector of base positions to label plot.
-Default is NA, which will produced automated values.}
+\item{pos_vec}{Integer: a vector of base positions to plot, subsets alignment.
+Default is NULL, which will plot all bases.}
 
 \item{show_bases}{Logical: whether the values of bases should be plotted.
 Default is TRUE.}
+
+\item{base_size}{Numeric: the text size used for nucleotide bases. Default is 3.}
 
 \item{show_legend}{Logical: whether a legend should be plotted.
 Default is FALSE.}
@@ -56,9 +59,9 @@ genomaliciousExtData <- paste0(find.package('genomalicious'), '/extdata')
 fasta <- paste0(genomaliciousExtData, '/data_COI.fasta')
 
 # Multi sequence alignmnet of demo COI data.
-co1 <- align_many_genes_dna(fasta, gene.names='COI')
+co1 <- align_many_genes_dna(fasta, gene.names='COI', model.model='JC')
 
 # Plot base positions from 200:250
-align_plot_dna(as.matrix(co1$COI$align)[, 200:250])
+align_plot_dna(as.matrix(co1$COI$align), pos_vec=200:250)
 
 }

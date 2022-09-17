@@ -4,7 +4,7 @@
 #' and tests the best evolutionary model. Specifically for DNA sequences.
 #'
 #' @param fasta.files Character, vector of paths to FASTA files. Each one
-#' containing seuqences for a specific gene for multiple taxa.
+#' containing sequences for a specific gene for multiple taxa.
 #'
 #' @param method Character, one of "ClustalW", "ClustalOmega", "Muscle".
 #' Is passed to the function \code{msa::msa(... method=method)}.
@@ -78,10 +78,11 @@ align_many_genes_dna <- function(
 
       # Align
       align <- msa(gene, method = method)
+      align.phydat <- as.phyDat(align)
 
       # Test evolutionary models
-      model.test <- modelTest(
-        align %>% as.phyDat(),
+      model.test <- phangorn::modelTest(
+        align.phydat,
         model=model.model, G=model.G, I=model.I) %>%
         as.data.table()
 

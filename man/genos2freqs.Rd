@@ -48,6 +48,6 @@ data(data_4pops)
 data_4pops
 
 # Convert to frequency matrix
-genos2freqs(data_4pops)
+freqMat <- genos2freqs(data_4pops)
 
 }

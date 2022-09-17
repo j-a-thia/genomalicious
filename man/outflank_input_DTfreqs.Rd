@@ -50,7 +50,12 @@ data('data_PoolPi')
 
 freqs <- data_PoolPi
 
-ofDF <- outflank_input_DTfreqs(freqs, 'POOL', 'LOCUS', 'PI', 'INDS')
+ofDF <- outflank_input_DTfreqs(
+   dat=freqs,
+   popCol='POOL',
+   locusCol='LOCUS',
+   freqCol='PI',
+   indsCol='INDS')
 
 }
 \references{

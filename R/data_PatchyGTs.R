@@ -1,6 +1,6 @@
 #' An example of a patchy genotype matrix
 #'
-#' A matrix matrix of genotypes with missing data.
+#' A matrix of genotypes with missing data.
 #'
 #' @usage data(data_PatchyMat)
 #'

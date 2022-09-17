@@ -11,7 +11,7 @@ A matrix with 100 rows and 100 columns.
 data(data_PatchyMat)
 }
 \description{
-A matrix matrix of genotypes with missing data.
+A matrix of genotypes with missing data.
 }
 \details{
 Samples IDs are in \code{rownames(data_PatchyGTs)}, and locus

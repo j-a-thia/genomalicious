@@ -26,6 +26,8 @@ the following columns,
   (see param \code{genoCol}).
 }}
 
+\item{plotBy}{Character: One of 'samples' or 'loci', the focus of missing data.}
+
 \item{look}{Character: The look of the plot. Default = \code{'ggplot'}, the
 typical gray background with gridlines produced by \code{ggplot2}. Alternatively,
 when set to \code{'classic'}, produces a base R style plot.}
@@ -42,9 +44,7 @@ Default = \code{'GT'}. Missing data should be represeted by \code{NA}.}
 \item{popCol}{Character: The column name with the population ID.
 Optional parameter. Default = \code{NA}.}
 
-\item{plotColours}{Character: Vector of colours to use in plotting.
-Size depends on values specified for parameters \code{type} and
-\code{popCol}, see Details.}
+\item{plotColours}{Character: The fill colour for histogram bars.}
 
 \item{plotNCol}{Integer: The number of columns to arrange indiviudal
 population plots into. Only takes effect when \code{popCol} is specified.
@@ -58,7 +58,10 @@ Use to visualise missing data with respect to samples and
 their associated populations.
 }
 \details{
-
+When \code{popCol} is unspecified, then all samples are used to create the plots.
+If it is specified, then that column name is used to make one plot for
+each population. These are arranged in rows and columns, and the
+user can specify the number of columns with the argument \code{plotNCol}.
 }
 \examples{
 ####   MISSING GENOTYPE DATA   ####
@@ -93,7 +96,7 @@ missHist(datGt, plotBy='loci',, look='classic'
                  , popCol='POP' , plotColours='plum2')
 
 ####   CATCH PLOT OUTPUT FOR LATER USE   ####
-gg4pops <- missHist(datGt, plotBy='samples',, popCol='POP')
+gg4pops <- missHist(datGt, plotBy='samples', popCol='POP')
 plot(gg4pops)
 
 }

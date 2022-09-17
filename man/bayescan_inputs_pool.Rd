@@ -41,9 +41,6 @@ the \code{bayescan} input file (i.e., \code{file.bayescan}).}
 }
 \description{
 Generates an input file for Bayescan (Foll & Gaggiotti, 2008) from pooled allele frequencies. \cr
-\cr
-It assumes that these pooled allele frequencies have been estimated from Gautier et al. (2013)'s
-\code{poolne_estim}, and have been imported into \code{R} with \code{genomalicious}.
 }
 \details{
 The allele counts in the Bayescan input file generated reflect the number of haploid

@@ -31,7 +31,7 @@
 #' data_4pops
 #'
 #' # Convert to frequency matrix
-#' genos2freqs(data_4pops)
+#' freqMat <- genos2freqs(data_4pops)
 #'
 #' @export
 genos2freqs <- function(dat
