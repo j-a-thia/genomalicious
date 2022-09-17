@@ -1,0 +1,9 @@
+MARKER	LOCUS
+1	Chrom_1_8
+2	Chrom_2_16
+3	Chrom_3_24
+4	Chrom_4_32
+5	Chrom_5_40
+6	Chrom_6_48
+7	Chrom_7_56
+8	Chrom_8_64

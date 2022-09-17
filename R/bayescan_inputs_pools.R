@@ -46,7 +46,7 @@
 #'                      , poolCol='POOL', locusCol='LOCUS', freqCol='PI')
 #'
 #' @export
-bayescan_inputs_pool <- function(dat, pool.info, file.bayescan, file.loci
+bayescan_inputs_pools <- function(dat, pool.info, file.bayescan, file.loci
                                  , poolCol, locusCol, freqCol) {
 
   # BEGIN ...........
@@ -92,6 +92,8 @@ bayescan_inputs_pool <- function(dat, pool.info, file.bayescan, file.loci
   # The observed REF and ALT alleles counts are derived from the estimated values in $P,
   # with respect to the sampled number of genomes (2*diploid individuals).
   BS.ls <- lapply(dat.spl, function(X){
+    pool <- X$POOL[1]
+
     X$INDS <- pool.info[POOL==pool]$IND
 
     X$REF.COUNT <- apply(X[, c('P', 'INDS')], 1, function(Y){
