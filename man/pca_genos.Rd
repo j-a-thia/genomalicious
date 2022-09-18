@@ -50,7 +50,7 @@ Returns a \code{prcomp} object. If argument \code{popCols} was specified,
 and additional index of \code{$pops} is also also present.
 }
 \description{
-Takes a long data table of genotypes and conducts a PCA using R's
+Takes a long-format data table of genotypes and conducts a PCA using R's
 \code{prcomp()} function. Different options for scaling the genotypes
 pre-PCA are available.
 }

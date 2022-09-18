@@ -23,7 +23,7 @@
 #' @param out.file Character: A single value, the name of the NEXUS file to save.
 #'
 #' @details Primary functionality is to convert data generated in R into NEXUS.
-#' Calculates data ranges and sets up partitions. Addition of \codes{MrBayes}
+#' Calculates data ranges and sets up partitions. Addition of \code{MrBayes}
 #' run commands are not supported.
 #'
 #' @return Writes a NEXUS file.

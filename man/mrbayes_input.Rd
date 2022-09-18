@@ -35,6 +35,6 @@ data types.
 }
 \details{
 Primary functionality is to convert data generated in R into NEXUS.
-Calculates data ranges and sets up partitions. Addition of \codes{MrBayes}
+Calculates data ranges and sets up partitions. Addition of \code{MrBayes}
 run commands are not supported.
 }

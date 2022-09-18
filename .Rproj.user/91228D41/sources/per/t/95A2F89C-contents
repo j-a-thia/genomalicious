@@ -1,0 +1,39 @@
+#' Convert a \code{lda} object to a long-format \code{data.table}
+#'
+#' @param daObj Lda: An object produced by \code{lda}.
+#'
+#' @param sampVec Character: The sample IDs, which need to match the sample
+#' order in \code{predict(daObj)$x}.
+#'
+#' @param obsPops Character/Factor: The observed population IDs, which need to
+#' match sample order in \code{predict(daObj)$x}.
+#'
+#' @returns Returns a long-format data.table with columns \code{$POP}, the
+#' population IDs, \code{$SAMPLE}, the sample IDs, \code{$AXIS}, the LD axis ID,
+#' and \code{$SCORE}, the score on the LD axis.
+#'
+#' @examples
+#' data(data_4pops)
+#'
+#' PCA <- pca_genos(data_4pops, popCol='POP')
+#' DA <- lda(PCA$pops ~ PCA$x[,1:3])
+#'
+#' da2DT(DA, sampVec=rownames(PCA$x), obsPops=PCA$pops)
+#'
+#' @export
+
+da2DT <- function(daObj, sampVec, obsPops){
+  require(data.table); require(tidyverse)
+
+  if(!c('lda')%in%class(daObj)){
+    stop('Argument `daObj` must be of "lda" class.')
+  }
+
+  # Get DA predictions
+  DA.pred <- predict(daObj)
+
+  # Add in populations then convert to long-format
+  data.table(POP=obsPops, SAMPLE=sampVec, DA.pred$x) %>%
+    melt(., id.vars=c('POP','SAMPLE'), variable.name='AXIS', value.name='SCORE') %>%
+    return()
+}

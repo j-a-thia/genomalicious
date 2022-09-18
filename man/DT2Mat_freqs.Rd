@@ -4,7 +4,13 @@
 \alias{DT2Mat_freqs}
 \title{Convert a data table of allele frequencies into a matrix (or vice versa)}
 \usage{
-DT2Mat_freqs(dat, popCol = NA, locusCol = NA, freqCol = NA, flip = FALSE)
+DT2Mat_freqs(
+  dat,
+  popCol = "POP",
+  locusCol = "LOCUS",
+  freqCol = "FREQ",
+  flip = FALSE
+)
 }
 \arguments{
 \item{dat}{Data table or Matrix: The object to transform. If this is a long data table
@@ -17,11 +23,11 @@ of allele frequencies, then three columns are required:
 The population pool column serves as the pivot point to convert the long data table into a wide matrix.
 If converting from a frequency matrix to a data table, see argument \code{flip}.}
 
-\item{popCol}{Character: The column name with the population information.}
+\item{popCol}{Character: The column name with the population information. Default is 'POP'.}
 
-\item{locusCol}{Character: The column name with the locus information.}
+\item{locusCol}{Character: The column name with the locus information. Default is 'LOCUS'.}
 
-\item{freqCol}{Character: The column name with the Ref allele frequency.}
+\item{freqCol}{Character: The column name with the Ref allele frequency. Default is 'FREQ'.}
 
 \item{flip}{Logical: Instead of converting a (long) data table to a (wide) matrix,
 should a (wide) matrix be converted into a (long) data table? Default = \code{FALSE}.
@@ -41,8 +47,8 @@ a matrix in wide format (loci in columns and populations in rows). The reverse
 can also be done. See also \code{DT2Mat_genos} for converting matrix of genotypes.
 }
 \examples{
-data(data_PoolPi)
-datFreq <- data_PoolPi
+data(data_PoolFreqs)
+datFreq <- data_PoolFreqs
 datFreq
 
 # Convert a long data table to a wide matrix

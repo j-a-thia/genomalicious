@@ -49,11 +49,11 @@
 #' from multidimensional SNP frequency data. PLoS Genetics: 10, e1000695.
 #'
 #' @examples
-#' data(data_PoolPi)
-#' data_PoolPi
+#' data(data_PoolFreqs)
+#' data_PoolFreqs
 #'
 #' # Default allele count estimation
-#' dadi_inputs_pools(dat=data_PoolPi
+#' dadi_inputs_pools(dat=data_PoolFreqs
 #'                   , poolCol='POOL'
 #'                   , locusCol='LOCUS'
 #'                   , refCol='REF'
@@ -63,7 +63,7 @@
 #'                   , poolSub=c('Pop1', 'Pop2'))
 #'
 #' # Using probabilistic allele count estimation
-#' dadi_inputs_pools(dat=data_PoolPi
+#' dadi_inputs_pools(dat=data_PoolFreqs
 #'                   , poolCol='POOL'
 #'                   , locusCol='LOCUS'
 #'                   , refCol='REF'

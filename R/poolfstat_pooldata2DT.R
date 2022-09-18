@@ -1,4 +1,4 @@
-#' Convert a \cod{pooldata} object to a data table of read counts
+#' Convert a \code{pooldata} object to a data table of read counts
 #'
 #' Takes a \code{pooldata} class object (from \code{poolfstat} package) and
 #' converts into a long-format data.table.

@@ -43,12 +43,17 @@ Converts a long format data table of allele frequency information into
 a data frame fit for analysis by OutFLANK (Whitlock & Lotterhos 2015).
 }
 \details{
-
+FST is estimated using modified versions of the \code{OutFLANK} functions
+\code{WC_FST_FiniteSample_Diploids_2Alleles_NoCorr()} and \code{WC_FST_FiniteSample_Diploids_2Alleles()}.
+The observed heterozygosity, Ho, is required to calculate the variance components. However,
+allele frequencies alone do not carry this information. Users can specify a column
+containing the Ho (argument \code{HoCol}) if this is known, otherwise, a naive assumption
+that Ho = He (the expected heterozygosity) is made.
 }
 \examples{
-data('data_PoolPi')
+data('data_PoolFreqs')
 
-freqs <- data_PoolPi
+freqs <- data_PoolFreqs
 
 ofDF <- outflank_input_DTfreqs(
    dat=freqs,

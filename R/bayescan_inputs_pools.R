@@ -36,10 +36,10 @@
 #' for both dominant and codominant markers: A Bayesian perspective. Genetics 180: 977-993.
 #'
 #' @examples
-#' data(data_PoolPi)
+#' data(data_PoolFreqs)
 #' data(data_PoolInfo)
 #'
-#' bayescan_inputs_pool(dat=data_PoolPi
+#' bayescan_inputs_pool(dat=data_PoolFreqs
 #'                      , pool.info=data_PoolInfo
 #'                      , file.bayescan='Bayescan_input.txt'
 #'                      , file.loci='Bayescan_loci.txt'

@@ -24,36 +24,59 @@ save(data_PoolReads, file='data/data_PoolReads.RData')
 refalt <- unique(data_PoolReads[, c('LOCUS', 'REF', 'ALT')])
 
 # Make pool ref allele (pi) frequency estimate data
-data_PoolPi <- fread('inst/extdata/data_PoolPi.csv')
-data_PoolPi <- cbind(data_PoolPi, refalt[match(data_PoolPi$LOCUS, refalt$LOCUS), c('REF', 'ALT')]
-                         , INDS=data_PoolInfo$INDS[match(data_PoolPi$POOL, data_PoolInfo$POOL)]
+data_PoolFreqs <- fread('inst/extdata/data_PoolFreqs.csv')
+data_PoolFreqs <- cbind(data_PoolFreqs, refalt[match(data_PoolFreqs$LOCUS, refalt$LOCUS), c('REF', 'ALT')]
+                         , INDS=data_PoolInfo$INDS[match(data_PoolFreqs$POOL, data_PoolInfo$POOL)]
                          )
-save(data_PoolPi, file='data/data_PoolPi.RData')
+save(data_PoolFreqs, file='data/data_PoolFreqs.RData')
 
 # Make a wide matrix of allele frequencies
-data_Freqs <- as.data.frame(
-                          spread(fread('inst/extdata/data_PoolPi.csv')[, c('POOL', 'LOCUS', 'PI')]
-                            , key=LOCUS, value=PI))
-rownames(data_Freqs) <- data_Freqs$POOL
-data_Freqs <- as.matrix(data_Freqs[, -which(colnames(data_Freqs)=='POOL')])
-save(data_Freqs, file='data/data_Freqs.RData')
-
-# data_FreqsLong <- as.data.table(data_Freqs)
-# data_FreqsLong$POP <- rownames(data_Freqs)
-# data_FreqsLong <- melt(data_FreqsLong, id='POP', variable.name='LOCUS', value.name='FREQ')
-# save(data_FreqsLong, file='data/data_FreqsLong.RData')
+data_FreqsMat <- as.data.frame(
+                          spread(fread('inst/extdata/data_PoolFreqs.csv')[, c('POOL', 'LOCUS', 'FREQ')]
+                            , key=LOCUS, value=FREQ))
+rownames(data_FreqsMat) <- data_FreqsMat$POOL
+save(data_FreqsMat, file='data/data_FreqsMat.RData')
 
 # Make the 4 pop genotype dataset
-data_4pops <- readRDS('inst/extdata/data_FastSimCoal_30Diploids.RDS')
-setnames(data_4pops, c('IND', 'GENO'), c('SAMPLE', 'GT'))
-data_4pops$GT[data_4pops$GT=='1/0'] <- '0/1'
-goodloci <- filter_maf(data_4pops, 0.01, 'genos')
-data_4pops <- data_4pops[LOCUS %in% goodloci]
+fsc_genos <- fread('inst/extdata/fsc2_radseq_sim_1_1.gen', skip=1)
+fsc_head <- colnames(fread('inst/extdata/fsc2_radseq_sim_1_1.gen', nrow=0))
+
+fsc_tab <- fsc_genos[, 1:(ncol(fsc_genos)-1)] %>%
+  setnames(., new=fsc_head) %>%
+  setnames(
+    .,
+    old=c('Chrom','Pos','Anc_all','Der_all'),
+    new=c('CHROM','POS','REF','ALT')
+  ) %>%
+  melt(
+    .,
+    id.vars=c('CHROM','POS','REF','ALT'),
+    variable.name='SAMPLE',
+    value.name='GT'
+  ) %>%
+  .[, SAMPLE:=as.character(SAMPLE)] %>%
+  .[, SAMPLE:=sub('A_', 'Ind', SAMPLE)] %>%
+  .[, POP:=sub('Ind', 'Pop', sub('\\_.*', '', SAMPLE))] %>%
+  .[, CHROM:=paste0('Contig', CHROM)] %>%
+  .[, LOCUS:=paste(CHROM, POS, sep='_')] %>%
+  .[, c('CHROM','POS','LOCUS','POP','SAMPLE','GT')] %>%
+  print
+
+fsc_tab[, length(unique(LOCUS)), by=CHROM]$V1 %>%  table
+
+keep.loci <- fsc_tab[LOCUS %in% filter_maf(fsc_tab, type='genos', maf=0.05)]$LOCUS %>%
+  unique() %>% .[1:500]
+
+fsc_tab[LOCUS %in% keep.loci, length(unique(LOCUS)), by=CHROM]$V1 %>%  table
+
+fsc_tab[GT=='1/0', GT:='0/1']
+data_4pops <- fsc_tab[LOCUS %in% keep.loci]
+
+data_4pops %>%  pca_genos(., popCol='POP') %>%  pca_plot
+
 save(data_4pops, file='data/data_4pops.RData')
 
 # Make a VCF from 4 pop genotypes
-data("data_4pops")
-
 sub4pops <- data_4pops[
   LOCUS %in% sample(x=unique(data_4pops$LOCUS), size=8, replace=FALSE)
   & SAMPLE %in% data_4pops[, unique(SAMPLE)[1:8], by=POP]$V1, ]
@@ -88,7 +111,7 @@ vcf4pops <- do.call('rbind', lapply(unique(sub4pops$LOCUS), function(locus){
   vcfRow <- matrix('.', nrow=1, ncol=9+nrow(X), dimnames=list(NULL, col_names))
 
   vcfRow[,'CHROM'] <- X$CHROM[1]
-  vcfRow[1,'POS'] <- strsplit(locus, '_')[[1]][3]
+  vcfRow[1,'POS'] <- X$POS[1]
   vcfRow[1,'REF'] <- alleles[1]
   vcfRow[1,'ALT'] <- alleles[2]
   vcfRow[1,'INFO'] <- paste0('DP=', sum(X$DP))
@@ -108,12 +131,5 @@ vcf4pops <- do.call('rbind', lapply(unique(sub4pops$LOCUS), function(locus){
 }))
 
 fwrite(vcf4pops, 'inst/extdata/data_indseq.vcf', sep='\t', quote=FALSE)
-
-##This is a toy dataset for the R package genomalicious - it emulates a VCF file for individually genotyped data
-##INFO=<ID=DP,Number=1,Type=Integer,Description='The total depth across samples'>
-##FORMAT=<ID=GT,Number=1,Type=String,Description='Genotype'>
-##FORMAT=<ID=DP,Number=1,Type=Integer,Description='The total depth in a sample'>
-##FORMAT=<ID=RO,Number=1,Type=Integer,Description='The reference allele counts in a sample'>
-##FORMAT=<ID=AO,Number=1,Type=Integer,Description='The alternate allele counts in a sample'>
 
 

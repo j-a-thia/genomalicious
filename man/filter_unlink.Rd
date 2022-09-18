@@ -4,7 +4,13 @@
 \alias{filter_unlink}
 \title{Filter for unlinked loci}
 \usage{
-filter_unlink(dat, chromCol = "CHROM", locusCol = "LOCUS")
+filter_unlink(
+  dat,
+  chromCol = "CHROM",
+  locusCol = "LOCUS",
+  posCol = "POS",
+  method = "random"
+)
 }
 \arguments{
 \item{dat}{Data table: The sequencing read information, must contain the columns:
@@ -12,23 +18,52 @@ filter_unlink(dat, chromCol = "CHROM", locusCol = "LOCUS")
 \enumerate{
    \item The chromosome (or contig) ID (see param \code{chromCol}).
    \item The locus ID (see param \code{locusCol}).
+   \item The SNP position (see param \code{posCol}).
 }}
 
 \item{chromCol}{Character: The chromosome (or contig) information column. Default = \code{'CHROM'}.}
 
 \item{locusCol}{Character: The locus information column. Default = \code{'LOCUS'}.}
+
+\item{posCol}{Character: The locus position column. Default = \code{'POS'}.}
+
+\item{method}{Character: How should the filtering be performed? Default = \code{'random'},
+a single random SNP will be drawn per contig. Alternatively, \code{'first'} can
+be used to draw the first SNP in the contig.}
 }
 \value{
 Returns a character vector of locus names in \code{dat$LOCUS} that are not on the same
 contig in \code{dat$CHROM}.
 }
 \description{
-Parses a data table of sequence read information to randomly draw one locus
+Parses a data table of sequence read information to draw one locus
 per contig.
+}
+\details{
+Note, this function is specifically designed for RADseq data where
+contigs comprise small (100s bp) genomic regions assembed from restriction
+digest fragments. It should not be used on genomic contigs from genome assembly.
+Additionally, it is also important to follow up filtering with formal tests of
+linkage disequilibrium.
 }
 \examples{
 data(data_4pops)
 
-filter_unlink(data_4pops)
+# Number of unique SNP per locus
+data_4pops[, length(unique(LOCUS)), by=CHROM]$V1 \%>\% table
+
+# Randomly sample 1 SNP per locus
+snp.rand.1st <- filter_unlink(data_4pops, method='random')
+snp.rand.2nd <- filter_unlink(data_4pops, method='random')
+
+# Number of SNPs different between random sets
+setdiff(snp.rand.1st, snp.rand.2nd) \%>\% length
+
+# Sample first SNP per locus
+snp.first.1st <- filter_unlink(data_4pops, method='first')
+snp.first.2nd <- filter_unlink(data_4pops, method='first')
+
+# Number of SNPs different between random sets
+setdiff(snp.first.1st, snp.first.2nd) \%>\% length
 
 }

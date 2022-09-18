@@ -2,7 +2,7 @@
 % Please edit documentation in R/locus_overlap.R
 \name{locus_overlap}
 \alias{locus_overlap}
-\title{Proability of random null overlap among groups for outlier loci}
+\title{Probability of random null overlap among groups for outlier loci}
 \usage{
 locus_overlap(lociList, lociSig, perms = 1000)
 }

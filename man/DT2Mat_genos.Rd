@@ -4,7 +4,13 @@
 \alias{DT2Mat_genos}
 \title{Convert a data table of genotypes into a matrix (or vice versa)}
 \usage{
-DT2Mat_genos(dat, sampCol = NA, locusCol = NA, genoCol = NA, flip = FALSE)
+DT2Mat_genos(
+  dat,
+  sampCol = "SAMPLE",
+  locusCol = "LOCUS",
+  genoCol = "GT",
+  flip = FALSE
+)
 }
 \arguments{
 \item{dat}{Data table or Matrix: The object to transform. If this is a long data table
@@ -19,11 +25,14 @@ Three columns are required:
 The sampled individual ID column serves as the pivot point to convert the long data table into a wide matrix.
 If converting from a genotypes matrix to a data table, see argument \code{flip}.}
 
-\item{sampCol}{Character: The column name with the sampled individual information.}
+\item{sampCol}{Character: The column name with the sampled individual information.
+Default is 'SAMPLE'.}
 
-\item{locusCol}{Character: The column name with the locus information.}
+\item{locusCol}{Character: The column name with the locus information.
+Default is 'LOCUS'.}
 
-\item{genoCol}{Character: The column name with the genotype information.}
+\item{genoCol}{Character: The column name with the genotype information.
+Default is 'GT'.}
 
 \item{flip}{Logical: Instead of converting a (long) data table to a (wide) matrix,
 should a (wide) matrix be converted into a (long) data table? Default = \code{FALSE}.

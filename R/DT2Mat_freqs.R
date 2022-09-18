@@ -14,11 +14,11 @@
 #' The population pool column serves as the pivot point to convert the long data table into a wide matrix.
 #' If converting from a frequency matrix to a data table, see argument \code{flip}.
 #'
-#' @param popCol Character: The column name with the population information.
+#' @param popCol Character: The column name with the population information. Default is 'POP'.
 #'
-#' @param locusCol Character: The column name with the locus information.
+#' @param locusCol Character: The column name with the locus information. Default is 'LOCUS'.
 #'
-#' @param freqCol Character: The column name with the Ref allele frequency.
+#' @param freqCol Character: The column name with the Ref allele frequency. Default is 'FREQ'.
 #'
 #' @param flip Logical: Instead of converting a (long) data table to a (wide) matrix,
 #' should a (wide) matrix be converted into a (long) data table? Default = \code{FALSE}.
@@ -32,8 +32,8 @@
 #' the Ref allele frequency.
 #'
 #' @examples
-#' data(data_PoolPi)
-#' datFreq <- data_PoolPi
+#' data(data_PoolFreqs)
+#' datFreq <- data_PoolFreqs
 #' datFreq
 #'
 #' # Convert a long data table to a wide matrix
@@ -43,7 +43,7 @@
 #' freqDT <- DT2Mat_freqs(freqMat, popCol='POP', locusCol='LOCUS', freqCol='FREQ', flip=TRUE)
 #'
 #' @export
-DT2Mat_freqs <- function(dat, popCol=NA, locusCol=NA, freqCol=NA, flip=FALSE){
+DT2Mat_freqs <- function(dat, popCol='POP', locusCol='LOCUS', freqCol='FREQ', flip=FALSE){
   # BEGIN ............
 
   # --------------------------------------------+

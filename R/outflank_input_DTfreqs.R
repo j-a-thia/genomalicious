@@ -25,7 +25,7 @@
 #' heterozygotes. Affects estimation of FST, see details. Default = \code{NULL}.
 #'
 #' @details FST is estimated using modified versions of the \code{OutFLANK} functions
-#' code{WC_FST_FiniteSample_Diploids_2Alleles_NoCorr()} and \code{WC_FST_FiniteSample_Diploids_2Alleles().
+#' \code{WC_FST_FiniteSample_Diploids_2Alleles_NoCorr()} and \code{WC_FST_FiniteSample_Diploids_2Alleles()}.
 #' The observed heterozygosity, Ho, is required to calculate the variance components. However,
 #' allele frequencies alone do not carry this information. Users can specify a column
 #' containing the Ho (argument \code{HoCol}) if this is known, otherwise, a naive assumption
@@ -38,9 +38,9 @@
 #' of FST. The American Naturalist 186.
 #'
 #' @examples
-#' data('data_PoolPi')
+#' data('data_PoolFreqs')
 #'
-#' freqs <- data_PoolPi
+#' freqs <- data_PoolFreqs
 #'
 #' ofDF <- outflank_input_DTfreqs(
 #'    dat=freqs,

@@ -1,4 +1,4 @@
-#' Proability of random null overlap among groups for outlier loci
+#' Probability of random null overlap among groups for outlier loci
 #'
 #' This functions calculates the null probability of observing
 #' overlap in outlier loci between 2+ groups with respect to a scenario

@@ -55,8 +55,8 @@
 #'
 #' @examples
 #' # FROM ALLELE FREQUENCIES
-#' data(data_Freqs)
-#' freqDat <- data_Freqs
+#' data(data_FreqsMat)
+#' freqDat <- data_FreqsMat
 #'
 #' # Create a sample size matrix (order is important!)
 #' freqSamps <- matrix(30, nrow=nrow(freqDat), ncol=ncol(freqDat), dimnames=list(NULL, colnames(freqDat)))

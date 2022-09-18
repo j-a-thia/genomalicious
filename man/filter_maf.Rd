@@ -7,7 +7,7 @@
 filter_maf(
   dat,
   maf = 0.05,
-  type = "freqs",
+  type = "genos",
   sampCol = "SAMPLE",
   locusCol = "LOCUS",
   genoCol = "GT"
@@ -40,24 +40,21 @@ Only needed when \code{dat} is a long-format data table of genotypes.}
 
 \item{genoCol}{Character: The column name with the genotype information. Default = \code{'GT'}.
 Only needed when \code{dat} is a long-format data table of genotypes.}
-
-\item{popCol}{Character: The column name with the sampled population information. Default = \code{'POP'}.
-Only needed when \code{dat} is a long-format data table of genotypes.}
 }
 \value{
 Returns an integer vector of column numbers in \code{dat} that conform
 to the MAF value specified. These values can then be used to filter the allele frequency matrix.
 }
 \description{
-Parses a matrix of allele frequencies to determine which loci conform to the
-desired minor allele frequency.
+Parses a matrix of data table  of allele frequencies to determine which loci
+conform to the desired minor allele frequency threshold.
 }
 \examples{
 # MATRIX OF ALLELE FREQUENCIES
-data(data_Freqs)
+data(data_FreqsMat)
 
 # Filter for MAF=0.20
-filter_maf(data_Freqs, maf=0.20, type='freqs')
+filter_maf(data_FreqsMat, maf=0.20, type='freqs')
 
 # LONG TABLE OF GENOTYPES
 data(data_4pops)

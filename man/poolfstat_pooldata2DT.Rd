@@ -2,7 +2,7 @@
 % Please edit documentation in R/poolfstat_pooldata2DT.R
 \name{poolfstat_pooldata2DT}
 \alias{poolfstat_pooldata2DT}
-\title{Convert a \cod{pooldata} object to a data table of read counts}
+\title{Convert a \code{pooldata} object to a data table of read counts}
 \usage{
 poolfstat_pooldata2DT(pooldata)
 }

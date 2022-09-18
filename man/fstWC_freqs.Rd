@@ -61,8 +61,8 @@ Takes a matrix of biallelic allele frequencies, and a matrix of sample sizes,
 and calculates Weir and Cockerham's FST, i.e. theta (Weir & Cockerham, 1984).
 }
 \examples{
-data(data_Freqs)
-freqMat <- data_Freqs
+data(data_FreqsMat)
+freqMat <- data_FreqsMat
 sampMat <- matrix(rep(30, 32), nrow=4, ncol=8)
 rownames(sampMat) <- paste0('Pop', 1:4)
 colnames(sampMat) <- colnames(freqMat); rownames(sampMat) <- rownames(freqMat)

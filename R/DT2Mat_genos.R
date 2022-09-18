@@ -17,10 +17,13 @@
 #' If converting from a genotypes matrix to a data table, see argument \code{flip}.
 #'
 #' @param sampCol Character: The column name with the sampled individual information.
+#' Default is 'SAMPLE'.
 #'
 #' @param locusCol Character: The column name with the locus information.
+#' Default is 'LOCUS'.
 #'
 #' @param genoCol Character: The column name with the genotype information.
+#' Default is 'GT'.
 #'
 #' @param flip Logical: Instead of converting a (long) data table to a (wide) matrix,
 #' should a (wide) matrix be converted into a (long) data table? Default = \code{FALSE}.
@@ -45,7 +48,7 @@
 #'               , flip=FALSE)
 #'
 #' @export
-DT2Mat_genos <- function(dat, sampCol=NA, locusCol=NA, genoCol=NA, flip=FALSE){
+DT2Mat_genos <- function(dat, sampCol='SAMPLE', locusCol='LOCUS', genoCol='GT', flip=FALSE){
 
   # --------------------------------------------+
   # Libraries and assertions

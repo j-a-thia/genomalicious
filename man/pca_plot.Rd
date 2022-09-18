@@ -10,7 +10,8 @@ pca_plot(
   axisIndex = NULL,
   pops = NULL,
   plotColours = NULL,
-  look = "ggplot"
+  look = "ggplot",
+  showPlot = TRUE
 )
 }
 \arguments{
@@ -43,6 +44,9 @@ if unspecified.}
 \item{look}{Character: The look of the plot. Default = \code{'ggplot'}, the
 typical gray background with gridlines produced by \code{ggplot2}. Alternatively,
 when set to \code{'classic'}, produces a base R style plot.}
+
+\item{showPlot}{Logical: Should the plot be shown automatically? Default is
+\code{TRUE}, otherwise \code{FALSE}.}
 }
 \value{
 Prints the plot to screen, and also returns an object of
@@ -59,7 +63,7 @@ datGt <- data_4pops
 
 # Conduct the PCA with Patterson et al.'s (2006) normalisation, and
 # population specified
-pca <- pca_DTgenos(pcaObj=datGt, scaling='patterson', popCol='POP')
+pca <- pca_genos(dat=datGt, scaling='patterson', popCol='POP')
 
 # Plot the PCA
 pca_plot(pca)
@@ -69,7 +73,7 @@ pca_plot(pca
             , axisIndex=c(2,3)
             , pops=pca$pops
             , plotColours=c(Pop1='gray30', Pop2='royalblue', Pop3='palevioletred3', Pop4='plum2')
-            , look='classic')
+            , look='classic', showPlot=TRUE)
 
 
 }
