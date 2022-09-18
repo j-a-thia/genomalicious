@@ -21,7 +21,7 @@
 pca2DT <- function(pcaObj){
   require(data.table); require(tidyverse)
 
-  if(!class('prcomp')%in%class(pcaObj)){
+  if(!c('prcomp')%in%class(pcaObj)){
     stop('Argument `pcaObj` must be of "prcomp" class.')
   }
 
