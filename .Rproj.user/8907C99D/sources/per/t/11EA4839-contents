@@ -1,12 +1,12 @@
 #' Perform a DAPC of individual genotype data in a data table
 #'
 #' Takes a long-format data table of genotypes and conducts a PCA using R's
-#' \code{prcomp()} function, then fits a DA using R's \code{lda()} function.
+#' \code{prcomp} function, then fits a DA using R's \code{lda} function.
 #' Can also be used to assess DA model fit using a leave-one-out cross-validation
 #' or training-testing partitioning.
 #'
 #' @param dat Data table: A long data table, e.g. like that imported from
-#' \code{vcf2DT}. Genotypes can be coded as '/' separated characters
+#' \code{genomalicious::vcf2DT}. Genotypes can be coded as '/' separated characters
 #' (e.g. '0/0', '0/1', '1/1'), or integers as Alt allele counts (e.g. 0, 1, 2).
 #' Must contain the following columns,
 #' \enumerate{
@@ -29,8 +29,8 @@
 #' @param genoCol Character: The column name with the genotype information.
 #' Default is \code{'GT'}.
 #'
-#' @param scaling Character: How should the data (loci) be scaled?
-#' Set to \code{'covar'} to scale to mean = 0, but variance is not
+#' @param scaling Character: How should the data (loci) be scaled for PCA?
+#' Default is \code{'covar'} to scale to mean = 0, but variance is not
 #' adjusted, i.e. PCA on a covariance matrix. Set to \code{'corr'}
 #' to scale to mean = 0 and variance = 1, i.e. PCA on a
 #' correlation matrix. Set to \code{'patterson'} to use the
@@ -38,7 +38,7 @@
 #' if you do not want to do any scaling before PCA.
 #'
 #' @param pcPreds Integer: The number of leading PC axes to use as predictors
-#' of among-population genetic differences in DA.
+#' of among-population genetic differences in DA. See details.
 #'
 #' @param method Character: The analysis to perform. Default is \code{'fit'},
 #' which is a DAPC fitted to all the samples. \code{'loo_cv'} performs
@@ -50,8 +50,124 @@
 #'
 #' @param trainProp Numeric: The proportion of the data to reserved as the
 #' training set, with the remaining proportion used as the testing set.
-#' Default is 0.7.
-
+#' Default is 0.7. See details.
+#'
+#' @details DAPC was made popular in the population genetics/molecular ecology
+#' community following Jombart et al.'s (2010) paper. The method uses a DA
+#' to model the genetic differences among populations using PC axes of genotypes
+#' as predictors.
+#'
+#' The choice of the number of PC axes to use as predictors of genetic
+#' differences among populations should be determined using the \emp{k}-1 criterion
+#' described in Thia (2022). This criterion is based on the findings of
+#' Patterson et al. (2006) that only the leading \emp{k}-1 PC axes of a genotype
+#' dataset capture biologically meaningful structure. Users can use the function
+#' \code{genomalicious::dapc_infer} to examine eigenvalue screeplots and
+#' perform K-means clustering with different parameters to infer the number of
+#' biologically informative PC axes.
+#'
+#' Assessing model fit of DAPC requires partitioning data into sets
+#' for training and testing. When \code{method=='loo_cv'}, leave-one-out cross-validation
+#' is performed: each ith sample is withheld as a testing sample, the model is
+#' fit without the ith sample, and then the model is used to predict the ith sample's
+#' population. This method is preferable when sample sizes are small.
+#' When \code{method=='train_test'}, a proportion of \code{trainProp} individuals
+#' from each populations are used to train the DAPC model which is then used to
+#' predict the populations in the remaining testing individuals.
+#'
+#' @references
+#' Jombart et al. (2010) BMC Genetics. DOI: 10.1186/1471-2156-11-94
+#' Patterson et al. (2006) PLoS Genetics. DOI: 10.1371/journal.pgen.0020190
+#' Thia (2022) Mol. Ecol. DOI: 10.1111/1755-0998.13706
+#'
+#' @returns Returns a list, whose contents depend on the \code{method} specified.
+#'
+#' If \code{method=='fit'}, the list contains:
+#' \enumerate{
+#'   \item \code{$da.fit}: an \code{lda} object, a DA of genotypic PC axes.
+#'   \item \code{$da.tab}: a data table of LD axis scores, with columns \code{$POP},
+#'      the designated population, \code{$SAMPLE}, the sample ID, \code{$[axis]},
+#'      where each \code{[axes]} is a column for a different DA axis.
+#'   \item \code{$da.prob}: a data table of posterior probabilities of group
+#'      assignment for each sample, with columns \code{$POP}, the designated
+#'      population, \code{$SAMPLE}, the sample ID, \code{$POP.PRED}, the predicted
+#'      population, \code{$PROB}, the posterior probability for the predicted
+#'      populations (sums to 1 across predicted populations per sample).
+#'   \item \code{pca.fit}: a \code{prcomp} object, a PCA of genotypes.
+#'   \item \code{pca.tab}: a data table of PC axis scores, with columns \code{$POP},
+#'      the designated populations, \code{$SAMPLE}, the sample ID, \code{$[axis]},
+#'      where each \code{[axes]} is a column for a different PC axis.
+#'   \item \code{snp.contrib}: a data table of SNP contributions to LD axes,
+#'      with columns, \code{$LOCUS}, the SNP locus, \code{$LD[x]}, the individual
+#'      LD axes, with \code{[x]} denoting the axis number.
+#'
+#' If \code{method=='loo_cv'} or \code{method=='train_test'}, the list contains:
+#' \enumerate{
+#'  \item \code{$tab}: a data table of predictions for tested samples, with
+#'     columns, \code{$POP}, the designated population, \code{SAMPLE}, the
+#'     sample ID, and \code{$POP.PRED}, the predicted population. Note, that
+#'     for \code{method=='loo_cv'}, as samples with be present, but for
+#'     \code{method=='train_test'}, only the samples retained for the testing
+#'     set will be present.
+#'  \item \code{$global}: a single numeric, the global \strong{correct} assignment rate.
+#'  \item \code{$pairs.long}: a long-format data table, of pairwise population correct
+#'     assignment rates, with columns, \code{$POP}, the designated population,
+#'     \code{$POP.PRED}, the predicted population, and \code{$ASSIGN}, the
+#'     assignment rate. Note, the \strong{correct} assignment rate are those
+#'     instances where values in \code{POP==POP.PRED}.
+#'  \item \code{$pairs.wide}: a wide-format data table of pairwise population
+#'     assignment rates, with columns, \code{$POP}, the designated population,
+#'     and ${[pop]}, the predicted populations, where each possible predicted
+#'     population is a \code{[pop]} column. The cell contents are the assignment
+#'     rate, with \strong{correct} assignment rates on the diagonal.
+#' }
+#'
+#' @examples
+#' data(data_4pops)
+#' dat <- data_4pops
+#'
+#' ### Fit the DAPC with the first 3 PC axes as predictors
+#' DAPC.fit <- dapc_fit(dat, pcPreds=3, method='fit')
+#'
+#' # Table of LD and PC axis scores
+#' DAPC.fit$da.tab
+#' DAPC.fit$pca.tab
+#'
+#' # The lda and prcomp objects
+#' DAPC.fit$da.fit
+#' DAPC.fit$pca.fit
+#'
+#' # The contributions of SNP to the LD axes
+#' DAPC.fit$snp.contrib
+#'
+#' # The posterior probabilities
+#' DAPC.fit$da.prob
+#'
+#' ### Leave-one out cross-validation with 2 cores
+#' DAPC.loo <- dapc_fit(dat, method='loo_cv', pcPreds=3, numCores=2)
+#'
+#' # Predictions
+#' DAPC.loo$tab
+#'
+#' # Global correct assignment rate
+#' DAPC.loo$global
+#'
+#' # Pairwise assignment rates in long-format data table
+#' DAPC.loo$pairs.long
+#'
+#' # Pairwise correct assignment rates from long-format data table
+#' DAPC.loo$pairs.long[POP==POP.PRED]
+#'
+#' # Pairwise assignment rates in wide-format data table
+#' DAPC.loo$pairs.wide
+#'
+#' #### Training-testing partitioning with 80% used as trianing
+#' DAPC.tt <- dapc_fit(dat, method='train_test', pcPreds=3, trainProp=0.8)
+#'
+#' # Pairwise assignment rates in wide-format data table
+#' DAPC.tt$pairs.wide
+#'
+#' @export
 
 dapc_fit <- function(
   dat, sampCol='SAMPLE', locusCol='LOCUS', genoCol='GT', popCol='POP',
@@ -129,10 +245,13 @@ dapc_fit <- function(
 
   ### Fit DAPC to all data
   if(method=='fit'){
+    # Population reference table
+    popRefs <- dat[, c('POP','SAMPLE')] %>% unique()
+
     # Fit the PCA
     PCA <- pca_genos(dat, scaling=scaling, popCol=popCol)
 
-    # Populations
+    # Populations as vector in PCA
     pops <- PCA$pops %>%  as.factor()
 
     # PC axes as predictors
@@ -151,15 +270,23 @@ dapc_fit <- function(
     # Tables of DA and PCA scores
     DA.tab <- da2DT(DA, sampVec=rownames(X), obsPops=pops)
     PCA.tab <- pca2DT(PCA) %>%
-      .[AXIS %in% paste0('PC', 1:pcPreds)]
+      left_join(., popRefs) %>%
+      .[, c('POP','SAMPLE',paste0('PC',1:pcPreds)), with=FALSE]
+
+    # Posterior probabilities
+    DA.prob <- predict(DA)$posterior %>%
+      as.data.frame %>%
+      rownames_to_column(., 'SAMPLE') %>%
+      as.data.table %>%
+      left_join(., popRefs) %>%
+      melt(., id.vars=c('POP','SAMPLE'), variable.name='POP.PRED', value.name='PROB')
 
     # Output
-    list(
-      da.fit=DA, da.tab=DA.tab,
+    output <- list(
+      da.fit=DA, da.tab=DA.tab, da.prob=DA.prob,
       pca.fit=PCA, pca.tab=PCA.tab,
       snp.contrib=snp.da.contr
-    ) %>%
-      return()
+    )
   }
 
   ### Leave-one-out cross-validation
@@ -275,11 +402,13 @@ dapc_fit <- function(
     predPairsWide <- predPairsLong %>%
       dcast(., POP~POP.PRED, value.var='ASSIGN')
 
-    list(
-      global=global, pairs.long=predPairsLong, pairs.wide=predPairsWide
-    ) %>%
-      return()
+    output <- list(
+      tab=predTab, global=global, pairs.long=predPairsLong, pairs.wide=predPairsWide
+    )
   }
+
+  ### Output results
+  return(output)
 }
 
 

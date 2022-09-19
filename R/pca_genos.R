@@ -15,7 +15,7 @@
 #' }
 #'
 #' @param scaling Character: How should the data (loci) be scaled?
-#' Set to \code{'covar'} to scale to mean = 0, but variance is not
+#' Default is \code{'covar'} to scale to mean = 0, but variance is not
 #' adjusted, i.e. PCA on a covariance matrix. Set to \code{'corr'}
 #' to scale to mean = 0 and variance = 1, i.e. PCA on a
 #' correlation matrix. Set to \code{'patterson'} to use the

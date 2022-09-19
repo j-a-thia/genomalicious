@@ -4,18 +4,21 @@
 \alias{pca2DT}
 \title{Convert a \code{prcomp} object to a long-format \code{data.table}}
 \usage{
-pca2DT(pcaObj)
+pca2DT(pcaObj, pops = NULL)
 }
 \arguments{
 \item{pcaObj}{Prcomp: An object produced by \code{prcomp}. If produced from
 \code{genomalicious::pca_genos}, it may contain a \code{$pops} indexed
 item, which contains the population designations for each sample in
 \code{pcaObj$x}.}
+
+\item{pops}{Character: An optional vector of population IDs. Default is \code{NULL}.
+Be sure to check that they match samples in rows of \code{pcaObj$x}.}
 }
 \value{
 Returns a long-format data.table with columns \code{$POP}, the
-population IDs, \code{$SAMPLE}, the sample IDs, \code{$AXIS}, the PC axis ID,
-and \code{$SCORE}, the score on the PC axis.
+population IDs (if data available), \code{$SAMPLE}, the sample IDs,
+\code{$AXIS}, the PC axis ID, and \code{$SCORE}, the score on the PC axis.
 }
 \description{
 Convert a \code{prcomp} object to a long-format \code{data.table}
@@ -23,8 +26,23 @@ Convert a \code{prcomp} object to a long-format \code{data.table}
 \examples{
 data(data_4pops)
 
-PCA <- pca_genos(data_4pops, popCol='POP')
+# With populations
+PCA.pops <- pca_genos(data_4pops, popCol='POP')
 
-pca2DT(PCA)
+pca2DT(PCA.pops)
+
+# Without populations
+PCA.nopops <- pca_genos(data_4pops)
+
+pca2DT(PCA.nopops)
+
+# Manual populations
+pops <- rownames(PCA.nopops$x) \%>\%
+   sub('Ind', '', .) \%>\%
+   sub('_.*', '', .)
+
+pops
+
+pca2DT(PCA.nopops, pops=pops)
 
 }

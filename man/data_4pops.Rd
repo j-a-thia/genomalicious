@@ -12,15 +12,16 @@ data(data_4pops)
 }
 \description{
 A dataset containing individual genotypes for 4 populations, each with 30
-individuals, and 1205 biallelic SNP loci. Simulated with FastSimCoal2 (Excoffier et al., 2013).
+individuals, and 200 biallelic SNP loci. Simulated with FastSimCoal2 (Excoffier et al., 2013).
 }
 \details{
 \itemize{
+  \item \code{CHROM} = The contig ID.
+  \item \code{POS} = The SNP position.
+  \item \code{LOCUS} = The unique locus ID.
   \item \code{POP} = The population ID.
   \item \code{SAMPLE} = The sample ID: Ind[Pop]_[Number].
-  \item \code{CHROM} = The contig ID.
-  \item \code{LOCUS} = The unique locus ID.
-  \item \code{GT} = The genotype ID, allele separated by '/'. 0 = Ref allele, 1 = Alt allele.
+  \item \code{GT} = The genotype ID, coded as counts of the alternate allele.
 }
 }
 \references{
