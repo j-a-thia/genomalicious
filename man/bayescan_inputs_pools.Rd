@@ -50,14 +50,18 @@ of indivdiuals carrying an allele is rounded to nearest integer (e.g. 1.5 = 2, a
 with the exception when the number of individauls is < 1 but > 0, in which it is always rounded to 1.
 }
 \examples{
+library(genomalicious)
+
 data(data_PoolFreqs)
 data(data_PoolInfo)
 
-bayescan_inputs_pool(dat=data_PoolFreqs
-                     , pool.info=data_PoolInfo
-                     , file.bayescan='Bayescan_input.txt'
-                     , file.loci='Bayescan_loci.txt'
-                     , poolCol='POOL', locusCol='LOCUS', freqCol='PI')
+bayescan_inputs_pools(dat=data_PoolFreqs,
+pool.info=data_PoolInfo,
+file.bayescan='Bayescan_input.txt',
+file.loci='Bayescan_loci.txt',
+poolCol='POOL',
+locusCol='LOCUS',
+freqCol='FREQ')
 
 }
 \references{

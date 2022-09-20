@@ -14,29 +14,6 @@ roxygenise()
 # Load currently installed genomalicious
 library(genomalicious)
 
-# Make pool info data
-data_PoolInfo <- data.table(POOL=paste0('Pop', 1:4), INDS=30)
-save(data_PoolInfo, file='data/data_PoolInfo.RData')
-
-# Make pool reads data
-data_PoolReads <- fread('inst/extdata/data_PoolReads.csv')
-save(data_PoolReads, file='data/data_PoolReads.RData')
-refalt <- unique(data_PoolReads[, c('LOCUS', 'REF', 'ALT')])
-
-# Make pool ref allele (pi) frequency estimate data
-data_PoolFreqs <- fread('inst/extdata/data_PoolFreqs.csv')
-data_PoolFreqs <- cbind(data_PoolFreqs, refalt[match(data_PoolFreqs$LOCUS, refalt$LOCUS), c('REF', 'ALT')]
-                         , INDS=data_PoolInfo$INDS[match(data_PoolFreqs$POOL, data_PoolInfo$POOL)]
-                         )
-save(data_PoolFreqs, file='data/data_PoolFreqs.RData')
-
-# Make a wide matrix of allele frequencies
-data_FreqsMat <- as.data.frame(
-                          spread(fread('inst/extdata/data_PoolFreqs.csv')[, c('POOL', 'LOCUS', 'FREQ')]
-                            , key=LOCUS, value=FREQ))
-rownames(data_FreqsMat) <- data_FreqsMat$POOL
-save(data_FreqsMat, file='data/data_FreqsMat.RData')
-
 # Make the 4 pop genotype dataset
 fsc_genos <- fread('inst/extdata/fsc2_radseq_sim_1_1.gen', skip=1)
 fsc_head <- colnames(fread('inst/extdata/fsc2_radseq_sim_1_1.gen', nrow=0))
@@ -70,60 +47,74 @@ keep.loci <- fsc_tab[LOCUS %in% filter_maf(fsc_tab, type='genos', maf=0.05)]$LOC
 fsc_tab[LOCUS %in% keep.loci, length(unique(LOCUS)), by=CHROM]$V1 %>%  table
 
 fsc_tab[GT=='1/0', GT:='0/1']
-data_4pops <- fsc_tab[LOCUS %in% keep.loci]
+data_4pops <- fsc_tab[LOCUS %in% keep.loci] %>%
+  .[, DP:=rnbinom(n=1, size=15, prob=0.3), by=c('CHROM','SAMPLE')] %>%
+  .[, AO:=rbinom(n=1, size=DP, prob=0.5), by=c('CHROM','SAMPLE')] %>%
+  .[, RO:=DP-AO]
+
+locs_4pops <- data_4pops[, c('LOCUS')] %>% unique()
+locs_4pops <- cbind(
+  locs_4pops,
+  sapply(1:nrow(locs_4pops), function(i){
+    sample(c('T','A','C','G'), 2, replace=FALSE)
+  }) %>%
+    t() %>%
+    as.data.table() %>%
+    setnames(., new=c('ALT','REF'))
+)
+
+data_4pops <- left_join(data_4pops, locs_4pops)
 
 data_4pops %>%  pca_genos(., popCol='POP') %>%  pca_plot
 
 save(data_4pops, file='data/data_4pops.RData')
 
+# Make pool data
+data_PoolFreqs <- data_4pops %>%
+  .[, .(FREQ=sum(GT)/(length(GT)*2)), by=c('CHROM','POS','LOCUS','ALT','REF','POP')] %>%
+  .[, DP:=rnbinom(1, 20, prob=0.2), by=c('POP','CHROM','LOCUS')] %>%
+  .[, AO:=rbinom(n=1, size=DP, prob=FREQ)] %>%
+  .[, RO:=DP-AO] %>%
+  setnames(., old='POP', new='POOL') %>%
+  .[, INDS:=30]
+save(data_PoolFreqs, file='data/data_PoolFreqs.RData')
+
+# Make pool info data
+data_PoolInfo <- data.table(POOL=paste0('Pop', 1:4), INDS=30)
+save(data_PoolInfo, file='data/data_PoolInfo.RData')
+
+# Make a frequency matrix
+data_FreqsMat <- data_PoolFreqs %>%
+  dcast(., POOL~LOCUS, value.var='FREQ') %>%
+  as.data.frame() %>%
+  column_to_rownames(., 'POOL') %>%
+  as.matrix()
+save(data_FreqsMat,file='data/data_FreqsMat.RData')
+
+# Make VCFs
+vcf_head <- "##This is a toy dataset for the R package genomalicious - it emulates a VCF file
+##INFO=<ID=DP,Number=1,Type=Integer,Description='The total depth across samples'>
+##FORMAT=<ID=GT,Number=1,Type=String,Description='Genotype'>
+##FORMAT=<ID=DP,Number=1,Type=Integer,Description='The total depth in a sample'>
+##FORMAT=<ID=RO,Number=1,Type=Integer,Description='The reference allele counts in a sample'>
+##FORMAT=<ID=AO,Number=1,Type=Integer,Description='The alternate allele counts in a sample'>"
+
 # Make a VCF from 4 pop genotypes
-sub4pops <- data_4pops[
-  LOCUS %in% sample(x=unique(data_4pops$LOCUS), size=8, replace=FALSE)
-  & SAMPLE %in% data_4pops[, unique(SAMPLE)[1:8], by=POP]$V1, ]
+vcf4pops <- do.call('rbind', lapply(unique(data_4pops$LOCUS), function(locus){
+  X <- data_4pops[LOCUS==locus]
 
-sub4pops[, DP:=rnbinom(nrow(sub4pops), mu=30, size=2)]
-
-hist(sub4pops$DP)
-
-sub4pops <-
-  apply(sub4pops, 1, function(xx){
-    dp <- as.integer(xx['DP'])
-    if(xx['GT']=='0/0'){
-      ro <- dp; ao <- 0
-    } else if(xx['GT']=='0/1'){
-      ro <- sum(rbinom(dp/2, size=1, prob=1))
-      ao <- dp - ro
-    } else{
-      ro <- 0; ao <- dp
-    }
-    return(data.table(RO=ro, AO=ao))
-  }) %>%
-  do.call('rbind', .) %>%
-  cbind(sub4pops, .) %>%
-  as.data.table()
-
-vcf4pops <- do.call('rbind', lapply(unique(sub4pops$LOCUS), function(locus){
-  X <- sub4pops[LOCUS==locus]
-  alleles <- sample(size=2, x=c('G', 'A', 'T', 'C'), replace=FALSE)
-
-  col_names <- c('CHROM', 'POS', 'ID', 'REF', 'ALT', 'QUAL', 'FILTER', 'INFO', 'FORMAT', X$SAMPLE)
-
-  vcfRow <- matrix('.', nrow=1, ncol=9+nrow(X), dimnames=list(NULL, col_names))
-
-  vcfRow[,'CHROM'] <- X$CHROM[1]
-  vcfRow[1,'POS'] <- X$POS[1]
-  vcfRow[1,'REF'] <- alleles[1]
-  vcfRow[1,'ALT'] <- alleles[2]
-  vcfRow[1,'INFO'] <- paste0('DP=', sum(X$DP))
-  vcfRow[1,'QUAL'] <- 30
-  vcfRow[1,'FORMAT'] <- 'GT:DP:RO:AO'
-
-  for(samp in unique(X$SAMPLE)){
-    xsamp <- unlist(X[SAMPLE==samp, c('GT', 'DP', 'RO', 'AO')])
-    vcfRow[, samp] <- paste(xsamp, collapse=':')
-  }
-
-  vcfRow <- as.data.table(vcfRow)
+  vcfRow <- data.table(
+    CHROM=X$CHROM[1],
+    POS=X$POS[1],
+    REF=X$REF[1],
+    ALT=X$ALT[1],
+    INFO=paste0('DP=', sum(X$DP)),
+    QUAL=30,
+    FORMAT='GT:DP:RO:AO',
+    X[, paste(GT,DP,RO,AO,sep=":"), by=c('LOCUS','SAMPLE')] %>%
+      dcast(., LOCUS ~ SAMPLE, value.var='V1') %>%
+      .[, !'LOCUS']
+  )
 
   setnames(vcfRow, 'CHROM', '#CHROM')
 
@@ -131,5 +122,34 @@ vcf4pops <- do.call('rbind', lapply(unique(sub4pops$LOCUS), function(locus){
 }))
 
 fwrite(vcf4pops, 'inst/extdata/data_indseq.vcf', sep='\t', quote=FALSE)
+readLines('inst/extdata/data_indseq.vcf') %>%
+  c(vcf_head, .) %>%
+  writeLines(., 'inst/extdata/data_indseq.vcf')
 
+vcfPools <- vcf4pops <- do.call('rbind', lapply(unique(data_PoolFreqs$LOCUS), function(locus){
+  X <- data_PoolFreqs[LOCUS==locus] %>%
+    copy %>%
+    .[, GT:='0/1']
 
+  vcfRow <- data.table(
+    CHROM=X$CHROM[1],
+    POS=X$POS[1],
+    REF=X$REF[1],
+    ALT=X$ALT[1],
+    INFO=paste0('DP=', sum(X$DP)),
+    QUAL=30,
+    FORMAT='GT:DP:RO:AO',
+    X[, paste(GT,DP,RO,AO,sep=":"), by=c('LOCUS','POOL')] %>%
+      dcast(., LOCUS ~ POOL, value.var='V1') %>%
+      .[, !'LOCUS']
+  )
+
+  setnames(vcfRow, 'CHROM', '#CHROM')
+
+  return(vcfRow)
+}))
+
+fwrite(vcfPools, 'inst/extdata/data_poolseq.vcf', sep='\t', quote=FALSE)
+readLines('inst/extdata/data_poolseq.vcf') %>%
+  c(vcf_head, .) %>%
+  writeLines(., 'inst/extdata/data_poolseq.vcf')

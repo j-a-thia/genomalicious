@@ -38,14 +38,16 @@
 #'
 #' @examples
 #' data(data_4pops)
-#' datGt <- data_4pops[LOCUS %in% unique(data_4pops$LOCUS)[1:8]]
 #'
 #' # Convert a long data table to a wide matrix
-#' genoMat <- DT2Mat_genos(datGt
-#'               , sampCol='SAMPLE'
-#'               , locusCol='LOCUS'
-#'               , genoCol='GT'
-#'               , flip=FALSE)
+#' genoMat <- DT2Mat_genos(
+#'    data_4pops,
+#'    sampCol='SAMPLE',
+#'    locusCol='LOCUS',
+#'    genoCol='GT',
+#'    flip=FALSE)
+#'
+#' genoMat
 #'
 #' @export
 DT2Mat_genos <- function(dat, sampCol='SAMPLE', locusCol='LOCUS', genoCol='GT', flip=FALSE){

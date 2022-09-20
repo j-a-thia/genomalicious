@@ -33,14 +33,26 @@
 #'
 #' @examples
 #' data(data_PoolFreqs)
-#' datFreq <- data_PoolFreqs
-#' datFreq
 #'
 #' # Convert a long data table to a wide matrix
-#' freqMat <- DT2Mat_freqs(dat=datFreq, popCol='POOL', locusCol='LOCUS', freqCol='PI', flip=FALSE)
+#' freqMat <- DT2Mat_freqs(
+#'    dat=data_PoolFreqs,
+#'    popCol='POOL',
+#'    locusCol='LOCUS',
+#'    freqCol='FREQ',
+#'    flip=FALSE)
+#'
+#' freqMat
 #'
 #' # Convert a wide matrix back to a data table
-#' freqDT <- DT2Mat_freqs(freqMat, popCol='POP', locusCol='LOCUS', freqCol='FREQ', flip=TRUE)
+#' freqDT <- DT2Mat_freqs(
+#'    freqMat,
+#'    popCol='POOL',
+#'    locusCol='LOCUS',
+#'    freqCol='FREQ',
+#'    flip=TRUE)
+#'
+#' freqDT
 #'
 #' @export
 DT2Mat_freqs <- function(dat, popCol='POP', locusCol='LOCUS', freqCol='FREQ', flip=FALSE){

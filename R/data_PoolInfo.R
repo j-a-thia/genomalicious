@@ -3,9 +3,6 @@
 #' A dataset containing the population pool ID and the number of individuals
 #' used in a pool-seq experiment. \cr
 #' \cr
-#' Data of this structure would be used as the \code{dat} parameter in the
-#' function \code{genomalicious::poolne_estim_input}, which prepares pooled replicate sequencing
-#' data for analysis by Gautier et al.'s (2013) \code{poolne_estim}.
 #'
 #' @usage data(data_PoolInfo)
 #'

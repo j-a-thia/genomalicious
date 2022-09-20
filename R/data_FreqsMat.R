@@ -1,7 +1,6 @@
 #' An example matrix of allele frequencies
 #'
-#' A dataset containing allele frequency information for 4 populations
-#' and 8 biallelic SNP loci.
+#' A matrix of population allele frequencies for 4 populations and 200 biallelic SNPs.
 #'
 #' @usage data(data_FreqsMat)
 #'

@@ -18,13 +18,15 @@
 #'
 #' @param n Integer: The ploidy level. Default = 2.
 #'
-#' @return A \code{genind} object, with the slot \code{pop} slot filled if argumnet
+#' @return A \code{genind} object, with the slot \code{pop} slot filled if argument
 #' \code{popCol} is specified.
 #'
 #' @references
 #' Jombart (2008) adegenet: a R package for the multivariate analysis of genetic markers. Bioinformatics.
 #'
 #' @examples
+#' library(genomalicious)
+#'
 #' data(data_4pops)
 #'
 #' data_4pops

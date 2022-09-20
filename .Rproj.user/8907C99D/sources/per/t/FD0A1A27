@@ -1,0 +1,26 @@
+{
+    "id": "FD0A1A27",
+    "path": "C:/Users/thiaj/Documents/GitHub/genomalicious/R/filter_unlink.R",
+    "project_path": "R/filter_unlink.R",
+    "type": "r_source",
+    "hash": "2817224518",
+    "contents": "",
+    "dirty": false,
+    "created": 1663644851682.0,
+    "source_on_save": false,
+    "relative_order": 2,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "51,0",
+        "scrollLine": "36"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1663491158,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1663491158,
+    "read_only": false,
+    "read_only_alternatives": []
+}

@@ -49,21 +49,10 @@ Returns a data table in the dadi input format.
 Creates an input file for the program dadi, described in Gutenkunst et al. (2009).
 }
 \examples{
+library(genomalicious)
+
 data(data_4pops)
 datGt <- copy(data_4pops)
-
-# Subset data for example (10 loci) and create artificial Ref and Alt
-# nucleotides for the purpose of illustration
-loci10 <- unique(datGt$LOCUS)[1:10]
-datGt <- datGt[LOCUS \%in\% loci10]
-ref10 <- sample(c('G', 'A', 'T', 'C'), 10, replace=TRUE)
-names(ref10) <- loci10
-
-alt10 <- sample(c('G', 'A', 'T', 'C'), 10, replace=TRUE)
-names(alt10) <- loci10
-
-datGt$REF <- ref10[match(datGt$LOCUS, names(ref10))]
-datGt$ALT <- alt10[match(datGt$LOCUS, names(alt10))]
 
 # Make the dadi input
 dadi_inputs_genos(dat=datGt, popSub=c('Pop1', 'Pop2'))

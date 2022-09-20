@@ -36,6 +36,8 @@ create a \code{genlight} object, as per the \code{adegenet} package
 (Jombart 2011 Bioinformatics). Must be biallelic.
 }
 \examples{
+library(genomalicious)
+
 data(data_4pops)
 
 data_4pops

@@ -34,6 +34,8 @@
 #' Default is FALSE.
 #'
 #' @examples
+#' library(genomalicious)
+#'
 #' # Create a link to raw external datasets in genomalicious
 #' genomaliciousExtData <- paste0(find.package('genomalicious'), '/extdata')
 #'
@@ -41,15 +43,23 @@
 #' fasta <- paste0(genomaliciousExtData, '/data_COI.fasta')
 #'
 #' # Multi sequence alignmnet of demo COI data.
-#' co1 <- align_many_genes_dna(fasta, gene.names='COI', model.model='JC')
+#' aln <- align_many_genes_dna(fasta, gene.names='COI')
 #'
 #' # Plot base positions from 200:250
-#' align_plot_dna(as.matrix(co1$COI$align), pos_vec=200:250)
+#' align_plot_dna(as.matrix(aln$COI$align), pos_vec=200:250)
+#'
+#' # Custom colours, no text
+#' align_plot_dna(
+#'    as.matrix(aln$COI$align),
+#'    nuc_colours=c(`A`='#ce0073',`T`='#e46adf',`G`='royalblue',`C`='#08c7e0'),
+#'    pos_vec=200:250,
+#'    show_bases=FALSE
+#' )
 #'
 #' @export
 
 align_plot_dna<- function(
-  alignMat, nuc_colours=NA, other_colours=NA, gap_colour=NA,
+  alignMat, nuc_colours=NULL, other_colours=NULL, gap_colour=NA,
   border_colour=NA, pos_vec=NULL, show_bases=TRUE, base_size=3, show_legend=FALSE){
 
   require(tidyverse)
@@ -61,7 +71,7 @@ align_plot_dna<- function(
   }
 
   # If colours not specified
-  if(is.na(nuc_colours)){
+  if(is.null(nuc_colours)){
     nuc_colours <- c(
       'A'='royalblue2',
       'T'='gold',
@@ -69,7 +79,7 @@ align_plot_dna<- function(
       'C'='firebrick2')
   }
 
-  if(is.na(other_colours)){
+  if(is.null(other_colours)){
     other_colours <- c('?'='black', 'N'='black')
   }
 
@@ -105,7 +115,13 @@ align_plot_dna<- function(
                 colour=border_colour
               )
               + scale_fill_manual(values=colour_map)
-              + scale_x_continuous(breaks=~round(unique(pretty(.))))
+              + scale_x_continuous(
+                breaks=~round(unique(pretty(.))),
+                expand=c(0,0)
+                )
+              + scale_y_discrete(
+                expand=c(0,0)
+              )
               + labs(x='Base position', y='Taxa', fill=NULL)
   )
 

@@ -10,11 +10,10 @@
 #' }
 #'
 #' @param minDP Integer: The minimum sequencing depth. Loci below this value are flagged
-#' as 'bad' loci. Default = \code{10}. Must be specified; set \code{minDP = 0} if there is no
-#' minimum number of reads.
+#' as 'bad' loci. Default is \code{NULL}.
 #'
 #' @param maxDP Integer: The maximum sequencing depth. Loci above this value are flagged
-#' as 'bad' loci. Default = \code{NA}.
+#' as 'bad' loci. Default is \code{NULL}.
 #'
 #' @param locusCol Character: The column name with the locus information. Default = \code{'LOCUS'}.
 #'
@@ -24,29 +23,26 @@
 #' to the read depth values specified, i.e. 'good' loci.
 #'
 #' @examples
-#' data(data_PoolReads)
-#' datReads <- data_PoolReads
+#' library(genomalicious)
 #'
-#' # Look at the sequencing coverage
-#' datReads
+#' data(data_4pops)
 #'
-#' # Exclude loci with coverage < 30 reads
-#' min30 <- filter_depth(datReads, minDP=30)
-#' min30
-#' datReads[LOCUS %in% min30]
+#' # Exclude loci with coverage < 10 reads
+#' min10 <- filter_depth(data_4pops, minDP=10)
+#' min10
+#' data_4pops[LOCUS %in% min10]$DP %>% summary
 #'
-#' # Exclude loci with coverage < 30 and > 110 reads
-#' min30max110 <- filter_depth(datReads, minDP=30, maxDP=110)
-#' min30max110
-#' datReads[LOCUS %in% min30max110]
+#' # Exclude loci with coverage < 10 and > 100 reads
+#' min10max100 <- filter_depth(data_4pops, minDP=10, maxDP=100)
+#' min10max100
+#' data_4pops[LOCUS %in% min10max100]$DP %>% summary
 #'
 #' # Alternatively, subset data.table to only contain the
-#' # bad loci with coverage < 30 reads
-#' datReads[!(LOCUS %in% min30)]
+#' # bad loci with coverage < 10 reads
+#' data_4pops[!(LOCUS %in% min10)]$DP %>% summary
 #'
 #' @export
-filter_depth <- function(dat, minDP=10, maxDP=NA, locusCol='LOCUS', dpCol='DP'){
-
+filter_depth <- function(dat, minDP=NULL, maxDP=NULL, locusCol='LOCUS', dpCol='DP'){
   # BEGIN ...........
 
   # --------------------------------------------+
@@ -56,7 +52,23 @@ filter_depth <- function(dat, minDP=10, maxDP=NA, locusCol='LOCUS', dpCol='DP'){
   for(L in libs){ require(L, character.only=TRUE)}
 
   # Test that the data table is the correct class.
-  if(!'data.table' %in% class(dat)){ stop("Argument dat isn't a data table.")}
+  if(!'data.table' %in% class(dat)){
+    stop("Argument dat isn't a data table. See ?filter_depth.")
+    }
+
+  # Test that at least one of the depth filters is specified
+  if(is.null(minDP) & is.null(maxDP)){
+    stop(
+    'At least one of arguments `minDP` and `maxDP` need to be specified.
+    See ?filter_depth.')
+  }
+
+  # Make sure both depth filter are specified correctly
+  if((!is.null(minDP) & !is.null(maxDP))){
+    if((minDP > maxDP)){
+      stop('Argument `minDP` must be smaller than `maxDP`. See ?filter_depth.')
+    }
+  }
 
   # --------------------------------------------+
   # Code
@@ -65,37 +77,22 @@ filter_depth <- function(dat, minDP=10, maxDP=NA, locusCol='LOCUS', dpCol='DP'){
   colReass <- match(c(locusCol, dpCol), colnames(dat))
   colnames(dat)[colReass] <- c('LOCUS', 'DP')
 
-  # Turn data into lists of data.tables, where each index is a LOCUS
-  dat.spl <- split(dat, dat$LOCUS)
+  # Table of loci
+  locTab <- left_join(
+    dat[, .(MIN=min(DP)), by=LOCUS],
+    dat[, .(MAX=max(DP)), by=LOCUS]
+  )
 
-  # If 'maxDP' isn't specified:
-  if(is.na(maxDP)){
-    badLoci <- lapply(dat.spl
-                      , function(L){
-                        if(min(L$DP) < minDP){
-                          return(data.table(LOCUS=L$LOCUS[1], KEEP='No'))
-                        } else if(min(L$DP) >= minDP){
-                          return(data.table(LOCUS=L$LOCUS[1], KEEP='Yes'))
-                        }
-                      }
-    )
+  # Filter
+  if(!is.null(minDP) & is.null(maxDP)){
+    good.loci <- locTab[MIN>=minDP]$LOCUS
+  } else if(is.null(minDP) & !is.null(maxDP)){
+    good.loci <- locTab[MAX<maxDP]$LOCUS
+  } else if(!is.null(minDP) & !is.null(maxDP)){
+    good.loci <- locTab[MIN>=minDP & MAX<=maxDP]$LOCUS
   }
 
-  # If 'maxDP' is specified:
-  if(!is.na(maxDP)){
-    badLoci <- lapply(dat.spl
-                      , function(L){
-                        if(min(L$DP) >= minDP & max(L$DP) <= maxDP){
-                          return(data.table(LOCUS=L$LOCUS[1], KEEP='Yes'))
-                        } else {
-                          return(data.table(LOCUS=L$LOCUS[1], KEEP='No'))
-                        }
-                      }
-    )
-  }
-
-  badLoci <- do.call('rbind', badLoci)
-  return(badLoci[KEEP=='Yes']$LOCUS)
+  return(good.loci)
 
   # ............ END
 }

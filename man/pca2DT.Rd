@@ -18,7 +18,7 @@ Be sure to check that they match samples in rows of \code{pcaObj$x}.}
 \value{
 Returns a long-format data.table with columns \code{$POP}, the
 population IDs (if data available), \code{$SAMPLE}, the sample IDs,
-\code{$AXIS}, the PC axis ID, and \code{$SCORE}, the score on the PC axis.
+\code{$PC[x]}, the individual PC axes, with \code{[x]} denoting the axis number.
 }
 \description{
 Convert a \code{prcomp} object to a long-format \code{data.table}

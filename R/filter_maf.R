@@ -16,7 +16,8 @@
 #' }
 #'
 #' @param maf Numeric: The minor allele frequency. E.g. 0.05 will filter for 5%, which will remove
-#' a locus if its frequency is < 0.05 or > 0.95.
+#' a locus if its frequency is < 0.05 or > 0.95. Default is 0.05, and the value
+#' must be <=0.5.
 #'
 #' @param type Character: Default = 'freqs', expected that \code{dat} is a matrix of allele frequencies.
 #' Alternatively, if \code{dat} is a data table of of genotypes, set \code{type} to 'genos'.
@@ -38,14 +39,17 @@
 #' data(data_FreqsMat)
 #'
 #' # Filter for MAF=0.20
-#' filter_maf(data_FreqsMat, maf=0.20, type='freqs')
+#' mat.loci <- filter_maf(data_FreqsMat, maf=0.20, type='freqs')
+#'
+#' data_FreqsMat[, mat.loci]
 #'
 #' # LONG TABLE OF GENOTYPES
 #' data(data_4pops)
 #'
-#' # Filter for MAF=0.05
-#' filter_maf(data_4pops, maf=0.05, type='genos')
+#' # Filter for MAF=0.20
+#' dt.loci <- filter_maf(data_4pops, maf=0.20, type='genos')
 #'
+#' data_4pops[LOCUS %in% dt.loci]
 #'
 #' @export
 filter_maf <- function(dat, maf=0.05, type='genos', sampCol='SAMPLE', locusCol='LOCUS', genoCol='GT'){
@@ -75,9 +79,16 @@ filter_maf <- function(dat, maf=0.05, type='genos', sampCol='SAMPLE', locusCol='
     }
   }
 
-  # Check that the MAF is between 0 and 1.
-  if(maf < 0 | maf > 1){
-    stop("Argument maf needs to be a numeric between 0 and 1. See ?filter_maf.")
+  # Check that the MAF is <=0.5
+  if(maf>0.5){
+    stop("Argument maf needs to be a numeric between <=0.5. See ?filter_maf.")
+  }
+
+  # Convert genotypes to integers if needed
+  if(type=='genos'){
+    if(class(dat[[genoCol]])=='character'){
+      dat[[genoCol]] <- genoscore_converter(dat[[genoCol]])
+    }
   }
 
   # --------------------------------------------+
@@ -90,7 +101,7 @@ filter_maf <- function(dat, maf=0.05, type='genos', sampCol='SAMPLE', locusCol='
   # If the input is a matrix of allele frequencies (columns = loci, rows = pops)
   if(type=='freqs'){
     test <- apply(dat, 2, function(f){
-      if(min(f) >= minF & max(f) <= maxF){ return('Yes')
+      if(min(f)>=minF & max(f)<=maxF){ return('Yes')
       } else {
         return('No')
       }
@@ -105,17 +116,9 @@ filter_maf <- function(dat, maf=0.05, type='genos', sampCol='SAMPLE', locusCol='
     colnames(dat)[colReass] <- c('SAMPLE', 'LOCUS', 'GT')
 
     # Frequencies
-    freqs <- genos2freqs(dat)
-
-    # Test for MAF
-    test <- apply(freqs, 2, function(f){
-      if(min(f) >= minF & max(f) <= maxF){ return('Yes')
-      } else {
-        return('No')
-      }
-    })
-    return(names(which(test=='Yes')))
+    dat[, .(FREQ=sum(GT)/length(GT)), by=LOCUS] %>%
+      .[, MAF:=if_else(FREQ<=0.5, FREQ, 1-FREQ)] %>%
+      .[MAF>=maf] %>%
+      .[['LOCUS']]
   }
-
-
 }

@@ -1,35 +1,26 @@
-#' An example of collating results from \code{poolne_estim}, in R
+#' An example pooled allele frequency data set
 #'
-#' \code{genomalicious} allows collation of output files from Gautier et al.'s (2013) program
-#' \code{poolne_estim}. \cr
-#' \cr
-#' Read counts from replicate sequencing events are processed by \code{genomalicious::poolne_estim_inputs},
-#' which provides the inputs for \code{poolne_estim}. The results of the \code{poolne_estim}
-#' analysis can then be imported into R with the function \code{genomalicious::poolne_estim_outputs}. \cr
-#' \cr
-#' The product of this workflow is exemplified in this dataset. \cr
+#' A long-format data table containing individual genotypes for 4 populations, each with 30
+#' individuals, and 200 biallelic SNP loci. Simulated with FastSimCoal2 (Excoffier et al., 2013).
 #'
 #' @usage data(data_PoolFreqs)
 #'
-#' @format A data table with 32 rows and 10 columns.
+#' @format A data table with 800 rows and 11 columns.
 #'
 #' @details
 #' These columns would be created by \code{genomalicious::poolne_estim_outputs}:
 #' \itemize{
-#'   \item \code{MRK} = The marker ID, assigned by \code{poolne_estim}.
-#'   \item \code{PI} = The posterior mean estimate of the population Ref allele frequency,
-#'     as estimated by \code{poolne_estim}.
-#'   \item \code{SD} = The standard deviation of the the population Ref allele frequency,
-#'     as estimated by \code{poolne_estim}.
-#'   \item \code{POOL} = The population pool ID.
-#'   \item \code{CHROM} = The chromosome ID.
-#'   \item \code{LOCUS} = The locus ID.
-#' }
-#' The following columns have been added as metadata:
-#' #' \itemize{
-#'   \item \code{REF} = The reference allele.
+#'   \item \code{CHROM} = The contig ID.
+#'   \item \code{POS} = The SNP position.
+#'   \item \code{LOCUS} = The unique locus ID.
 #'   \item \code{ALT} = The alternate allele.
-#'   \item \code{INDS} = The number of diploid individuals pooled.
+#'   \item \code{REF} = The reference allele.
+#'   \item \code{POOL} = The pool ID.
+#'   \item \code{FREQ} = The frequency of the alternate allele.
+#'   \item \code{DP} = The total read depth.
+#'   \item \code{AO} = The alternate read counts.
+#'   \item \code{RO} = The reference read counts.
+#'   \item \code{INDS} = The number of pooled diploid individuals.
 #' }
 #'
 #' @references Gautier et al. (2013) Estimation of population allele frequencies from

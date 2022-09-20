@@ -7,7 +7,7 @@
 align_many_genes_dna(
   fasta.files,
   method = "ClustalW",
-  model.model = c("JC", "F81", "K80", "HKY", "SYM", "GTR"),
+  model.model = NULL,
   model.G = TRUE,
   model.I = TRUE,
   cores = 1,
@@ -23,7 +23,8 @@ Is passed to the function \code{msa::msa(... method=method)}.}
 
 \item{model.model}{Character, evolutionary models to test. Any one, or all of
 "JC", "F81", "K80", "HKY", "SYM", "GTR". Passed to function
-\code{phangorn::modelTest(... model=model.model)}. Default is to test all.}
+\code{phangorn::modelTest(... model=model.model)}. Default is \code{NULL},
+in which case, not model will be tested.}
 
 \item{model.G}{Logical, whether a gamma distribution of rates should be
 tested in evolutionary models. Passed to function
@@ -63,17 +64,29 @@ AIC of the best model. Those models with delta AIC <= 10 are cosnidered
 the top models and non-differentiable.
 }
 \examples{
+library(genomalicious)
+
 # Create a link to raw external datasets in genomalicious
 genomaliciousExtData <- paste0(find.package('genomalicious'), '/extdata')
 
 # Path to the demo FASTA file
 fasta <- paste0(genomaliciousExtData, '/data_COI.fasta')
 
-# Multi sequence alignmnet of demo COI data.
-co1 <- align_many_genes_dna(fasta, gene.names='COI')
+# Multi sequence alignmnet of demo COI data, without model test
+aln <- align_many_genes_dna(fasta, gene.names='COI')
 
-str(co1)
-names(co1)
-co1$COI
+str(aln)
+names(aln)
+aln$COI
+
+# Same again, but with model test
+aln.test <- align_many_genes_dna(
+   fasta.files=fasta, gene.names='COI', model.I=TRUE, model.G=TRUE,
+   model.model=c("JC", "F81", "K80", "HKY", "SYM", "GTR")
+   )
+
+aln.test$COI$model.test
+aln.test$COI$model.top
+
 
 }

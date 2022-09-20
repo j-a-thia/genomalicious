@@ -6,8 +6,8 @@
 \usage{
 align_plot_dna(
   alignMat,
-  nuc_colours = NA,
-  other_colours = NA,
+  nuc_colours = NULL,
+  other_colours = NULL,
   gap_colour = NA,
   border_colour = NA,
   pos_vec = NULL,
@@ -52,6 +52,8 @@ This function takes in an alignment of DNA sequences in a matrix format
 and returns a plot of that alignment.
 }
 \examples{
+library(genomalicious)
+
 # Create a link to raw external datasets in genomalicious
 genomaliciousExtData <- paste0(find.package('genomalicious'), '/extdata')
 
@@ -59,9 +61,17 @@ genomaliciousExtData <- paste0(find.package('genomalicious'), '/extdata')
 fasta <- paste0(genomaliciousExtData, '/data_COI.fasta')
 
 # Multi sequence alignmnet of demo COI data.
-co1 <- align_many_genes_dna(fasta, gene.names='COI', model.model='JC')
+aln <- align_many_genes_dna(fasta, gene.names='COI')
 
 # Plot base positions from 200:250
-align_plot_dna(as.matrix(co1$COI$align), pos_vec=200:250)
+align_plot_dna(as.matrix(aln$COI$align), pos_vec=200:250)
+
+# Custom colours, no text
+align_plot_dna(
+   as.matrix(aln$COI$align),
+   nuc_colours=c(`A`='#ce0073',`T`='#e46adf',`G`='royalblue',`C`='#08c7e0'),
+   pos_vec=200:250,
+   show_bases=FALSE
+)
 
 }

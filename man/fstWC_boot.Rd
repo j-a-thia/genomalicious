@@ -45,6 +45,15 @@ Returns a vector of bootstrapped multilocus FST values.
 Generate a vector of bootstrapped Weir and Cockerham's FST from observed
 genotype or allele freuqency data.
 }
+\examples{
+library(genomalicious)
+
+data(data_4pops)
+data(data_PoolFreqs)
+
+
+
+}
 \references{
 Weir, Cockerham (1984) Estimating F-statistics for the analysis of population structure. Evol. \cr
 }

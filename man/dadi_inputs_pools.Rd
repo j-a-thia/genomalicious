@@ -74,29 +74,34 @@ to the nature of the probabilistic draws. However, it does avoid potentially bia
 the SFS from rounding errors when allele frequencies are low.
 }
 \examples{
+library(genomalicious)
+
 data(data_PoolFreqs)
 data_PoolFreqs
 
 # Default allele count estimation
-dadi_inputs_pools(dat=data_PoolFreqs
-                  , poolCol='POOL'
-                  , locusCol='LOCUS'
-                  , refCol='REF'
-                  , altCol='ALT'
-                  , freqCol='PI'
-                  , indsCol='INDS'
-                  , poolSub=c('Pop1', 'Pop2'))
+dadi_inputs_pools(
+   dat=data_PoolFreqs,
+   poolCol='POOL',
+   locusCol='LOCUS',
+   refCol='REF',
+   altCol='ALT',
+   freqCol='FREQ',
+   indsCol='INDS',
+   poolSub=c('Pop1', 'Pop2')
+)
 
 # Using probabilistic allele count estimation
-dadi_inputs_pools(dat=data_PoolFreqs
-                  , poolCol='POOL'
-                  , locusCol='LOCUS'
-                  , refCol='REF'
-                  , altCol='ALT'
-                  , freqCol='PI'
-                  , indsCol='INDS'
-                  , poolSub=c('Pop1', 'Pop2')
-                  , methodSFS='probs')
+dadi_inputs_pools(
+   dat=data_PoolFreqs,
+   poolCol='POOL',
+   locusCol='LOCUS',
+   refCol='REF',
+   altCol='ALT',
+   freqCol='FREQ',
+   indsCol='INDS',
+   poolSub=c('Pop1', 'Pop2'),
+   methodSFS='probs')
 
 
 }

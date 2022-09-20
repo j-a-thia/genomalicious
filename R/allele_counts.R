@@ -14,6 +14,8 @@
 #' returns a vector with names as alleles.
 #'
 #' @examples
+#' library(genomalicious)
+#'
 #' # Genotypes as separated alleles, biallelic
 #' allele_counts(c('1/1', '0/1', '0/1', '0/0', '0/0'))
 #'

@@ -8,11 +8,13 @@
 #' @param obsPops Character/Factor: The observed population IDs, which need to
 #' match sample order in \code{predict(daObj)$x}.
 #'
-#' @returns Returns a wide-format data.table with columns \code{$POP}, the
+#' @return Returns a wide-format data.table with columns \code{$POP}, the
 #' population IDs, \code{$SAMPLE}, the sample IDs, \code{$LD[x]}, the individual
 #' LD axes, with \code{[x]} denoting the axis number.
 #'
 #' @examples
+#' library(genomalicious)
+#'
 #' data(data_4pops)
 #'
 #' PCA <- pca_genos(data_4pops, popCol='POP')

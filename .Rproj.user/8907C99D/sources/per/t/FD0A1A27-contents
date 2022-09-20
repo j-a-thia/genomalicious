@@ -1,0 +1,111 @@
+#' Filter for unlinked loci
+#'
+#' Parses a data table of sequence read information to draw one locus
+#' per contig.
+#'
+#' Note, this function is specifically designed for RADseq data where
+#' contigs comprise small (100s bp) genomic regions assembed from restriction
+#' digest fragments. It should not be used on genomic contigs from genome assembly.
+#' Additionally, it is also important to follow up filtering with formal tests of
+#' linkage disequilibrium.
+#'
+#' @param dat Data table: The sequencing read information, must contain the columns:
+#' \code{CHROM} = the chromosome ID, i.e. contigs; and \code{LOCUS} = the locus ID.
+#' \enumerate{
+#'    \item The chromosome (or contig) ID (see param \code{chromCol}).
+#'    \item The locus ID (see param \code{locusCol}).
+#'    \item The SNP position (see param \code{posCol}).
+#' }
+#'
+#' @param chromCol Character: The chromosome (or contig) information column. Default = \code{'CHROM'}.
+#'
+#' @param locusCol Character: The locus information column. Default = \code{'LOCUS'}.
+#'
+#' @param posCol Character: The locus position column. Default = \code{'POS'}.
+#'
+#' @param method Character: How should the filtering be performed? Default = \code{'random'},
+#' a single random SNP will be drawn per contig. Alternatively, \code{'first'} can
+#' be used to draw the first SNP in the contig.
+#'
+#' @return Returns a character vector of locus names in \code{dat$LOCUS} that are not on the same
+#' contig in \code{dat$CHROM}.
+#'
+#' @examples
+#' data(data_4pops)
+#'
+#' # Number of unique SNP per locus
+#' data_4pops[, length(unique(LOCUS)), by=CHROM]$V1 %>% table
+#'
+#' # Randomly sample 1 SNP per locus
+#' snp.rand.1st <- filter_unlink(data_4pops, method='random')
+#' snp.rand.2nd <- filter_unlink(data_4pops, method='random')
+#'
+#' # Number of SNPs different between random sets
+#' setdiff(snp.rand.1st, snp.rand.2nd) %>% length
+#'
+#' # Sample first SNP per locus
+#' snp.first.1st <- filter_unlink(data_4pops, method='first')
+#' snp.first.2nd <- filter_unlink(data_4pops, method='first')
+#'
+#' # Number of SNPs different between random sets
+#' setdiff(snp.first.1st, snp.first.2nd) %>% length
+#'
+#' @export
+filter_unlink <- function(dat, chromCol='CHROM', locusCol='LOCUS', posCol='POS', method='random'){
+
+  # BEGIN ............
+
+  # --------------------------------------------+
+  # Libraries and assertions
+  # --------------------------------------------+
+  libs <- library(data.table)
+  for(L in libs){ require(L, character.only=TRUE)}
+
+  # Make sure that dat is a data table.
+  if(!'data.table' %in% class(dat)){ stop("Argument dat isn't a data table.")}
+
+  # Make sure the right columns are in dat.
+  if(length(which((c('CHROM', 'LOCUS', 'POS') %in% colnames(dat))==FALSE)) > 0){
+    stop("Argument `dat` needs the columns $CHROM, $LOCUS, and $POS.")
+  }
+
+  # Check that specification of method is correct.
+  if(!method %in% c('random','first')){
+    stop('Argument `method` needs to one of "random" or "first".')
+  }
+
+  # --------------------------------------------+
+  # Internal function
+  # --------------------------------------------+
+  FUN_sort_loci <- function(X){
+    X %>%
+      setorder(., POS) %>%
+      .[['LOCUS']]
+  }
+
+  # --------------------------------------------+
+  # Code
+  # --------------------------------------------+
+  # Reassign column names
+  colReass <- match(c(chromCol, locusCol, posCol), colnames(dat))
+  colnames(dat)[colReass] <- c('CHROM', 'LOCUS', 'POS')
+
+  # Random SNPs
+  if(method=='random'){
+    keep.loci <- dat[, sample(LOCUS, 1, replace=FALSE), by=CHROM]$V1
+  }
+
+  # First SNP per lcous
+  if(method=='first'){
+    uniq.locs <- dat %>% .[, c('CHROM','POS','LOCUS')] %>% unique
+    keep.loci <- uniq.locs %>%
+      .[, min(POS), by=CHROM] %>%
+      left_join(., uniq.locs) %>%
+      .[['LOCUS']]
+  }
+
+  # Subset original dataset by loci in 'keep.loci'.
+  return(unlist(keep.loci))
+
+  # ............ END
+}

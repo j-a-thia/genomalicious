@@ -27,7 +27,8 @@ or as counts of the Alt allele (0, 1, 2). For a data.table, expecting the column
 }}
 
 \item{maf}{Numeric: The minor allele frequency. E.g. 0.05 will filter for 5%, which will remove
-a locus if its frequency is < 0.05 or > 0.95.}
+a locus if its frequency is < 0.05 or > 0.95. Default is 0.05, and the value
+must be <=0.5.}
 
 \item{type}{Character: Default = 'freqs', expected that \code{dat} is a matrix of allele frequencies.
 Alternatively, if \code{dat} is a data table of of genotypes, set \code{type} to 'genos'.}
@@ -54,13 +55,16 @@ conform to the desired minor allele frequency threshold.
 data(data_FreqsMat)
 
 # Filter for MAF=0.20
-filter_maf(data_FreqsMat, maf=0.20, type='freqs')
+mat.loci <- filter_maf(data_FreqsMat, maf=0.20, type='freqs')
+
+data_FreqsMat[, mat.loci]
 
 # LONG TABLE OF GENOTYPES
 data(data_4pops)
 
-# Filter for MAF=0.05
-filter_maf(data_4pops, maf=0.05, type='genos')
+# Filter for MAF=0.20
+dt.loci <- filter_maf(data_4pops, maf=0.20, type='genos')
 
+data_4pops[LOCUS \%in\% dt.loci]
 
 }

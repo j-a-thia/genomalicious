@@ -24,6 +24,8 @@
 #' Jombart (2008) adegenet 1.3-1: new tools for the analysis of genome-wide SNP data. Bioinformatics.
 #'
 #' @examples
+#' library(genomalicious)
+#'
 #' data(data_4pops)
 #'
 #' data_4pops

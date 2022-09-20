@@ -11,8 +11,7 @@ A data table with 4 rows and 8 columns.
 data(data_FreqsMat)
 }
 \description{
-A dataset containing allele frequency information for 4 populations
-and 8 biallelic SNP loci.
+A matrix of population allele frequencies for 4 populations and 200 biallelic SNPs.
 }
 \details{
 Population ID are in \code{rownames(data_FreqsMat)}, and locus

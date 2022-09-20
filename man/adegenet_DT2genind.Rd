@@ -29,7 +29,7 @@ by a '/'. Assumes missing genotyes are coded as './.'.}
 \item{n}{Integer: The ploidy level. Default = 2.}
 }
 \value{
-A \code{genind} object, with the slot \code{pop} slot filled if argumnet
+A \code{genind} object, with the slot \code{pop} slot filled if argument
 \code{popCol} is specified.
 }
 \description{
@@ -38,6 +38,8 @@ create a \code{genind} object, as per the \code{adegenet} package
 (Jombart 2008 Bioinformatics). Does not have to be biallelic.
 }
 \examples{
+library(genomalicious)
+
 data(data_4pops)
 
 data_4pops

@@ -16,14 +16,16 @@ order in \code{predict(daObj)$x}.}
 match sample order in \code{predict(daObj)$x}.}
 }
 \value{
-Returns a long-format data.table with columns \code{$POP}, the
-population IDs, \code{$SAMPLE}, the sample IDs, \code{$AXIS}, the LD axis ID,
-and \code{$SCORE}, the score on the LD axis.
+Returns a wide-format data.table with columns \code{$POP}, the
+population IDs, \code{$SAMPLE}, the sample IDs, \code{$LD[x]}, the individual
+LD axes, with \code{[x]} denoting the axis number.
 }
 \description{
 Convert a \code{lda} object to a long-format \code{data.table}
 }
 \examples{
+library(genomalicious)
+
 data(data_4pops)
 
 PCA <- pca_genos(data_4pops, popCol='POP')
