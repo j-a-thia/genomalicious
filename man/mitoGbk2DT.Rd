@@ -2,7 +2,7 @@
 % Please edit documentation in R/mitoGbk2DT.R
 \name{mitoGbk2DT}
 \alias{mitoGbk2DT}
-\title{Convert a mitogenome GENBANK file into a Data table}
+\title{Convert a mitogenome GENBANK file into a data table}
 \usage{
 mitoGbk2DT(
   genbankFile,
@@ -10,9 +10,9 @@ mitoGbk2DT(
 )
 }
 \arguments{
-\item{genbankFile}{Chracter: the path to the GENBANK file.}
+\item{genbankFile}{Character: the path to the GENBANK file.}
 
-\item{type_vec}{Chracter: a vector of features to extract. The default value
+\item{type_vec}{Character: a vector of features to extract. The default value
 has been set to extract the major elements of mitochondrial genomes, but
 it could be edited to extract other features. Default is
 \code{c('gene', 'CDS', 'tRNA', 'rRNA', 'D-loop', 'misc_feature')}.}
@@ -31,14 +31,16 @@ Returns a data.table with the following columns: \cr
 \description{
 This function reads in a GENBANK file and outputs an R data.table object.
 It has been written for the import of mitogenome data into R, but could be
-used for importing other GENBANK files (not rigorously tested).
+used for importing other GENBANK files but is \strong{not rigorously tested}.
 }
 \examples{
+library(genomalicious)
+
 # Create a link to raw external datasets in genomalicious
 genomaliciousExtData <- paste0(find.package('genomalicious'), '/extdata')
 
 # Read in a GENBANK file
 gbk.read <- mitoGbk2DT(paste(genomaliciousExtData, 'data_Bcocosensis.gbk', sep='/'))
-head(gbk.read)
+gbk.read
 
 }

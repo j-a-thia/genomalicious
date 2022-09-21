@@ -25,7 +25,7 @@ overlap in outlier loci between 2+ groups with respect to a scenario
 whereby loci are drawn at random from a set of loci.
 }
 \details{
-This non-parametric sytle test is not a strict population genetic statistical
+This non-parametric style test is not a strict population genetic statistical
 method per se, but provides an informal way to compare parameters of an
 outlier analysis (number of groups, number of analysed loci,
 and the number of observed outlier loci) to random chance.
@@ -46,6 +46,8 @@ to that deemed statistically significant in empircal tests. In other words, if a
 determined 2 loci out of 100 were significant, a null draw would randomly sample 2 loci from the set of 100.
 }
 \examples{
+library(genomalicious)
+
 grps <- list(A=c(1:100), B=c(20:100), C=c(20:100))
 
 sig <- list(A=c(8, 10, 16, 67, 68, 69, 88, 89, 90), B=c(22, 50, 51, 56, 57, 88, 95, 96), C=c(20, 21, 23, 44, 60, 70, 75, 88, 100))

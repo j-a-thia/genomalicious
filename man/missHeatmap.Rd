@@ -11,7 +11,8 @@ missHeatmap(
   genoCol = "GT",
   popCol = NA,
   plotColours = "white",
-  plotNCol = 2
+  plotNCol = 2,
+  showPlot = TRUE
 )
 }
 \arguments{
@@ -43,6 +44,9 @@ Size depends on values specified for parameters \code{type} and
 \item{plotNCol}{Integer: The number of columns to arrange indiviudal
 population plots into. Only takes effect when \code{popCol} is specified.
 Default = 2.}
+
+\item{showPlot}{Logical: Should the plot be shown automatically? Default is
+\code{TRUE}, otherwise \code{FALSE}.}
 }
 \description{
 Use to visualise the presence or absence of genetic information
@@ -50,6 +54,8 @@ for all sample and locus combinations. Can also be subset
 by population.
 }
 \examples{
+library(genomalicious)
+
 ####   MISSING GENOTYPE DATA   ####
 data(data_4pops)
 datGt <- data_4pops

@@ -55,13 +55,15 @@ Takes a long-format data table of genotypes and conducts a PCA using R's
 pre-PCA are available.
 }
 \examples{
+library(genomalicious)
+
 # Data
 data(data_4pops)
-datGt <- data_4pops
+data_4pops
 
 # Conduct the PCA with Patterson et al.'s (2006) normalisation, and
 # population specified
-pca <- pca_genos(dat=datGt, scaling='patterson', popCol='POP')
+pca <- pca_genos(dat=data_4pops, scaling='patterson', popCol='POP')
 
 # Plot the PCA
 pca_plot(pca)

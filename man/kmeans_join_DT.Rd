@@ -29,11 +29,13 @@ of samples in \code{kFit}. The function will throw a warning if this is not
 the case, but will force the join regardless.
 }
 \examples{
+library(genomalicious)
+
 data(data_4pops)
-dat <- data_4pops
+data_4pops
 
 # Perform PCA.
-PCA <- pca_genos(dat)
+PCA <- pca_genos(data_4pops)
 
 # Get a table of PC axes
 pcTable <- pca2DT(PCA)
@@ -45,11 +47,11 @@ K4$cluster
 
 # Add in inferred populations.
 pcTable2 <- kmeans_join_DT(pcTable, 'SAMPLE', K4)
+pcTable2
 
 # Plot
-(pcTable2[AXIS \%in\% c('PC1','PC2')] \%>\%
-   dcast(., SAMPLE+CLUSTER~AXIS, value.var='SCORE') \%>\%
-   ggplot(., aes(x=PC1, y=PC2, colour=CLUSTER))
+(ggplot(pcTable2, aes(x=PC1, y=PC2, colour=CLUSTER))
    + geom_point()
 )
+
 }

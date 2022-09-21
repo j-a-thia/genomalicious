@@ -22,6 +22,7 @@ take the form of './.'. Otherwise, if \code{dat} is a vector of integers,
 missing values should take the form of \code{NA}.
 }
 \examples{
+library(genomalicious)
 genoscore_converter(c('0/0', '0/1', '1/1'))
 genoscore_converter(c(0, 1, 2))
 

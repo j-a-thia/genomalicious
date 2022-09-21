@@ -11,8 +11,8 @@ normalise_patterson(dat)
 , e.g. the C(i,j) table described in Patterson et al. (2006).}
 }
 \value{
-Returns a matrix with the same deminsions as \code{dat}, but with
-genotypes normalised.
+Returns a matrix with the same dimensions as \code{dat}, but with
+genotypes normalised as per Patterson et al. (2006).
 }
 \description{
 Perform the Patterson et al. (2006) normalisation to a genotype matrix

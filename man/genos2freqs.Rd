@@ -2,7 +2,7 @@
 % Please edit documentation in R/genos2freqs.R
 \name{genos2freqs}
 \alias{genos2freqs}
-\title{Generate a matrix of allele frequencies from genotypes}
+\title{Get population allele frequencies from a (long) data table of genotypes}
 \usage{
 genos2freqs(
   dat,
@@ -37,12 +37,14 @@ Default = \code{TRUE}, but if \code{FALSE}, will return a data table.}
 \value{
 Returns a matrix of allele frequencies for the Alt allele, or
 a data table with the columns \code{$POP}, \code{$SAMPLE}, \code{$LOCUS}
-and \code{$ALT.FREQ}.
+and \code{$FREQ}.
 }
 \description{
 Parses a data table of genotypes and returns a matrix of allele frequencies.
 }
 \examples{
+library(genomalicious)
+
 # Import genotype data
 data(data_4pops)
 data_4pops

@@ -29,12 +29,14 @@ data table of alleles, where each locus is represented by two columns:
 one for the first allele, the other for the second allele.
 }
 \examples{
+library(genomalicious)
 data(data_4pops)
 
 data_4pops
 
 alle_dt <- genos2indAlleles(data_4pops)
 
-alle_dt[1:4, 1:6]
+# The first three loci, with count of allele 1 and 2.
+alle_dt[1:4, 1:7]
 
 }

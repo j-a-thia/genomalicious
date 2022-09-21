@@ -59,20 +59,21 @@ vcfPath <- paste0(genomaliciousExtData, '/data_indseq.vcf')
 
 # You can read the file in as lines to see what it
 # looks like:
-readLines(vcfPath)
+readLines(vcfPath) \%>\%  head
+readLines(vcfPath) \%>\%  tail
 
 # Now read it in as a data table
 readVcf1 <- vcf2DT(vcfFile=vcfPath)
-readVcf1
+readVcf1 \%>\% print()
 
 # Read in VCF, but drop some columns,
 # and keep comments and info.
 readVcf2 <- vcf2DT(vcfPath
-   , dropCols=c('FILTER', 'ID')
+   , dropCols=c('QUAL')
    , keepComments=TRUE
    , keepInfo=TRUE)
 
-readVcf2
+readVcf2 \%>\% print
 
 attr(readVcf2, 'vcf_comments')
 attr(readVcf2, 'vcf_info')

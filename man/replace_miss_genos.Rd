@@ -56,27 +56,23 @@ should be used to code missing genotypes. Otherwise if genotypes
 are coded as integers, \code{NA} should code missing genotypes.
 }
 \examples{
-# Create a link to raw external datasets in genomalicious
-genomaliciousExtData <- paste0(find.package('genomalicious'), '/inst/extdata')
+library(genomalicious)
 
-# Use this to create a path to the genomalicious ind-seq VCF
+# Create a link to raw external datasets in genomalicious
+genomaliciousExtData <- paste0(find.package('genomalicious'), '/extdata')
+
+# This command here shows you the VCF file that comes with genomalicious
+list.files(path=genomaliciousExtData, pattern='indseq.vcf')
+
+# Use this to create a path to that file
 vcfPath <- paste0(genomaliciousExtData, '/data_indseq.vcf')
 
 # Import the VCF
 indseq <- vcf2DT(vcfPath)
 indseq
 
-# Add a population column
-indseq[, POP:=sub(
-        pattern='Ind'
-        , replacement=''
-        , x=strsplit(SAMPLE, '.', fixed=TRUE)[[1]][1])
-    , by=c('LOCUS', 'SAMPLE') ]
-
 # Sites with missing data
-genomiss <- which(indseq$GT=='./.')
-genomiss
-indseq[genomiss,]
+indseq$GT[sample(1:nrow(indseq), round(nrow(indseq)*0.15), FALSE)] <- NA
 
 # Replace genotypes using the mode across all individuals
 indseq_mode_all <- replace_miss_genos(

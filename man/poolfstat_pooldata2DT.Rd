@@ -29,24 +29,20 @@ Takes a \code{pooldata} class object (from \code{poolfstat} package) and
 converts into a long-format data.table.
 }
 \examples{
+library(genomalicious)
+
 # Load in the pool metadata and reads
 data(data_PoolInfo)
-data(data_PoolReads)
+data(data_PoolFreqs)
 
 # Pool info
 data_PoolInfo
 
-# Replicate samples for each pool
-data_PoolReads
-
-# Subset to keep only Rep1 reads.
-subReads <- data_PoolReads[grep(pattern='Rep1', x=data_PoolReads$SAMPLE)]
-
-# Need to add pool ID: the ID used to match $POOL in data_PoolInfo
-subReads$POOL <- unlist(lapply(strsplit(subReads$SAMPLE, '_'), function(X){ return(X[1]) }))
+# Pool reads in $DP, $AO, and $RO
+data_PoolFreqs[, c('POOL','DP','AO','RO')]
 
 # Make pooldata object
-pooldataObj <-poolfstat_DT2pooldata(subReads, data_PoolInfo)
+pooldataObj <-poolfstat_DT2pooldata(data_PoolFreqs, data_PoolInfo)
 
 # And go back to data table
 pooldataTab <- poolfstat_pooldata2DT(pooldataObj)

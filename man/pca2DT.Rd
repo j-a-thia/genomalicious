@@ -4,7 +4,7 @@
 \alias{pca2DT}
 \title{Convert a \code{prcomp} object to a long-format \code{data.table}}
 \usage{
-pca2DT(pcaObj, pops = NULL)
+pca2DT(pcaObj, pops = NULL, subAxes = NULL)
 }
 \arguments{
 \item{pcaObj}{Prcomp: An object produced by \code{prcomp}. If produced from
@@ -14,6 +14,9 @@ item, which contains the population designations for each sample in
 
 \item{pops}{Character: An optional vector of population IDs. Default is \code{NULL}.
 Be sure to check that they match samples in rows of \code{pcaObj$x}.}
+
+\item{subAxes}{Integer: An optional vector of values to subset the PC axes.
+Default is NULL.}
 }
 \value{
 Returns a long-format data.table with columns \code{$POP}, the
@@ -24,25 +27,26 @@ population IDs (if data available), \code{$SAMPLE}, the sample IDs,
 Convert a \code{prcomp} object to a long-format \code{data.table}
 }
 \examples{
+library(genomalicious)
 data(data_4pops)
 
 # With populations
 PCA.pops <- pca_genos(data_4pops, popCol='POP')
 
-pca2DT(PCA.pops)
+pca2DT(PCA.pops) \%>\% print
 
-# Without populations
+# Without populations and all axes (default)
 PCA.nopops <- pca_genos(data_4pops)
 
-pca2DT(PCA.nopops)
+pca2DT(PCA.nopops) \%>\% print
 
-# Manual populations
+# Manual populations, with just the first three axes
 pops <- rownames(PCA.nopops$x) \%>\%
    sub('Ind', '', .) \%>\%
    sub('_.*', '', .)
 
 pops
 
-pca2DT(PCA.nopops, pops=pops)
+pca2DT(PCA.nopops, pops=pops, subAxes=1:3) \%>\% print
 
 }

@@ -13,7 +13,8 @@ missHist(
   genoCol = "GT",
   popCol = NA,
   plotColours = "white",
-  plotNCol = 2
+  plotNCol = 2,
+  showPlot = TRUE
 )
 }
 \arguments{
@@ -49,6 +50,9 @@ Optional parameter. Default = \code{NA}.}
 \item{plotNCol}{Integer: The number of columns to arrange indiviudal
 population plots into. Only takes effect when \code{popCol} is specified.
 Default = 2.}
+
+\item{showPlot}{Logical: Should the plot be shown automatically? Default is
+\code{TRUE}, otherwise \code{FALSE}.}
 }
 \value{
 Displays plot and returns the plot object.
@@ -64,6 +68,8 @@ each population. These are arranged in rows and columns, and the
 user can specify the number of columns with the argument \code{plotNCol}.
 }
 \examples{
+library(genomalicious)
+
 ####   MISSING GENOTYPE DATA   ####
 data(data_4pops)
 datGt <- data_4pops
