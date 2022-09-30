@@ -1,9 +1,0 @@
-fread(vcfFile, skip=headPos-1, header=TRUE)
-
-tail(readLines(vcfPath))
-
-'C:/Users/thiaj/Dropbox/AGPIP/2. Projects/Project 5. Molecular Markers/RLEM/OP_Resistance/2022_Pool_WGS_Popgenom_JEB/Analyses/99b_Merged_Variant_Calls/RLEM_merge_snps_dp20_miss0.recode.vcf' %>% 
-  readLines(.) %>% 
-  tail()
-
-DD <- vcf2DT('C:/Users/thiaj/Dropbox/AGPIP/2. Projects/Project 5. Molecular Markers/RLEM/OP_Resistance/2022_Pool_WGS_Popgenom_JEB/Analyses/99b_Merged_Variant_Calls/RLEM_merge_snps_dp20_miss0.recode.vcf')
