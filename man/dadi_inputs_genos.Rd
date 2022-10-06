@@ -12,7 +12,8 @@ dadi_inputs_genos(
   refCol = "REF",
   altCol = "ALT",
   genoCol = "GT",
-  popSub = NULL
+  popSub = NULL,
+  popLevels = NULL
 )
 }
 \arguments{
@@ -41,12 +42,17 @@ integers of Alt allele counts (e.g. 0, 1, 2). Must contain the following columns
 \item{genoCol}{Character: The genotype. Default = \code{'GT'}.}
 
 \item{popSub}{Character: The populations to subset out of \code{popCol}. Default = \code{NULL}.}
+
+\item{popLevels}{Character: An optional vector of the population pool IDs used
+to manually specify the first and second population order. Default = \code{NULL}.}
 }
 \value{
 Returns a data table in the dadi input format.
 }
 \description{
 Creates an input file for the program dadi, described in Gutenkunst et al. (2009).
+This function specifically uses individually sequenced genotypes to produce
+inferred allele counts.
 }
 \examples{
 library(genomalicious)

@@ -1,6 +1,8 @@
 #' Genertate dadi input from pool-seq data
 #'
 #' Creates an input file for the program dadi, described in Gutenkunst et al. (2009).
+#' This function specifically uses allele frequencies to produce inferred
+#' allele counts, e.g., from pool-seq data.
 #'
 #' @param dat Data table: Must contain columns with the following information,
 #' \enumerate{
@@ -11,15 +13,17 @@
 #' \item Reference allele freuqency
 #' \item Number of individuals per population pool
 #'             }
-#' @param poolCol Character: Population pool ID. Default = \code{'POOL'}
+#' @param popCol Character: Population pool ID. Default = \code{'POOL'}
 #' @param locusCol Character: Locus ID. Default = \code{'LOCUS'}
 #' @param refCol Character: Reference allele. Default = \code{'REF'}
 #' @param altCol Character: Alternate allele. Default = \code{'ALT'}
 #' @param freqCol Character: The reference allele frequency. Default = \code{'FREQ'}.
 #' @param indsCol Character: The number of individuals per population pool. Default = \code{'INDS'}.
-#' @param poolSub Character: The pools to subset out of \code{poolCol}. Default = \code{NULL}.
+#' @param poolSub Character: The pools to subset out of \code{popCol}. Default = \code{NULL}.
 #' @param methodSFS Character: The method to estimate the SFS, either \code{'counts'} or
 #' \code{'probs'}. Default = \code{'counts'}. See Details for parameterisation.
+#' @param popLevels Character: An optional vector of the population pool IDs used
+#' to manually specify the first and second population order. Default = \code{NULL}.
 #'
 #' @details Because pool-seq provides estimates of allele frequencies, not direct observations
 #' of allele counts, we have to infer the SFS from the allele frequencies. This is determined
@@ -55,9 +59,9 @@
 #' data_PoolFreqs
 #'
 #' # Default allele count estimation
-#' dadi_inputs_pools(
+#' dadi_inputs_freqs(
 #'    dat=data_PoolFreqs,
-#'    poolCol='POOL',
+#'    popCol='POOL',
 #'    locusCol='LOCUS',
 #'    refCol='REF',
 #'    altCol='ALT',
@@ -67,9 +71,9 @@
 #' )
 #'
 #' # Using probabilistic allele count estimation
-#' dadi_inputs_pools(
+#' dadi_inputs_freqs(
 #'    dat=data_PoolFreqs,
-#'    poolCol='POOL',
+#'    popCol='POOL',
 #'    locusCol='LOCUS',
 #'    refCol='REF',
 #'    altCol='ALT',
@@ -80,15 +84,17 @@
 #'
 #'
 #' @export
-dadi_inputs_pools <- function(dat
-                              , poolCol='POOL'
-                              , locusCol='LOCUS'
-                              , refCol='REF'
-                              , altCol='ALT'
-                              , freqCol='P'
-                              , indsCol='INDS'
-                              , poolSub=NULL
-                              , methodSFS='counts'){
+dadi_inputs_freqs <- function(
+  dat
+  , popCol='POOL'
+  , locusCol='LOCUS'
+  , refCol='REF'
+  , altCol='ALT'
+  , freqCol='FREQ'
+  , indsCol='INDS'
+  , poolSub=NULL
+  , methodSFS='counts'
+  , popLevels=NULL){
 
   # BEGIN ...........
 
@@ -99,12 +105,12 @@ dadi_inputs_pools <- function(dat
 
   # Check that the `methodSFS` argument has been assigned properly.
   if((methodSFS %in% c('counts', 'probs'))==FALSE){
-    stop("Argument `methodSFS` must be 'counts' or 'probs'. See ?dadi_inputs_pools.")
+    stop("Argument `methodSFS` must be 'counts' or 'probs'. See ?dadi_inputs_freqs.")
   }
 
   # Reassign names
-  colReass <- match(c(poolCol, locusCol, refCol, altCol, freqCol, indsCol), colnames(dat))
-  colnames(dat)[colReass] <- c('POOL', 'LOCUS', 'REF', 'ALT', 'P', 'INDS')
+  colReass <- match(c(popCol, locusCol, refCol, altCol, freqCol, indsCol), colnames(dat))
+  colnames(dat)[colReass] <- c('POOL', 'LOCUS', 'REF', 'ALT', 'FREQ', 'INDS')
 
   # Sub out the pools if specified
   if(is.null(poolSub)==FALSE){
@@ -118,8 +124,8 @@ dadi_inputs_pools <- function(dat
   # Simple REF counts
   if(methodSFS=='counts'){
     # Convert frequency into estimated counts of individuals with each allele
-    dat$REF.COUNT <- apply(dat[, c('P', 'INDS')], 1, function(X){
-      p <- X[['P']]
+    dat$REF.COUNT <- apply(dat[, c('FREQ', 'INDS')], 1, function(X){
+      p <- X[['FREQ']]
       inds <- X[['INDS']]
       ref.count <- p * (inds * 2)
       if(p != 0 & ref.count < 1){ ref.count <- 1
@@ -132,8 +138,8 @@ dadi_inputs_pools <- function(dat
     # Probabilistic REF counts
   } else if(methodSFS=='probs'){
     # Get probabilistic counts of alleles using binomial draws
-    dat$REF.COUNT <- apply(dat[, c('P', 'INDS')], 1, function(X){
-      rbinom(n=1, size=X['INDS']*2, prob=X['P'])
+    dat$REF.COUNT <- apply(dat[, c('FREQ', 'INDS')], 1, function(X){
+      rbinom(n=1, size=X['INDS']*2, prob=X['FREQ'])
     })
   }
 
@@ -143,16 +149,24 @@ dadi_inputs_pools <- function(dat
   # Some manipulations
   r <- spread(dat[,c('LOCUS', 'REF', 'POOL', 'REF.COUNT')], key=POOL, value=REF.COUNT)
   setorder(r, 'LOCUS'); setnames(r, 'REF', 'Allele1')
+
   a <- spread(dat[,c('LOCUS', 'ALT', 'POOL', 'ALT.COUNT')], key=POOL, value=ALT.COUNT)
   setorder(a, 'LOCUS'); setnames(a, 'ALT', 'Allele2')
 
+  if(!is.null(popLevels)){
+    r <- r[, c('LOCUS','Allele1',popLevels),with=FALSE]
+    a <- a[, c('LOCUS','Allele2',popLevels),with=FALSE]
+  }
+
   # Mash it all together
-  return(data.table(REF=paste0('-', r$Allele1, '-')
-                    , ALT=paste0('-', a$Allele2, '-')
-                    , r[, !'LOCUS']
-                    , a[, !'LOCUS']
-                    , LOCUS=r$LOCUS
-  ))
+  data.table(
+    REF=paste0('-', r$Allele1, '-')
+    , ALT=paste0('-', a$Allele2, '-')
+    , r[, !'LOCUS']
+    , a[, !'LOCUS']
+    , LOCUS=r$LOCUS
+  ) %>%
+    return()
 
   # ........... END
 }
