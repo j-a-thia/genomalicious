@@ -1,7 +1,7 @@
 #' Filter loci by sequencing depth
 #'
-#' Parses a data table of sequencing read information to determine which loci
-#' conform to desired sequencing depth values.
+#' Parses a data table of genotypes/allele frequencies and returns a list of
+#' loci that conform to a desired read depth threshold.
 #'
 #' @param dat Data table: The sequencing read information, must contain the columns:
 #' \enumerate{
@@ -19,8 +19,9 @@
 #'
 #' @param dpCol Character: The column with read depth information. Default = \code{'DP'}.
 #'
-#' @return Returns a character vector of locus names in \code{dat$LOCUS} that conform
-#' to the read depth values specified, i.e. 'good' loci.
+#' @return Returns a character vector of locus names in \code{dat[[locusCol]]}
+#' that conform to the read depth threshold (>= value of \code{minDP} and <= value
+#' of \code{maxDP}).
 #'
 #' @examples
 #' library(genomalicious)
@@ -87,7 +88,7 @@ filter_depth <- function(dat, minDP=NULL, maxDP=NULL, locusCol='LOCUS', dpCol='D
   if(!is.null(minDP) & is.null(maxDP)){
     good.loci <- locTab[MIN>=minDP]$LOCUS
   } else if(is.null(minDP) & !is.null(maxDP)){
-    good.loci <- locTab[MAX<maxDP]$LOCUS
+    good.loci <- locTab[MAX<=maxDP]$LOCUS
   } else if(!is.null(minDP) & !is.null(maxDP)){
     good.loci <- locTab[MIN>=minDP & MAX<=maxDP]$LOCUS
   }

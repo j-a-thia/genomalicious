@@ -1,7 +1,7 @@
-#' Filter for unlinked loci
+#' Filter for "unlinked" loci
 #'
-#' Parses a data table of sequence read information to draw one locus
-#' per contig.
+#' Parses a data table of genotypes/allele frequencies and returns a list of
+#' loci that are "unlinked", in the sense they occur on different contigs.
 #'
 #' Note, this function is specifically designed for RADseq data where
 #' contigs comprise small (100s bp) genomic regions assembed from restriction
@@ -27,8 +27,8 @@
 #' a single random SNP will be drawn per contig. Alternatively, \code{'first'} can
 #' be used to draw the first SNP in the contig.
 #'
-#' @return Returns a character vector of locus names in \code{dat$LOCUS} that are not on the same
-#' contig in \code{dat$CHROM}.
+#' @return Returns a character vector of locus names in \code{dat[[locusCol]]}
+#' that are not on the same contig in \code{dat[[chromCol]]}.
 #'
 #' @examples
 #' data(data_4pops)

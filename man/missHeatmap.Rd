@@ -37,9 +37,9 @@ Default = \code{'GT'}. Missing data should be represeted by \code{NA}.}
 \item{popCol}{Character: The column name with the population ID.
 Optional parameter. Default = \code{NA}.}
 
-\item{plotColours}{Character: Vector of colours to use in plotting.
-Size depends on values specified for parameters \code{type} and
-\code{popCol}, see Details.}
+\item{plotColours}{Character: Vector of colours to use in plotting with a
+length of 2. The first colour is the missing colour, and the second colour
+is the non-missing colour.}
 
 \item{plotNCol}{Integer: The number of columns to arrange indiviudal
 population plots into. Only takes effect when \code{popCol} is specified.

@@ -24,12 +24,13 @@ as 'bad' loci. Default is \code{NULL}.}
 \item{dpCol}{Character: The column with read depth information. Default = \code{'DP'}.}
 }
 \value{
-Returns a character vector of locus names in \code{dat$LOCUS} that conform
-to the read depth values specified, i.e. 'good' loci.
+Returns a character vector of locus names in \code{dat[[locusCol]]}
+that conform to the read depth threshold (>= value of \code{minDP} and <= value
+of \code{maxDP}).
 }
 \description{
-Parses a data table of sequencing read information to determine which loci
-conform to desired sequencing depth values.
+Parses a data table of genotypes/allele frequencies and returns a list of
+loci that conform to a desired read depth threshold.
 }
 \examples{
 library(genomalicious)

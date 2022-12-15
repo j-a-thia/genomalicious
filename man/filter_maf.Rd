@@ -8,63 +8,77 @@ filter_maf(
   dat,
   maf = 0.05,
   type = "genos",
+  method = "mean",
   sampCol = "SAMPLE",
   locusCol = "LOCUS",
-  genoCol = "GT"
+  popCol = "POP",
+  genoCol = "GT",
+  freqCol = "FREQ"
 )
 }
 \arguments{
-\item{dat}{Matrix or data.table: Default expectation is that user is supplying a matrix of allele
-frequencies; i.e., loci in columns, populations in rows, and allele frequencies in cells (i.e.
-\code{type=='freqs'}). \cr\cr
-Alternatively, #' a data table of genotypes (i.e. \code{type=='genos'}). Loci are
-expected to be biallelic. Recorded either as '/' separated alleles (0/0, 0/1 1/1),
-or as counts of the Alt allele (0, 1, 2). For a data.table, expecting the columns:
+\item{dat}{A data table of genotypes or allele frequencies. Ggenotypes are
+recorded either as '/' separated alleles (0/0, 0/1 1/1), or as counts of the
+Alt allele (0, 1, 2). If allele frequencies, can be either the Ref or Alt
+allele, so long as it is consistent across samples, populations, loci, etc.
+Eexpects the columns:
 \enumerate{
-   \item The sample ID (see param \code{sampCol})
+   \item The sample ID (see param \code{sampCol}), for genotype datasets only.
    \item The locus ID (see param \code{locusCol}).
-   \item The genotypes (see param \code{genoCol}).
+   \item The population ID (see param \code{popCol}).
+   \item The genotypes (see param \code{genoCol}), or the allele frequencies
+   (see param \code{freqCol})
 }}
 
 \item{maf}{Numeric: The minor allele frequency. E.g. 0.05 will filter for 5%, which will remove
 a locus if its frequency is < 0.05 or > 0.95. Default is 0.05, and the value
 must be <=0.5.}
 
-\item{type}{Character: Default = 'freqs', expected that \code{dat} is a matrix of allele frequencies.
-Alternatively, if \code{dat} is a data table of of genotypes, set \code{type} to 'genos'.}
+\item{type}{Character: Is \code{dat} a data table of genotypes (\code{'genos'})
+or a data table of allele frequencies (\code{'freqs'})? Default = \code{'genos'}.}
 
-\item{sampCol}{Character: The column name with the sampled individual information. Default = \code{'SAMPLE'}.
-Only needed when \code{dat} is a long-format data table of genotypes.}
+\item{method}{Character: The method by which MAF filtering is performed.
+One of \code{'mean'}, or \code{'any_pop'}. Default = \code{'mean'}.
+For \code{'mean'}, the mean MAF across populations is calculated and used to
+assess the MAF threshold at each locus. For \code{'any_pop'}, if any population
+has a MAF less than the threshold at a locus, then that locus will be removed.}
 
-\item{locusCol}{Character: The column name with the locus information. Default = \code{'LOCUS'}.
-Only needed when \code{dat} is a long-format data table of genotypes.}
+\item{sampCol}{Character: The column name with the sampled individual information.
+Default = \code{'SAMPLE'}. Only needed when \code{type=='genos'}.}
 
-\item{genoCol}{Character: The column name with the genotype information. Default = \code{'GT'}.
-Only needed when \code{dat} is a long-format data table of genotypes.}
+\item{locusCol}{Character: The column name with the locus information.
+Default = \code{'LOCUS'}.}
+
+\item{popCol}{Character: The column name with population information.
+Default = \code{'POP'}.}
+
+\item{genoCol}{Character: The column name with the genotype information.
+Default = \code{'GT'}. Only needed when \code{type=='genos'}.}
+
+\item{freqCol}{Character: The column name with the allele frequency information.
+Default = \code{'freqCol'}. Only needed when \code{type=='freqs'}.}
 }
 \value{
-Returns an integer vector of column numbers in \code{dat} that conform
-to the MAF value specified. These values can then be used to filter the allele frequency matrix.
+Returns a character vector of locus names in \code{dat[[locusCol]]} that conform
+to the MAF threshold (>= value of \code{maf}).
 }
 \description{
-Parses a matrix of data table  of allele frequencies to determine which loci
-conform to the desired minor allele frequency threshold.
+Parses a data table of genotypes/allele frequencies and returns a list of
+loci that conform to a desired MAF threshold.
 }
 \examples{
-# MATRIX OF ALLELE FREQUENCIES
-data(data_FreqsMat)
-
-# Filter for MAF=0.20
-mat.loci <- filter_maf(data_FreqsMat, maf=0.20, type='freqs')
-
-data_FreqsMat[, mat.loci]
-
 # LONG TABLE OF GENOTYPES
 data(data_4pops)
 
 # Filter for MAF=0.20
-dt.loci <- filter_maf(data_4pops, maf=0.20, type='genos')
+loci.genos <- filter_maf(data_4pops, maf=0.20, type='genos')
 
 data_4pops[LOCUS \%in\% dt.loci]
+
+# LONG TABLE OF ALLELE FREQUENCIES
+freqs_4pops <- data_4pops \%>\%
+   .[, .(FREQ=sum(GT)/(length(GT)*2)), by=c('LOCUS','POP')]
+
+loci.freqs <- filter_maf(freqs_4pops, maf=0.20, type='freqs')
 
 }

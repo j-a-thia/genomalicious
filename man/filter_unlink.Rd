@@ -2,7 +2,7 @@
 % Please edit documentation in R/filter_unlink.R
 \name{filter_unlink}
 \alias{filter_unlink}
-\title{Filter for unlinked loci}
+\title{Filter for "unlinked" loci}
 \usage{
 filter_unlink(
   dat,
@@ -32,12 +32,12 @@ a single random SNP will be drawn per contig. Alternatively, \code{'first'} can
 be used to draw the first SNP in the contig.}
 }
 \value{
-Returns a character vector of locus names in \code{dat$LOCUS} that are not on the same
-contig in \code{dat$CHROM}.
+Returns a character vector of locus names in \code{dat[[locusCol]]}
+that are not on the same contig in \code{dat[[chromCol]]}.
 }
 \description{
-Parses a data table of sequence read information to draw one locus
-per contig.
+Parses a data table of genotypes/allele frequencies and returns a list of
+loci that are "unlinked", in the sense they occur on different contigs.
 }
 \details{
 Note, this function is specifically designed for RADseq data where
