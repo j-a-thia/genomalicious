@@ -1,10 +1,12 @@
 #' Replace missing genotypes
 #'
-#' For each locus, missing genotypes are replaced with either
-#' the median or mode genotype. Can be done across all sampled individuals
-#' or by population. Loci must be biallelic. NOTE: it is recommended
-#' that missing genotypes are imputed, but if you need a
-#' quick-and-dirty approach, this function might be useful for
+#' For each locus, missing genotypes are replaced with the most common
+#' genotype. Can be done across all sampled individuals or by population.
+#' Loci must be biallelic.
+#'
+#' NOTE: it is recommended that missing genotypes are imputed using
+#' inferences of linkage and genotype likelihood. However, if you need
+#' a quick-and-dirty approach, this function might be useful for
 #' preliminary analyses, or if missing data is very low.
 #'
 #' @param dat Data table: A long data table, e.g. like that imported from
@@ -31,69 +33,54 @@
 #' replacement at each locus is done per population, not across all
 #' sampled individuals.
 #'
-#' @param methodReplace Character: The way in which missing genotypes
-#' are replaced. Either by the \code{'median'} (middle) genotype, or by
-#' the \code{'mode'} (most common) genotype. Default = \code{'mode'}.
-#'
 #' @details If genotypes are coded as characters, \code{NA} or \code{'./.'}
 #' should be used to code missing genotypes. Otherwise if genotypes
 #' are coded as integers, \code{NA} should code missing genotypes.
+#' Whether the most common genotype is estimated across individuals or
+#' for each population depends on parameterisation of \code{popCol}.
 #'
 #' @examples
 #' library(genomalicious)
 #'
-#' # Create a link to raw external datasets in genomalicious
-#' genomaliciousExtData <- paste0(find.package('genomalicious'), '/extdata')
+#' data(data_4pops)
 #'
-#' # This command here shows you the VCF file that comes with genomalicious
-#' list.files(path=genomaliciousExtData, pattern='indseq.vcf')
-#'
-#' # Use this to create a path to that file
-#' vcfPath <- paste0(genomaliciousExtData, '/data_indseq.vcf')
-#'
-#' # Import the VCF
-#' indseq <- vcf2DT(vcfPath)
-#' indseq
+#' D <- data_4pops %>% copy
 #'
 #' # Sites with missing data
-#' indseq$GT[sample(1:nrow(indseq), round(nrow(indseq)*0.15), FALSE)] <- NA
+#' D[sample(1:nrow(D), round(0.1*nrow(D)), FALSE), GT:=NA] %>%
+#'  setnames(., 'GT', 'GT.MISS')
 #'
-#' # Replace genotypes using the mode across all individuals
-#' indseq_mode_all <- replace_miss_genos(
-#'     dat=indseq
-#'     , sampCol='SAMPLE'
-#'     , locusCol='LOCUS'
-#'     , popCol=NULL
-#'     , methodReplace='mode')
+#' # Replace across individuals
+#' D.rep.inds <- replace_miss_genos(
+#'    dat=D, sampCol='SAMPLE', locusCol='LOCUS', genoCol='GT.MISS'
+#' ) %>%
+#'    setnames(., 'GT', 'GT.INDS')
 #'
-#' # Replace genotypes using the mode within each population
-#' indseq_mode_pops <- replace_miss_genos(
-#'     dat=indseq
-#'     , sampCol='SAMPLE'
-#'     , locusCol='LOCUS'
-#'     , popCol='POP'
-#'     , methodReplace='mode')
+#' # Replace within populations
+#' D.rep.pops <- replace_miss_genos(
+#'    dat=D, sampCol='SAMPLE', locusCol='LOCUS', genoCol='GT.MISS', popCol='POP'
+#' ) %>%
+#'    setnames(., 'GT', 'GT.POPS')
 #'
-#' # Replace genotypes using the median within each population
-#' indseq_med_pops <- replace_miss_genos(
-#'     dat=indseq
-#'     , sampCol='SAMPLE'
-#'     , locusCol='LOCUS'
-#'     , popCol='POP'
-#'     , methodReplace='median')
+#' # Tabulate comparisons between methods
+#' compReplace <- left_join(
+#'    data_4pops[, c('LOCUS','SAMPLE','POP','GT')],
+#'    D[, c('LOCUS','SAMPLE','POP','GT.MISS')]
+#' ) %>%
+#' .[is.na(GT.MISS), !'GT.MISS'] %>%
+#'    left_join(., D.rep.inds[,c('LOCUS','SAMPLE','POP','GT.INDS')]) %>%
+#'    left_join(., D.rep.pops[,c('LOCUS','SAMPLE','POP','GT.POPS')])
 #'
-#' # Compare between methods
-#' cbind(indseq_mode_all[genomiss, GT]
-#'     , indseq_mode_pops[genomiss, GT]
-#'     , indseq_med_pops[genomiss, GT])
+#' # Number of correct matches is slightly higher when using the most
+#' # common genotype within populations
+#' compReplace[GT==GT.INDS] %>% nrow
+#' compReplace[GT==GT.POPS] %>% nrow
+#'
 #'
 #' @export
-replace_miss_genos <- function(dat
-                               , sampCol='SAMPLE'
-                               , locusCol='LOCUS'
-                               , genoCol='GT'
-                               , popCol=NULL
-                               , methodReplace='mode'){
+replace_miss_genos <- function(
+    dat, sampCol='SAMPLE', locusCol='LOCUS', genoCol='GT', popCol=NULL
+  ){
 
   # BEGIN ...........
 
@@ -101,11 +88,6 @@ replace_miss_genos <- function(dat
   # Libraries and assertions
   # --------------------------------------------+
   require(data.table)
-
-  # Check the replacement method is specified correctly
-  if((methodReplace %in% c('median', 'mode'))==FALSE){
-    stop("Argument `methodReplace` misspecififed. See: ?replace_miss_genos")
-  }
 
   # Get the class of the genotypes
   gtClass <- class(dat[[genoCol]])
@@ -126,44 +108,47 @@ replace_miss_genos <- function(dat
     dat[[genoCol]] <- as.integer(dat[[genoCol]])
   }
 
+  # Rename columns
+  if(is.null(popCol)){
+    if(sum(colnames(dat) %in% c(sampCol, locusCol, genoCol))!=3){
+      stop('Arguments `sampCol`, `locusCol`, and `genoCol` must all be
+           column names in argument `dat`. See ?replace_miss_genos')
+    }
+
+    colnames(dat)[match(c(sampCol, locusCol, genoCol), colnames(dat))] <- c('SAMPLE','LOCUS','GT')
+  } else if(!is.null(popCol)){
+    if(sum(colnames(dat) %in% c(sampCol, locusCol, genoCol, popCol))!=4){
+      stop('Arguments `sampCol`, `locusCol`, `genoCol`, and `popCol` must all be
+           column names in argument `dat`. See ?replace_miss_genos')
+    }
+
+    colnames(dat)[match(c(sampCol, locusCol, genoCol, popCol), colnames(dat))] <- c('SAMPLE','LOCUS','GT','POP')
+  }
+
   # --------------------------------------------+
   # Internal functions
   # --------------------------------------------+
-  FUN_median_geno <- function(x){
-    return(x[round(length(x)/2)])
-  }
-
-  FUN_mode_geno <- function(x){
+  FUN_common_geno <- function(x){
+    xclass <- class(x)
     tab <- sort(table(x))
-    return(names(tab)[length(tab)])
+    xcommon <- names(tab)[length(tab)]
+    return(as.integer(xcommon))
   }
 
   # --------------------------------------------+
   # Code
   # --------------------------------------------+
-  # Split the data by loci, or loci * population combinations
-  if(is.null(popCol)==TRUE){
-    dat <- split(dat, dat[[locusCol]])
-  } else if(is.null(popCol)==FALSE){
-    dat <- split(dat, dat[, c(locusCol, popCol), with=FALSE])
+  if(is.null(popCol)){
+    genoCommTab <- dat[, .(GT=FUN_common_geno(GT)), by=LOCUS]
+  } else if(!is.null(popCol)){
+    genoCommTab <- dat[, .(GT=FUN_common_geno(GT)), by=c('LOCUS','POP')]
   }
 
-  # Iterate through each X facet of data
-  datRepl <- lapply(dat, function(X){
-    # Get the genotypes, omit missing values
-    x_gt <- sort(na.omit(X[[genoCol]]))
+  datGenos <- dat[!is.na(GT)]
+  datMiss <- dat[is.na(GT), !'GT']
 
-    # Determine which value to replace missing genotypes
-    if(methodReplace=='median'){ x_repl <- FUN_median_geno(x_gt)
-    } else if(methodReplace=='mode'){ x_repl <- FUN_mode_geno(x_gt) }
-
-    # Replace missing genotypes
-    X[[genoCol]][is.na(X[[genoCol]])] <- x_repl
-
-    # Return updated value
-    return(X)
-  })
-
-  return(do.call('rbind', datRepl))
+  rbind(datGenos, left_join(datMiss, genoCommTab)) %>%
+    setorder(., LOCUS, SAMPLE) %>%
+    return()
   # .......... END
 }
