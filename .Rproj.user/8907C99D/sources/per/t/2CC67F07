@@ -1,26 +1,26 @@
 {
-    "id": "59A06B8E",
-    "path": "C:/Users/thiaj/Documents/GitHub/genomalicious/R/filter_maf.R",
-    "project_path": "R/filter_maf.R",
+    "id": "2CC67F07",
+    "path": "C:/Users/thiaj/Documents/GitHub/genomalicious/R/replace_miss_genos.R",
+    "project_path": "R/replace_miss_genos.R",
     "type": "r_source",
-    "hash": "3323801179",
+    "hash": "3576518728",
     "contents": "",
     "dirty": false,
-    "created": 1671097089032.0,
+    "created": 1671240661062.0,
     "source_on_save": false,
     "relative_order": 2,
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "8,61",
-        "scrollLine": "0"
+        "cursorPosition": "34,32",
+        "scrollLine": "29"
     },
     "folds": "",
-    "lastKnownWriteTime": 1671097529,
+    "lastKnownWriteTime": 1671240691,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1671097529794,
+    "last_content_update": 1671240691192,
     "read_only": false,
     "read_only_alternatives": []
 }

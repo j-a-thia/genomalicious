@@ -39,7 +39,7 @@ replacement at each locus is done per population, not across all
 sampled individuals.}
 
 \item{methodReplace}{Character: The way in which missing genotypes
-are replaced. Either by the code{'median'} (middle) genotype, or by
+are replaced. Either by the \code{'median'} (middle) genotype, or by
 the \code{'mode'} (most common) genotype. Default = \code{'mode'}.}
 }
 \description{
