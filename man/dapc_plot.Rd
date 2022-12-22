@@ -18,7 +18,6 @@ dapc_plot(
 }
 \arguments{
 \item{dapcList}{List: A list object generated from \code{genomalicious::dapc_fit}.
-Depending on what plot is requested, the contents of \code{dapcList} will change.
 See details.}
 
 \item{type}{Character: The type of plot to produce. If \code{'scatter'}, a
@@ -55,6 +54,14 @@ rate heatmap.}
 Plot the results of a DAPC. Includes options to produce scatterplot,
 probability plots, and correct assignment heat maps. Expects output produced
 from the function \code{genomalicious::dapc_fit}.
+}
+\details{
+If you want to produce a DAPC scatterplot (\code{type=='scatter'}) or
+a probability plot (\code{type=='probs'}), then this function receives the
+output of \code{dapc_fit(..., type='fit')}. If instead, you have performed
+as assignment analysis with \code{dapc_fit(..., type='loo_cv')} or
+\code{dapc_fit(..., type='traint_test')}, then you want to parameterise with
+\code{type=='assign'}.
 }
 \examples{
 library(genomalicious)
