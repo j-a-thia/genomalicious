@@ -3,9 +3,9 @@
     "path": "C:/Users/thiaj/Documents/GitHub/genomalicious/DEV.R",
     "project_path": "DEV.R",
     "type": "r_source",
-    "hash": "1841003934",
+    "hash": "486992455",
     "contents": "",
-    "dirty": true,
+    "dirty": false,
     "created": 1660683112417.0,
     "source_on_save": false,
     "relative_order": 1,
@@ -16,11 +16,11 @@
         "scrollLine": "0"
     },
     "folds": "",
-    "lastKnownWriteTime": 1663723999,
+    "lastKnownWriteTime": 1671692213,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1670554700954,
+    "last_content_update": 1671692213568,
     "read_only": false,
     "read_only_alternatives": []
 }

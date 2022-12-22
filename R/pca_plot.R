@@ -41,8 +41,8 @@
 #'
 #' @examples
 #' # Data
-#' data(data_4pops)
-#' datGt <- data_4pops
+#' data(data_Genos)
+#' datGt <- data_Genos
 #'
 #' # Conduct the PCA with Patterson et al.'s (2006) normalisation, and
 #' # population specified

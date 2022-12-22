@@ -26,21 +26,21 @@
 #' @examples
 #' library(genomalicious)
 #'
-#' data(data_4pops)
+#' data(data_Genos)
 #'
 #' # Exclude loci with coverage < 10 reads
-#' min10 <- filter_depth(data_4pops, minDP=10)
+#' min10 <- filter_depth(data_Genos, minDP=10)
 #' min10
-#' data_4pops[LOCUS %in% min10]$DP %>% summary
+#' data_Genos[LOCUS %in% min10]$DP %>% summary
 #'
 #' # Exclude loci with coverage < 10 and > 100 reads
-#' min10max100 <- filter_depth(data_4pops, minDP=10, maxDP=100)
+#' min10max100 <- filter_depth(data_Genos, minDP=10, maxDP=100)
 #' min10max100
-#' data_4pops[LOCUS %in% min10max100]$DP %>% summary
+#' data_Genos[LOCUS %in% min10max100]$DP %>% summary
 #'
 #' # Alternatively, subset data.table to only contain the
 #' # bad loci with coverage < 10 reads
-#' data_4pops[!(LOCUS %in% min10)]$DP %>% summary
+#' data_Genos[!(LOCUS %in% min10)]$DP %>% summary
 #'
 #' @export
 filter_depth <- function(dat, minDP=NULL, maxDP=NULL, locusCol='LOCUS', dpCol='DP'){

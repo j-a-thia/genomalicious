@@ -42,9 +42,9 @@
 #' @examples
 #' library(genomalicious)
 #'
-#' data(data_4pops)
+#' data(data_Genos)
 #'
-#' D <- data_4pops %>% copy
+#' D <- data_Genos %>% copy
 #'
 #' # Sites with missing data
 #' D[sample(1:nrow(D), round(0.1*nrow(D)), FALSE), GT:=NA] %>%
@@ -64,7 +64,7 @@
 #'
 #' # Tabulate comparisons between methods
 #' compReplace <- left_join(
-#'    data_4pops[, c('LOCUS','SAMPLE','POP','GT')],
+#'    data_Genos[, c('LOCUS','SAMPLE','POP','GT')],
 #'    D[, c('LOCUS','SAMPLE','POP','GT.MISS')]
 #' ) %>%
 #' .[is.na(GT.MISS), !'GT.MISS'] %>%

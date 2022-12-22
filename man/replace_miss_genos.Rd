@@ -9,8 +9,7 @@ replace_miss_genos(
   sampCol = "SAMPLE",
   locusCol = "LOCUS",
   genoCol = "GT",
-  popCol = NULL,
-  methodReplace = "mode"
+  popCol = NULL
 )
 }
 \arguments{
@@ -58,9 +57,9 @@ for each population depends on parameterisation of \code{popCol}.
 \examples{
 library(genomalicious)
 
-data(data_4pops)
+data(data_Genos)
 
-D <- data_4pops \%>\% copy
+D <- data_Genos \%>\% copy
 
 # Sites with missing data
 D[sample(1:nrow(D), round(0.1*nrow(D)), FALSE), GT:=NA] \%>\%
@@ -80,7 +79,7 @@ D.rep.pops <- replace_miss_genos(
 
 # Tabulate comparisons between methods
 compReplace <- left_join(
-   data_4pops[, c('LOCUS','SAMPLE','POP','GT')],
+   data_Genos[, c('LOCUS','SAMPLE','POP','GT')],
    D[, c('LOCUS','SAMPLE','POP','GT.MISS')]
 ) \%>\%
 .[is.na(GT.MISS), !'GT.MISS'] \%>\%

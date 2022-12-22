@@ -79,7 +79,7 @@ just one output, those loci with missing data less than the \code{missing} thres
 \examples{
 library(genomalicious)
 
-simMiss <- data_4pops \%>\% copy()
+simMiss <- data_Genos \%>\% copy()
 simMiss$GT[sample(1:nrow(simMiss), 0.1*nrow(simMiss), replace=FALSE)] <- NA
 
 filter_missing_loci(simMiss, 0.10)

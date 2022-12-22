@@ -26,9 +26,9 @@ Convert a \code{lda} object to a long-format \code{data.table}
 \examples{
 library(genomalicious)
 
-data(data_4pops)
+data(data_Genos)
 
-PCA <- pca_genos(data_4pops, popCol='POP')
+PCA <- pca_genos(data_Genos, popCol='POP')
 DA <- lda(PCA$pops ~ PCA$x[,1:3])
 
 da2DT(DA, sampVec=rownames(PCA$x), obsPops=PCA$pops)

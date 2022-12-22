@@ -26,12 +26,12 @@
 #' @examples
 #' library(genomalicious)
 #'
-#' data(data_4pops)
+#' data(data_Genos)
 #'
-#' data_4pops
+#' data_Genos
 #'
-#' adegenet_DT2genlight(data_4pops)
-#' adegenet_DT2genlight(data_4pops, popCol='POP')
+#' adegenet_DT2genlight(data_Genos)
+#' adegenet_DT2genlight(data_Genos, popCol='POP')
 #'
 #' @export
 adegenet_DT2genlight <- function(dat, sampCol='SAMPLE', locusCol='LOCUS', genoCol='GT', popCol=NULL){

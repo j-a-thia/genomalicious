@@ -47,15 +47,15 @@ keep.loci <- fsc_tab[LOCUS %in% filter_maf(fsc_tab, type='genos', maf=0.05)]$LOC
 fsc_tab[LOCUS %in% keep.loci, length(unique(LOCUS)), by=CHROM]$V1 %>%  table
 
 fsc_tab[GT=='1/0', GT:='0/1']
-data_4pops <- fsc_tab[LOCUS %in% keep.loci] %>%
+data_Genos <- fsc_tab[LOCUS %in% keep.loci] %>%
   .[, DP:=rnbinom(n=1, size=15, prob=0.3), by=c('CHROM','SAMPLE')] %>%
   .[, AO:=rbinom(n=1, size=DP, prob=0.5), by=c('CHROM','SAMPLE')] %>%
   .[, RO:=DP-AO]
 
-locs_4pops <- data_4pops[, c('LOCUS')] %>% unique()
-locs_4pops <- cbind(
-  locs_4pops,
-  sapply(1:nrow(locs_4pops), function(i){
+locs_Genos <- data_Genos[, c('LOCUS')] %>% unique()
+locs_Genos <- cbind(
+  locs_Genos,
+  sapply(1:nrow(locs_Genos), function(i){
     sample(c('T','A','C','G'), 2, replace=FALSE)
   }) %>%
     t() %>%
@@ -63,14 +63,14 @@ locs_4pops <- cbind(
     setnames(., new=c('ALT','REF'))
 )
 
-data_4pops <- left_join(data_4pops, locs_4pops)
+data_Genos <- left_join(data_Genos, locs_Genos)
 
-data_4pops %>%  pca_genos(., popCol='POP') %>%  pca_plot
+data_Genos %>%  pca_genos(., popCol='POP') %>%  pca_plot
 
-save(data_4pops, file='data/data_4pops.RData')
+save(data_Genos, file='data/data_Genos.RData')
 
 # Make pool data
-data_PoolFreqs <- data_4pops %>%
+data_PoolFreqs <- data_Genos %>%
   .[, .(FREQ=sum(GT)/(length(GT)*2)), by=c('CHROM','POS','LOCUS','ALT','REF','POP')] %>%
   .[, DP:=rnbinom(1, 20, prob=0.2), by=c('POP','CHROM','LOCUS')] %>%
   .[, AO:=rbinom(n=1, size=DP, prob=FREQ)] %>%
@@ -100,8 +100,8 @@ vcf_head <- "##This is a toy dataset for the R package genomalicious - it emulat
 ##FORMAT=<ID=AO,Number=1,Type=Integer,Description='The alternate allele counts in a sample'>"
 
 # Make a VCF from 4 pop genotypes
-vcf4pops <- do.call('rbind', lapply(unique(data_4pops$LOCUS), function(locus){
-  X <- data_4pops[LOCUS==locus]
+vcf4pops <- do.call('rbind', lapply(unique(data_Genos$LOCUS), function(locus){
+  X <- data_Genos[LOCUS==locus]
   X[, GT:=genoscore_converter(GT)]
 
   vcfRow <- data.table(

@@ -34,8 +34,8 @@
 #' @examples
 #' library(genomalicious)
 #'
-#' data(data_4pops)
-#' datGt <- copy(data_4pops)
+#' data(data_Genos)
+#' datGt <- copy(data_Genos)
 #'
 #' # Make the dadi input
 #' dadi_inputs_genos(dat=datGt, popSub=c('Pop1', 'Pop2'))

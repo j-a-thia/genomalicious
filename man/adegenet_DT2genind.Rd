@@ -40,12 +40,12 @@ create a \code{genind} object, as per the \code{adegenet} package
 \examples{
 library(genomalicious)
 
-data(data_4pops)
+data(data_Genos)
 
-data_4pops
+data_Genos
 
-adegenet_DT2genind(data_4pops)
-adegenet_DT2genind(data_4pops, popCol='POP')
+adegenet_DT2genind(data_Genos)
+adegenet_DT2genind(data_Genos, popCol='POP')
 
 }
 \references{

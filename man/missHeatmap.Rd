@@ -57,8 +57,8 @@ by population.
 library(genomalicious)
 
 ####   MISSING GENOTYPE DATA   ####
-data(data_4pops)
-datGt <- data_4pops
+data(data_Genos)
+datGt <- data_Genos
 
 # Add missing values
 datGt <- do.call(

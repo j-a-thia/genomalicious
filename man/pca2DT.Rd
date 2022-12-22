@@ -28,15 +28,15 @@ Convert a \code{prcomp} object to a long-format \code{data.table}
 }
 \examples{
 library(genomalicious)
-data(data_4pops)
+data(data_Genos)
 
 # With populations
-PCA.pops <- pca_genos(data_4pops, popCol='POP')
+PCA.pops <- pca_genos(data_Genos, popCol='POP')
 
 pca2DT(PCA.pops) \%>\% print
 
 # Without populations and all axes (default)
-PCA.nopops <- pca_genos(data_4pops)
+PCA.nopops <- pca_genos(data_Genos)
 
 pca2DT(PCA.nopops) \%>\% print
 

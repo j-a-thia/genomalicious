@@ -46,10 +46,10 @@ Parses a data table of genotypes and returns a matrix of allele frequencies.
 library(genomalicious)
 
 # Import genotype data
-data(data_4pops)
-data_4pops
+data(data_Genos)
+data_Genos
 
 # Convert to frequency matrix
-freqMat <- genos2freqs(data_4pops)
+freqMat <- genos2freqs(data_Genos)
 
 }

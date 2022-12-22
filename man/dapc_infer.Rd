@@ -106,12 +106,12 @@ for downstream analysis, e.g., with \code{genomalicious::dapc_fit}.
 \examples{
 library(genomalicious)
 
-data(data_4pops)
+data(data_Genos)
 
 # Test 1 to 10 with 3, 10, 20, and 40 PC axes, plotting just the first 10
 # eigenvalues from the PCA, with a ggplot flavour.
 inferK <- dapc_infer(
-   data_4pops,
+   data_Genos,
    kTest=1:10L,
    pTest=c(3,10,20,40),
    screeMax=10L,

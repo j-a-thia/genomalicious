@@ -52,11 +52,11 @@ a matrix in wide format (loci in columns and individuals in rows). The reverse
 can also be done. See also \code{DT2Mat_freqs} for converting matrix of frequencies.
 }
 \examples{
-data(data_4pops)
+data(data_Genos)
 
 # Convert a long data table to a wide matrix
 genoMat <- DT2Mat_genos(
-   data_4pops,
+   data_Genos,
    sampCol='SAMPLE',
    locusCol='LOCUS',
    genoCol='GT',

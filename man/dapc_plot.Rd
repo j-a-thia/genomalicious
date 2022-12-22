@@ -59,13 +59,13 @@ from the function \code{genomalicious::dapc_fit}.
 \examples{
 library(genomalicious)
 
-data("data_4pops")
+data("data_Genos")
 
 # DAPC fit on all samples
-DAPC.fit <- dapc_fit(data_4pops, pcPreds=3, method='fit')
+DAPC.fit <- dapc_fit(data_Genos, pcPreds=3, method='fit')
 
 # DAPC using training and testing partitions
-DAPC.tt <- dapc_fit(data_4pops, pcPreds=3, method='train_test')
+DAPC.tt <- dapc_fit(data_Genos, pcPreds=3, method='train_test')
 
 # Scatterplot, LD1 and LD2, with default colours, and ggplot look
 dapc_plot(DAPC.fit, type='scatter', axisIndex=c(1,2))

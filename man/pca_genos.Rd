@@ -58,12 +58,12 @@ pre-PCA are available.
 library(genomalicious)
 
 # Data
-data(data_4pops)
-data_4pops
+data(data_Genos)
+data_Genos
 
 # Conduct the PCA with Patterson et al.'s (2006) normalisation, and
 # population specified
-pca <- pca_genos(dat=data_4pops, scaling='patterson', popCol='POP')
+pca <- pca_genos(dat=data_Genos, scaling='patterson', popCol='POP')
 
 # Plot the PCA
 pca_plot(pca)

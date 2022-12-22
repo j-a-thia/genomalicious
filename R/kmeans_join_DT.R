@@ -22,11 +22,11 @@
 #' @examples
 #' library(genomalicious)
 #'
-#' data(data_4pops)
-#' data_4pops
+#' data(data_Genos)
+#' data_Genos
 #'
 #' # Perform PCA.
-#' PCA <- pca_genos(data_4pops)
+#' PCA <- pca_genos(data_Genos)
 #'
 #' # Get a table of PC axes
 #' pcTable <- pca2DT(PCA)

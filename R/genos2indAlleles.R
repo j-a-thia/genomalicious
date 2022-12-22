@@ -21,11 +21,11 @@
 #'
 #' @examples
 #' library(genomalicious)
-#' data(data_4pops)
+#' data(data_Genos)
 #'
-#' data_4pops
+#' data_Genos
 #'
-#' alle_dt <- genos2indAlleles(data_4pops)
+#' alle_dt <- genos2indAlleles(data_Genos)
 #'
 #' # The first three loci, with count of allele 1 and 2.
 #' alle_dt[1:4, 1:7]

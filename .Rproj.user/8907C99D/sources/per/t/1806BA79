@@ -1,26 +1,26 @@
 {
-    "id": "2CC67F07",
-    "path": "C:/Users/thiaj/Documents/GitHub/genomalicious/R/replace_miss_genos.R",
-    "project_path": "R/replace_miss_genos.R",
+    "id": "1806BA79",
+    "path": "C:/Users/thiaj/Documents/GitHub/genomalicious/R/fst_calc.R",
+    "project_path": "R/fst_calc.R",
     "type": "r_source",
-    "hash": "1259221391",
+    "hash": "762506130",
     "contents": "",
     "dirty": false,
-    "created": 1671240661062.0,
+    "created": 1671692990736.0,
     "source_on_save": false,
     "relative_order": 2,
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "82,2",
-        "scrollLine": "72"
+        "cursorPosition": "361,32",
+        "scrollLine": "355"
     },
     "folds": "",
-    "lastKnownWriteTime": 1671246280,
+    "lastKnownWriteTime": 1671693449,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1671246280536,
+    "last_content_update": 1671693449647,
     "read_only": false,
     "read_only_alternatives": []
 }

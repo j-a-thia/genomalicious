@@ -27,12 +27,12 @@
 #' @examples
 #' library(genomalicious)
 #'
-#' data(data_4pops)
+#' data(data_Genos)
 #'
-#' data_4pops
+#' data_Genos
 #'
-#' adegenet_DT2genind(data_4pops)
-#' adegenet_DT2genind(data_4pops, popCol='POP')
+#' adegenet_DT2genind(data_Genos)
+#' adegenet_DT2genind(data_Genos, popCol='POP')
 #'
 #' @export
 adegenet_DT2genind <- function(dat, sampCol='SAMPLE', locusCol='LOCUS', genoCol='GT', popCol=NULL, n=2L){

@@ -126,10 +126,10 @@
 #' @examples
 #' library(genomalicious)
 #'
-#' data(data_4pops)
+#' data(data_Genos)
 #'
 #' ### Fit the DAPC with the first 3 PC axes as predictors
-#' DAPC.fit <- dapc_fit(dat=data_4pops, pcPreds=3, method='fit')
+#' DAPC.fit <- dapc_fit(dat=data_Genos, pcPreds=3, method='fit')
 #'
 #' # Table of LD and PC axis scores
 #' DAPC.fit$da.tab
@@ -146,7 +146,7 @@
 #' DAPC.fit$da.prob
 #'
 #' ### Leave-one out cross-validation with 2 cores
-#' DAPC.loo <- dapc_fit(data_4pops, method='loo_cv', pcPreds=3, numCores=2)
+#' DAPC.loo <- dapc_fit(data_Genos, method='loo_cv', pcPreds=3, numCores=2)
 #'
 #' # Predictions
 #' DAPC.loo$tab
@@ -164,7 +164,7 @@
 #' DAPC.loo$pairs.wide
 #'
 #' #### Training-testing partitioning with 80% used as trianing
-#' DAPC.tt <- dapc_fit(data_4pops, method='train_test', pcPreds=3, trainProp=0.8)
+#' DAPC.tt <- dapc_fit(data_Genos, method='train_test', pcPreds=3, trainProp=0.8)
 #'
 #' # Pairwise assignment rates in wide-format data table
 #' DAPC.tt$pairs.wide

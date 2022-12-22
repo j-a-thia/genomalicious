@@ -49,15 +49,15 @@
 #'
 #' @examples
 #' # LONG TABLE OF GENOTYPES
-#' data(data_4pops)
+#' data(data_Genos)
 #'
 #' # Filter for MAF=0.20
-#' loci.genos <- filter_maf(data_4pops, maf=0.20, type='genos')
+#' loci.genos <- filter_maf(data_Genos, maf=0.20, type='genos')
 #'
-#' data_4pops[LOCUS %in% dt.loci]
+#' data_Genos[LOCUS %in% dt.loci]
 #'
 #' # LONG TABLE OF ALLELE FREQUENCIES
-#' freqs_4pops <- data_4pops %>%
+#' freqs_4pops <- data_Genos %>%
 #'    .[, .(FREQ=sum(GT)/(length(GT)*2)), by=c('LOCUS','POP')]
 #'
 #' loci.freqs <- filter_maf(freqs_4pops, maf=0.20, type='freqs')

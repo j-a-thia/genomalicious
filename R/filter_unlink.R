@@ -31,21 +31,21 @@
 #' that are not on the same contig in \code{dat[[chromCol]]}.
 #'
 #' @examples
-#' data(data_4pops)
+#' data(data_Genos)
 #'
 #' # Number of unique SNP per locus
-#' data_4pops[, length(unique(LOCUS)), by=CHROM]$V1 %>% table
+#' data_Genos[, length(unique(LOCUS)), by=CHROM]$V1 %>% table
 #'
 #' # Randomly sample 1 SNP per locus
-#' snp.rand.1st <- filter_unlink(data_4pops, method='random')
-#' snp.rand.2nd <- filter_unlink(data_4pops, method='random')
+#' snp.rand.1st <- filter_unlink(data_Genos, method='random')
+#' snp.rand.2nd <- filter_unlink(data_Genos, method='random')
 #'
 #' # Number of SNPs different between random sets
 #' setdiff(snp.rand.1st, snp.rand.2nd) %>% length
 #'
 #' # Sample first SNP per locus
-#' snp.first.1st <- filter_unlink(data_4pops, method='first')
-#' snp.first.2nd <- filter_unlink(data_4pops, method='first')
+#' snp.first.1st <- filter_unlink(data_Genos, method='first')
+#' snp.first.2nd <- filter_unlink(data_Genos, method='first')
 #'
 #' # Number of SNPs different between random sets
 #' setdiff(snp.first.1st, snp.first.2nd) %>% length

@@ -124,12 +124,12 @@ the permuted values are greater than the observed, p=1.
 \examples{
 library(genomalicious)
 
-data(data_4pops)
+data(data_Genos)
 data(data_PoolFreqs)
 
 ### Genotypes, global, with 50 permutations
 genoGlobal <- fst_calc(
-   data_4pops,
+   data_Genos,
    type='genos',
    global=TRUE,
    permute=TRUE,
@@ -147,7 +147,7 @@ genoGlobal$permute$pval
 
 ### Genotypes, pairwise, no permutations
 genoPairs <- fst_calc(
-   data_4pops,
+   data_Genos,
    type='genos',
    global=FALSE,
    pairwise=TRUE
@@ -164,7 +164,7 @@ genoPairs$permute
 
 ### Genotypes, pairwise, with 10 permutations
 genoPairsPerms <- fst_calc(
-   data_4pops,
+   data_Genos,
    type='genos',
    global=FALSE,
    pairwise=TRUE,

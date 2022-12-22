@@ -3,7 +3,7 @@
 #' A long-format data table containing individual genotypes for 4 populations, each with 30
 #' individuals, and 200 biallelic SNP loci. Simulated with FastSimCoal2 (Excoffier et al., 2013).
 #'
-#' @usage data(data_4pops)
+#' @usage data(data_Genos)
 #'
 #' @format A data table with 24000 rows and 11 columns.
 #'
@@ -27,5 +27,5 @@
 #'
 #' @docType data
 #' @keywords datasets
-#' @name data_4pops
+#' @name data_Genos
 NULL
