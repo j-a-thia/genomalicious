@@ -58,7 +58,7 @@
 #' statistical significance of FST? Default is \code{FALSE}. Can only be performed
 #' on genotype data, i.e., \code{type=='genos'}.
 #'
-#' @param num.iters Integer: The number of permutations to perform. Default is 100.
+#' @param numIters Integer: The number of permutations to perform. Default is 100.
 #'
 #' @details Permutation tests involve random shuffling of individuals
 #' among populations, recalculating FST, and testing the hypothesis
@@ -110,7 +110,7 @@
 #'    type='genos',
 #'    global=TRUE,
 #'    permute=TRUE,
-#'    num.iters=50)
+#'    numIters=50)
 #'
 #' # Locus specific estimates
 #' genoGlobal$locus
@@ -146,15 +146,14 @@
 #'    global=FALSE,
 #'    pairwise=TRUE,
 #'    permute=TRUE,
-#'    num.iters=10
+#'    numIters=10
 #'    )
 #'
 #' # Permuted FST
 #' genoPairsPerms$permute$fst
 #'
 #' # Permuted p-value
-#  genoPairsPerms$permute$pval
-#'
+#' genoPairsPerms$permute$pval
 #'
 #' ### Frequencies, pairwise, with 10 permutations
 #' # Note columns in data_PoolFreqs
@@ -175,7 +174,7 @@
 fst_calc <- function(
   dat, type, popCol='POP', sampCol='SAMPLE', locusCol='LOCUS', genoCol='GT',
   freqCol='FREQ', indsCol='INDS', global=TRUE, pairwise=FALSE,
-  permute=FALSE, num.iters=100){
+  permute=FALSE, numIters=100){
 
   # --------------------------------------------+
   # Assertions and environment
@@ -214,13 +213,13 @@ fst_calc <- function(
     stop('Argument `permute` must be a logical value. See ?fst_calc.')
   }
 
-  # If permute is specified, then check num.iters is >0 and is an integer
+  # If permute is specified, then check numIters is >0 and is an integer
   if(permute==TRUE){
-    if(num.iters<1){
-      stop('Argument `num.iters` must be an integer >0. See ?fst_calc.')
+    if(numIters<1){
+      stop('Argument `numIters` must be an integer >0. See ?fst_calc.')
     }
 
-    num.iters <- as.integer(num.iters)
+    numIters <- as.integer(numIters)
   }
 
   # Check all necessary columns are present and reassign values.
@@ -317,12 +316,12 @@ fst_calc <- function(
   }
 
   # Permute FST
-  FUN_fst_perm <- function(Dx, fst.genome, type, num.iters){
+  FUN_fst_perm <- function(Dx, fst.genome, type, numIters){
     # Dx is a data table with $POP, $SAMPLE, $LOCUS, $GT.
 
     # fst.genome is the genome-wide FST to test.
 
-    # num.iters is the number of iterations to perform.
+    # numIters is the number of iterations to perform.
 
     perm.list <- list()
 
@@ -332,7 +331,7 @@ fst_calc <- function(
     perm.results <- list()
 
     # Iterate through i iterations
-    for(i in 1:num.iters){
+    for(i in 1:numIters){
       # Reshuffle the populations in reference tbale
       pop.perm.tab$POP <- sample(pop.perm.tab$POP, nrow(pop.perm.tab), replace=FALSE)
 
@@ -350,7 +349,7 @@ fst_calc <- function(
     }
     # Results
     perm.list$fst <- unlist(perm.results)
-    perm.list$pval <- sum(perm.list$fst>fst.genome)/num.iters
+    perm.list$pval <- sum(perm.list$fst>fst.genome)/numIters
     return(perm.list)
   }
 
@@ -372,7 +371,7 @@ fst_calc <- function(
       if(permute == TRUE){
         cat('Performing permutations', '\n')
         fstOutput$permute <- FUN_fst_perm(
-          Dx=dat, fst.genome=fstOutput$genome, type='genos', num.iters=num.iters)
+          Dx=dat, fst.genome=fstOutput$genome, type='genos', numIters=numIters)
       } else{
         fstOutput$permute <- NULL
       }
@@ -410,7 +409,7 @@ fst_calc <- function(
             Dx=dat[POP %in% c(pop1, pop2)],
             fst.genome=fstOutput$genome[[i]]$FST,
             type='genos',
-            num.iters=num.iters
+            numIters=numIters
           )
 
           fstOutput$permute$fst[[i]] <- pair.perm$fst %>%

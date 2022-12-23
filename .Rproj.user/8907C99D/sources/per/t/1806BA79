@@ -3,7 +3,7 @@
     "path": "C:/Users/thiaj/Documents/GitHub/genomalicious/R/fst_calc.R",
     "project_path": "R/fst_calc.R",
     "type": "r_source",
-    "hash": "762506130",
+    "hash": "2145053896",
     "contents": "",
     "dirty": false,
     "created": 1671692990736.0,
@@ -12,15 +12,15 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "361,32",
-        "scrollLine": "0"
+        "cursorPosition": "164,21",
+        "scrollLine": "156"
     },
     "folds": "",
-    "lastKnownWriteTime": 1671693449,
+    "lastKnownWriteTime": 1671834640,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1671693449647,
+    "last_content_update": 1671834640244,
     "read_only": false,
     "read_only_alternatives": []
 }

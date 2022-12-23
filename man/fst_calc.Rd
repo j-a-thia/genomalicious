@@ -16,7 +16,7 @@ fst_calc(
   global = TRUE,
   pairwise = FALSE,
   permute = FALSE,
-  num.iters = 100
+  numIters = 100
 )
 }
 \arguments{
@@ -73,7 +73,7 @@ is not permitted.}
 statistical significance of FST? Default is \code{FALSE}. Can only be performed
 on genotype data, i.e., \code{type=='genos'}.}
 
-\item{num.iters}{Integer: The number of permutations to perform. Default is 100.}
+\item{numIters}{Integer: The number of permutations to perform. Default is 100.}
 }
 \value{
 A list is returned with three indexes.
@@ -133,7 +133,7 @@ genoGlobal <- fst_calc(
    type='genos',
    global=TRUE,
    permute=TRUE,
-   num.iters=50)
+   numIters=50)
 
 # Locus specific estimates
 genoGlobal$locus
@@ -169,14 +169,14 @@ genoPairsPerms <- fst_calc(
    global=FALSE,
    pairwise=TRUE,
    permute=TRUE,
-   num.iters=10
+   numIters=10
    )
 
 # Permuted FST
 genoPairsPerms$permute$fst
 
 # Permuted p-value
-
+genoPairsPerms$permute$pval
 
 ### Frequencies, pairwise, with 10 permutations
 # Note columns in data_PoolFreqs
