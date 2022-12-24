@@ -19,7 +19,7 @@ pca_plot(
 \code{prcomp} function. Either manually fitted, or using \code{genomalicious::pca_genos}.}
 
 \item{type}{Character: What type of plot to make: a scatterplot (\code{'scatter'}),
-a screeplot of eigenvalues (\code{'scree'}), or the cumulative explained
+a screeplot of explained variances (\code{'scree'}), or the cumulative explained
 variance (\code{'cumvar'}).}
 
 \item{axisIndex}{Integer: The PC axes to plot. If \code{type=='scatter'},
