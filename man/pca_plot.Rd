@@ -11,6 +11,7 @@ pca_plot(
   pops = NULL,
   plotColours = NULL,
   look = "ggplot",
+  legendPos = "top",
   showPlot = TRUE
 )
 }
@@ -44,6 +45,10 @@ if unspecified.}
 \item{look}{Character: The look of the plot. Default = \code{'ggplot'}, the
 typical gray background with gridlines produced by \code{ggplot2}. Alternatively,
 when set to \code{'classic'}, produces a base R style plot.}
+
+\item{legendPos}{Character: Where should the legend be positioned? Default is
+\code{'top'}, but could also be one of, \code{'right'}, \code{'bottom'},
+\code{'left'}, or \code{'none'}.}
 
 \item{showPlot}{Logical: Should the plot be shown automatically? Default is
 \code{TRUE}, otherwise \code{FALSE}.}

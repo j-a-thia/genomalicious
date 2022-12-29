@@ -12,7 +12,7 @@ dapc_plot(
   popBarScale = 1,
   sampleShow = TRUE,
   plotColours = NULL,
-  legendPos = "right",
+  legendPos = "top",
   showPlot = TRUE
 )
 }
@@ -49,6 +49,13 @@ are colours and their indexed names are populations. All populations need
 to be represented with a colour. If \code{type=='assign'}, a series of colours
 needs to be specified to parameterise the colour gradient in the assignment
 rate heatmap.}
+
+\item{legendPos}{Character: Where should the legend be positioned? Default is
+\code{'top'}, but could also be one of, \code{'right'}, \code{'bottom'},
+\code{'left'}, or \code{'none'}.}
+
+\item{showPlot}{Logical: Should the plot be shown automatically? Default is
+\code{TRUE}, otherwise \code{FALSE}.}
 }
 \description{
 Plot the results of a DAPC. Includes options to produce scatterplot,
