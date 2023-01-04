@@ -2,7 +2,7 @@
 % Please edit documentation in R/pca_genos.R
 \name{pca_genos}
 \alias{pca_genos}
-\title{Conduct a PCA on individual genotypes stored in a (long) data table}
+\title{Perform a PCA (principal components analysis) on individual genotypes}
 \usage{
 pca_genos(
   dat,
@@ -14,15 +14,15 @@ pca_genos(
 )
 }
 \arguments{
-\item{dat}{Data table: A long data table, e.g. like that imported from
-\code{vcf2DT}. Genotypes can be coded as '/' separated characters
-(e.g. '0/0', '0/1', '1/1'), or integers as Alt allele counts (e.g. 0, 1, 2).
-Must contain the following columns,
+\item{dat}{Data table: A long-fomate data table. Genotypes can be coded as
+'/' separated characters (e.g. '0/0', '0/1', '1/1'), or integers of Alt
+allele counts (e.g. 0, 1, 2). Must contain the following columns,
 \enumerate{
   \item The sampled individuals (see param \code{sampCol}).
   \item The locus ID (see param \code{locusCol}).
   \item The genotype column (see param \code{genoCol}).
-}}
+}
+Optionally, a population ID column can also be included (see param \code{popCol}).}
 
 \item{scaling}{Character: How should the data (loci) be scaled?
 Default is \code{'covar'} to scale to mean = 0, but variance is not

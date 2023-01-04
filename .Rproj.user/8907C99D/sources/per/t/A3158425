@@ -1,0 +1,26 @@
+{
+    "id": "A3158425",
+    "path": "C:/Users/thiaj/Documents/GitHub/genomalicious/R/pca_genos.R",
+    "project_path": "R/pca_genos.R",
+    "type": "r_source",
+    "hash": "2081008538",
+    "contents": "",
+    "dirty": false,
+    "created": 1672862674238.0,
+    "source_on_save": false,
+    "relative_order": 3,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "14,85",
+        "scrollLine": "4"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1672863371,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1672863371169,
+    "read_only": false,
+    "read_only_alternatives": []
+}
