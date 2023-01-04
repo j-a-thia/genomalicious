@@ -8,6 +8,12 @@ fstat_calc(
   dat,
   type,
   fstat = NULL,
+  popCol = "POP",
+  sampCol = "SAMPLE",
+  locusCol = "LOCUS",
+  genoCol = "GT",
+  freqCol = "FREQ",
+  indsCol = "INDS",
   global = TRUE,
   pairwise = FALSE,
   permute = FALSE,
@@ -22,19 +28,19 @@ of the Alt alleles (0, 1, 2, respectively). Alternatively, a long-format
 data table of allele frequencies.
 Columns required for \strong{both} genotypes and allele frequencies:
 \enumerate{
-   \item \code{$POP}, the population ID.
-   \item \code{$LOCUS}, the locus ID.
+   \item The population ID (see param \code{popCol}).
+   \item The locus ID (see param \code{locusCol}).
 }
 Columns required only for \strong{genotypes}:
 \enumerate{
-   \item \code{$SAMPLE}, the sample ID (a diploid individual).
-   \item \code{$GT}, the genotypes.
+   \item The sample ID (see param \code{sampCol}).
+   \item The genotypes (see param \code{genoCol}).
 }
 Columns required only for \strong{allele frequencies}:
 \enumerate{
-   \item \code{$FREQ}, the allele frequencies.
-   \item \code{$INDS}, the number of pooled diploid individuals used to
-   obtain the allele frequency estimate.
+   \item The allele frequencies (see param \code{freqCol}).
+   \item The number of individuals used to obtain the allele frequency
+   estimate (see param \code{indsCol}).
 }}
 
 \item{type}{Character: One of \code{'genos'} or \code{'freqs'}, to calculate
@@ -43,6 +49,24 @@ F-statistics from genotype or allele frequency data, respectively.}
 \item{fstat}{Character: A vector of F-statistics to calculate. This is only
 applicable for genotype data. Must include one of \code{"FST"},
 \code{"FIS"}, or \code{"FIT"}.}
+
+\item{popCol}{Character: The column name with the population information.
+Default is \code{'POP'}.}
+
+\item{sampCol}{Character: The column name with the sampled individual information.
+Default is \code{'SAMPLE'}.}
+
+\item{locusCol}{Character: The column name with the locus information.
+Default is \code{'LOCUS'}.}
+
+\item{genoCol}{Character: The column name with the genotype information.
+Default is \code{'GT'}.}
+
+\item{freqCol}{Character: The column name with the allele freuqency information.
+Default is \code{'FREQ'}.}
+
+\item{indsCol}{Character: The column name with the number of individuals
+contributing to the allele freuqency estimate. Default is \code{indsCol}.}
 
 \item{global}{Logical: Calculate global F-statistics across all populations?
 Default is \code{TRUE}. Note, \code{global==TRUE} and \code{pairwise==TRUE}
@@ -102,7 +126,7 @@ Only FST can be calculated from allele frequency data.
 
 F-statistics from genotype data are calculated from the variance components
 'a', 'b', and 'c', which have been standardised for observed heterozygosity.
-FST from allele frequencies are calculated using estimates of MSP
+FST from allele frequencies is calculated using estimates of MSP
 (mean squares for populations), MSG (mean squares for gametes) and
 nc (the weighted mean sample size).
 

@@ -11,19 +11,19 @@
 #' data table of allele frequencies.
 #' Columns required for \strong{both} genotypes and allele frequencies:
 #' \enumerate{
-#'    \item \code{$POP}, the population ID.
-#'    \item \code{$LOCUS}, the locus ID.
+#'    \item The population ID (see param \code{popCol}).
+#'    \item The locus ID (see param \code{locusCol}).
 #' }
 #' Columns required only for \strong{genotypes}:
 #' \enumerate{
-#'    \item \code{$SAMPLE}, the sample ID (a diploid individual).
-#'    \item \code{$GT}, the genotypes.
+#'    \item The sample ID (see param \code{sampCol}).
+#'    \item The genotypes (see param \code{genoCol}).
 #' }
 #' Columns required only for \strong{allele frequencies}:
 #' \enumerate{
-#'    \item \code{$FREQ}, the allele frequencies.
-#'    \item \code{$INDS}, the number of pooled diploid individuals used to
-#'    obtain the allele frequency estimate.
+#'    \item The allele frequencies (see param \code{freqCol}).
+#'    \item The number of individuals used to obtain the allele frequency
+#'    estimate (see param \code{indsCol}).
 #' }
 #'
 #' @param type Character: One of \code{'genos'} or \code{'freqs'}, to calculate
@@ -32,6 +32,24 @@
 #' @param fstat Character: A vector of F-statistics to calculate. This is only
 #' applicable for genotype data. Must include one of \code{"FST"},
 #' \code{"FIS"}, or \code{"FIT"}.
+#'
+#' @param popCol Character: The column name with the population information.
+#' Default is \code{'POP'}.
+#'
+#' @param sampCol Character: The column name with the sampled individual information.
+#' Default is \code{'SAMPLE'}.
+#'
+#' @param locusCol Character: The column name with the locus information.
+#' Default is \code{'LOCUS'}.
+#'
+#' @param genoCol Character: The column name with the genotype information.
+#' Default is \code{'GT'}.
+#'
+#' @param freqCol Character: The column name with the allele freuqency information.
+#' Default is \code{'FREQ'}.
+#'
+#' @param indsCol Character: The column name with the number of individuals
+#' contributing to the allele freuqency estimate. Default is \code{indsCol}.
 #'
 #' @param global Logical: Calculate global F-statistics across all populations?
 #' Default is \code{TRUE}. Note, \code{global==TRUE} and \code{pairwise==TRUE}
@@ -52,7 +70,7 @@
 #'
 #' F-statistics from genotype data are calculated from the variance components
 #' 'a', 'b', and 'c', which have been standardised for observed heterozygosity.
-#' FST from allele frequencies are calculated using estimates of MSP
+#' FST from allele frequencies is calculated using estimates of MSP
 #' (mean squares for populations), MSG (mean squares for gametes) and
 #' nc (the weighted mean sample size).
 #'
@@ -180,7 +198,8 @@
 #' @export
 
 fstat_calc <- function(
-    dat, type, fstat=NULL, global=TRUE, pairwise=FALSE,
+    dat, type, fstat=NULL, popCol='POP', sampCol='SAMPLE', locusCol='LOCUS',
+    genoCol='GT', freqCol='FREQ', indsCol='INDS', global=TRUE, pairwise=FALSE,
     permute=FALSE, numPerms=100, numCores=1
   ){
 
@@ -233,10 +252,10 @@ fstat_calc <- function(
   # Checks specific to each type
   if(type=='genos'){
     # Check all necessary columns are present and reassign values.
-    if(sum(c("POP", "SAMPLE", "LOCUS", "GT") %in% colnames(dat))!=4){
+    if(sum(c(popCol,sampCol,locusCol,genoCol) %in% colnames(dat))!=4){
       stop(
-        'Argument `dat` requires columns "POP", "SAMPLE", "LOCUS", "GT" to
-        estimate F-statistics from genotypes. See ?fstat_calc.')
+        'Argument `dat` requires columns `popCol`, `sampCol`, `locusCol` and
+        `genoCol` to estimate F-statistics from genotypes. See ?fstat_calc.')
     }
 
     # If genotypes are characters, convert to integers.
@@ -261,10 +280,10 @@ fstat_calc <- function(
   }
 
   if(type=='freqs'){
-    if(sum(c("POP", "LOCUS", "FREQ", "INDS") %in% colnames(dat))!=4){
+    if(sum(c(popCol,locusCol,freqCol,indsCol) %in% colnames(dat))!=4){
       stop(
-        'Argument `dat` requires columns "POP", "LOCUS", "FREQ", "INDS" to
-        estimate F-statistics from allele frequencies. See ?fstat_calc.')
+        'Argument `dat` requires columns `popCol`, `locusCol`, `freqCol`, and
+        `indsCol` to estimate F-statistics from allele frequencies. See ?fstat_calc.')
     }
 
     if(is.null(fstat)!=TRUE){
@@ -280,6 +299,10 @@ fstat_calc <- function(
   # --------------------------------------------+
 
   if(type=='genos'){
+    # Rename columns
+    col.index <- match(c(popCol,sampCol,locusCol,genoCol), colnames(dat))
+    colnames(dat)[col.index] <- c('POP','SAMPLE','LOCUS','GT')
+
     # START: FST among all populations
     if(global==TRUE){
       cat('FST calculation on genotype data, global estimate', '\n')
@@ -382,6 +405,10 @@ fstat_calc <- function(
   # Code for allele frequencies
   # --------------------------------------------+
   if(type=='freqs'){
+    # Rename columns
+    col.index <- match(c(popCol,locusCol,freqCol,indsCol), colnames(dat))
+    colnames(dat)[col.index] <- c('POP','LOCUS','FREQ','INDS')
+
     # START: FST among all populations
     if(global==TRUE){
       cat('FST calculation on frequency data, global estimate', '\n')
