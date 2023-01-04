@@ -27,7 +27,6 @@ These columns would be created by \code{genomalicious::poolne_estim_outputs}:
   \item \code{DP} = The total read depth.
   \item \code{AO} = The alternate read counts.
   \item \code{RO} = The reference read counts.
-  \item \code{INDS} = The number of pooled diploid individuals.
 }
 }
 \references{

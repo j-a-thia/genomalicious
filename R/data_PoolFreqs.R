@@ -20,7 +20,6 @@
 #'   \item \code{DP} = The total read depth.
 #'   \item \code{AO} = The alternate read counts.
 #'   \item \code{RO} = The reference read counts.
-#'   \item \code{INDS} = The number of pooled diploid individuals.
 #' }
 #'
 #' @references Gautier et al. (2013) Estimation of population allele frequencies from

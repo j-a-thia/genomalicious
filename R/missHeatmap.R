@@ -33,8 +33,7 @@
 #' population plots into. Only takes effect when \code{popCol} is specified.
 #' Default = 2.
 #'
-#' @param showPlot Logical: Should the plot be shown automatically? Default is
-#' \code{TRUE}, otherwise \code{FALSE}.
+#' @return Returns a ggplot object.
 #'
 #' @examples
 #' library(genomalicious)
@@ -97,7 +96,7 @@
 missHeatmap <- function(dat
                              , sampCol='SAMPLE', locusCol='LOCUS'
                              , genoCol='GT', popCol=NA
-                             , plotColours='white', plotNCol=2, showPlot=TRUE){
+                             , plotColours='white', plotNCol=2){
 
   # --------------------------------------------+
   # Libraries, assertions, and setup
@@ -163,6 +162,5 @@ missHeatmap <- function(dat
   }
 
   # Finish up
-  if(showPlot==TRUE){plot(gg)}
   return(gg)
 }

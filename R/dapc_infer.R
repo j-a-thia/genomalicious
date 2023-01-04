@@ -44,13 +44,10 @@
 #' typical gray background with gridlines produced by \code{ggplot2}. Alternatively,
 #' when set to \code{'classic'}, produces a base R style plot.
 #'
-#' @param showPlot Logical: Should the plot be shown automatically? Default is
-#' \code{TRUE}, otherwise \code{FALSE}.
-#'
-#' @return Prints the plot to screen, and also returns a list:
+#' @return Returns a list:
 #' \code{$tab} is a datatable of \emph{k} and \code{p} values examined and
-#' associated BIC value. \code{$fit} contains the indivdiual outputs from
-#' \code{kmeans()} for each combination of parameters fitted. \code{$plot} is
+#' associated BIC value. \code{$fit} contains the individual outputs from
+#' \code{kmeans} for each combination of parameters fitted. \code{$plot} is
 #' a ggplot object.
 #'
 #' @details DAPC was made popular in the population genetics/molecular ecology
@@ -100,8 +97,7 @@
 #'    kTest=1:10L,
 #'    pTest=c(3,10,20,40),
 #'    screeMax=10L,
-#'    look='ggplot',
-#'    showPlot=TRUE
+#'    look='ggplot'
 #' )
 #'
 #' # Tabulated statistics
@@ -116,7 +112,7 @@
 #' @export
 dapc_infer <- function(
     dat, scaling='covar', sampCol='SAMPLE', locusCol='LOCUS', genoCol='GT',
-    kTest=1:10L, pTest, screeMax=20L, look='ggplot', showPlot=TRUE){
+    kTest=1:10L, pTest, screeMax=20L, look='ggplot'){
   # --------------------------------------------+
   # Libraries and assertions
   # --------------------------------------------+
@@ -168,7 +164,7 @@ dapc_infer <- function(
   pca <- pca_genos(dat, scaling=scaling, sampCol=sampCol, locusCol=locusCol, genoCol=genoCol)
 
   # Plot the eigenvalues
-  gg.eig <- pca_plot(pca, type='scree', axisIndex = 1:screeMax, look=look, showPlot=FALSE)
+  gg.eig <- pca_plot(pca, type='scree', axisIndex = 1:screeMax, look=look)
 
   # Construct a table of all K and p number of axes to test
   compTab <- CJ(K=kTest, P=pTest)
@@ -220,7 +216,6 @@ dapc_infer <- function(
   )
 
   # Return
-  if(showPlot==TRUE){plot(gg.infer)}
   list(
     tab=kfitTab[, c('K','P','BIC')],
     fit=kfitList,

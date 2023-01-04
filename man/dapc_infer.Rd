@@ -13,8 +13,7 @@ dapc_infer(
   kTest = 1:10L,
   pTest,
   screeMax = 20L,
-  look = "ggplot",
-  showPlot = TRUE
+  look = "ggplot"
 )
 }
 \arguments{
@@ -56,15 +55,12 @@ fit K-means with.}
 \item{look}{Character: The look of the plot. Default = \code{'ggplot'}, the
 typical gray background with gridlines produced by \code{ggplot2}. Alternatively,
 when set to \code{'classic'}, produces a base R style plot.}
-
-\item{showPlot}{Logical: Should the plot be shown automatically? Default is
-\code{TRUE}, otherwise \code{FALSE}.}
 }
 \value{
-Prints the plot to screen, and also returns a list:
+Returns a list:
 \code{$tab} is a datatable of \emph{k} and \code{p} values examined and
-associated BIC value. \code{$fit} contains the indivdiual outputs from
-\code{kmeans()} for each combination of parameters fitted. \code{$plot} is
+associated BIC value. \code{$fit} contains the individual outputs from
+\code{kmeans} for each combination of parameters fitted. \code{$plot} is
 a ggplot object.
 }
 \description{
@@ -115,8 +111,7 @@ inferK <- dapc_infer(
    kTest=1:10L,
    pTest=c(3,10,20,40),
    screeMax=10L,
-   look='ggplot',
-   showPlot=TRUE
+   look='ggplot'
 )
 
 # Tabulated statistics

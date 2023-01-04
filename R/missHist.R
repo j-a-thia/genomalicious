@@ -36,15 +36,12 @@
 #' population plots into. Only takes effect when \code{popCol} is specified.
 #' Default = 2.
 #'
-#' @param showPlot Logical: Should the plot be shown automatically? Default is
-#' \code{TRUE}, otherwise \code{FALSE}.
-#'
 #' @details When \code{popCol} is unspecified, then all samples are used to create the plots.
 #' If it is specified, then that column name is used to make one plot for
 #' each population. These are arranged in rows and columns, and the
 #' user can specify the number of columns with the argument \code{plotNCol}.
 #'
-#' @return Displays plot and returns the plot object.
+#' @return Returns a ggplot object.
 #'
 #' @examples
 #' library(genomalicious)
@@ -112,7 +109,7 @@
 #' @export
 missHist <- function(
   dat, plotBy, look='ggplot', sampCol='SAMPLE', locusCol='LOCUS', genoCol='GT',
-  popCol=NA, plotColours='white', plotNCol=2, showPlot=TRUE
+  popCol=NA, plotColours='white', plotNCol=2
   ){
 
   # --------------------------------------------+
@@ -175,6 +172,5 @@ missHist <- function(
   }
 
   # Finish up
-  if(showPlot==TRUE){plot(gg)}
   return(gg)
 }

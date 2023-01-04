@@ -12,8 +12,7 @@ dapc_plot(
   popBarScale = 1,
   sampleShow = TRUE,
   plotColours = NULL,
-  legendPos = "top",
-  showPlot = TRUE
+  legendPos = "top"
 )
 }
 \arguments{
@@ -53,9 +52,9 @@ rate heatmap.}
 \item{legendPos}{Character: Where should the legend be positioned? Default is
 \code{'top'}, but could also be one of, \code{'right'}, \code{'bottom'},
 \code{'left'}, or \code{'none'}.}
-
-\item{showPlot}{Logical: Should the plot be shown automatically? Default is
-\code{TRUE}, otherwise \code{FALSE}.}
+}
+\value{
+Returns a ggplot object.
 }
 \description{
 Plot the results of a DAPC. Includes options to produce scatterplot,

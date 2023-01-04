@@ -1,26 +1,26 @@
 {
-    "id": "F3C7931E",
-    "path": "C:/Users/thiaj/Documents/GitHub/genomalicious/R/dapc_plot.R",
-    "project_path": "R/dapc_plot.R",
+    "id": "228C1A70",
+    "path": "C:/Users/thiaj/Documents/GitHub/genomalicious/R/fstat_calc.R",
+    "project_path": "R/fstat_calc.R",
     "type": "r_source",
-    "hash": "0",
+    "hash": "1222772622",
     "contents": "",
     "dirty": false,
-    "created": 1672304644195.0,
+    "created": 1672789922489.0,
     "source_on_save": false,
     "relative_order": 2,
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "224,4",
-        "scrollLine": "211"
+        "cursorPosition": "30,2",
+        "scrollLine": "24"
     },
     "folds": "",
-    "lastKnownWriteTime": 1672305937,
+    "lastKnownWriteTime": 1672792748,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1672305937831,
+    "last_content_update": 1672792748575,
     "read_only": false,
     "read_only_alternatives": []
 }

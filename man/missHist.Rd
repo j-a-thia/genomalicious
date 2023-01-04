@@ -13,8 +13,7 @@ missHist(
   genoCol = "GT",
   popCol = NA,
   plotColours = "white",
-  plotNCol = 2,
-  showPlot = TRUE
+  plotNCol = 2
 )
 }
 \arguments{
@@ -50,12 +49,9 @@ Optional parameter. Default = \code{NA}.}
 \item{plotNCol}{Integer: The number of columns to arrange indiviudal
 population plots into. Only takes effect when \code{popCol} is specified.
 Default = 2.}
-
-\item{showPlot}{Logical: Should the plot be shown automatically? Default is
-\code{TRUE}, otherwise \code{FALSE}.}
 }
 \value{
-Displays plot and returns the plot object.
+Returns a ggplot object.
 }
 \description{
 Use to visualise missing data with respect to samples and

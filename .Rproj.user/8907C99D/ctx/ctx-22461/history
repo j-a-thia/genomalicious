@@ -1,0 +1,512 @@
+}
+# Output
+return(result)
+}
+data_Genos ->dat
+#' @examples
+#' @examples
+library(genomalicious)
+data_Genos ->dat
+type='genos'
+global=TRUE
+pairwise=FALSE
+permute=FALSE
+numIters=100
+numIters=100
+# --------------------------------------------+
+# Assertions and environment
+# --------------------------------------------+
+require(data.table); require(tidyverse)
+# Make sure dat is a data.table
+dat <- as.data.table(dat)
+# Has type been specified correctly?
+if(!type %in% c('genos','freqs')){
+stop('Argument `type` must be one of "genos" or "freqs".')
+}
+# Check that global and pairwise are logicals
+if(class(global)!='logical'){
+stop('Argument `global` must be a logical value. See ?fst_calc.')
+}
+if(class(pairwise)!='logical'){
+stop('Argument `pairwise` must be a logical value. See ?fst_calc.')
+}
+# Cannot specify bpth global and pairwise
+if(global==TRUE & pairwise==TRUE){
+stop('Arguments `global` and `pairwise` cannot both be TRUE. See ?fst_calc.')
+}
+# Must specify one of global or pairwise
+if(global==FALSE & pairwise==FALSE){
+stop('One of arguments `global` and `pairwise` must be TRUE. See ?fst_calc.')
+}
+# Check that permute is logical
+if(class(permute)!='logical'){
+stop('Argument `permute` must be a logical value. See ?fst_calc.')
+}
+cat('FST calculation on genotype data, global estimate', '\n')
+#' Calculate variance components for F-statistics
+#'
+#' Takes a list of values of allele frequencies, sample sizes, number of
+#' populations, and heterozygosity, and returns variance components, as
+#' per Weir & Cockerham (1984). Assumes that all values are for a single
+#' biallelic SNP locus.
+#'
+#' Note, this function is not exported.
+#'
+#' @param pi Numeric: A vector of allele frequencies for each population.
+#'
+#' @param ni Numeric: A vector of sample sizes (number of diploid individuals)
+#' for each population.
+#'
+#' @param r Integer: A single value, the number of populations.
+#'
+#' @param hetStand Logical: Should the estimates be standardised for observed
+#' heterozygosity?
+#'
+#' @param hi Numeric: A vector of observed heterozygosities for each population.
+#'
+#' @returns Returns a data table. If \code{hetStand==FALSE}, then the list has three
+#' columns: \code{$MSP}, mean sqaures for populations; \code{$MSG}, mean squares
+#' for gametes; \code{$Nc}, a sample size constant. If \code{hetStand==TRUE},
+#' then the three columns are \code{$A}, \code{$B}, \code{$C}, which
+#' correspond to the 'a', 'b' and 'c' variance components described in
+#' Weir & Cockheram (1984).
+#'
+#' @references
+#' Weir & Cockerham (1984) Evolution. DOI: 10.1111/j.1558-5646.1984.tb05657.x
+#' Weir et al. (2002) Annals of Human Genetics. DOI: 10.1146/annurev.genet.36
+#'
+#' @examples
+#' fstat_varcomps(pi=c(0.5,0.25), ni=c(20,20), r=2, hetStand=FALSE)
+#'
+#' fstat_varcomps(pi=c(0.5,0.25), ni=c(20,20), r=2, hi=c(0.05,0.375), hetStand=TRUE)
+fstat_varcomps <- function(pi, ni, r, hi=NULL, hetStand=FALSE){
+require(data.table); require(tidyverse)
+if(hetStand==FALSE){
+# Mean weighted allele frequency
+p.mean <- sum(ni * pi)/sum(ni)
+# Mean squares variance components
+msp <- (1/(r-1)) * sum(ni * (pi - p.mean)^2)
+msg <- (1/sum(ni-1)) * sum(ni * pi * (1-pi))
+# Sample size correction factor
+nc <- (1/(r-1)) * ( sum(ni) - (sum(ni^2)/sum(ni)) )
+# Output as data.table
+return(data.table(MSP=msp, MSG=msg, Nc=nc))
+}
+if(hetStand==TRUE){
+# The mean sample size
+n.mean <- sum(ni/r)
+# The sample size scaling parameter
+nc <- (r*n.mean - sum((ni^2)/(r*n.mean))) / (r-1)
+# The average sample allele frequency
+p.mean <- sum((ni*pi)/(r*n.mean))
+# The variance in allele frequencies
+s2 <- sum( (ni*(pi-p.mean)^2)/((r-1)*n.mean) )
+# The average heterozygosity
+h.mean <- sum( (ni*hi)/(r*n.mean) )
+# The a, b, and c components
+a <- (nc/n.mean) * (s2 - (1/(n.mean-1))*((p.mean*(1-p.mean)) - (s2*(r-1)/r) - (0.25*h.mean)))
+b <- (n.mean/(n.mean-1)) * ((p.mean*(1-p.mean)) - (s2*(r-1)/r) - (h.mean*((2*n.mean-1)/(4*n.mean))))
+c <- 0.5 * h.mean
+# Return as list
+return(data.table(A=a, B=b, C=c))
+}
+}
+#' Subfunction for calculating F-statistics
+#'
+#' Calculates F-statistics from genotype or allele frequency data in a
+#' long-format data table as per Weir & Cockerham (1984). Assumes that all
+#' values are for a single biallelic SNP locus.
+#'
+#' Note, this function is not exported.
+#'
+#' @param dat Data table: In long-format, requires columns \code{$POP},
+#' \code{$SAMPLE}, \code{$LOCUS} and \code{$GT} for genotypes;
+#' requires \code{$POP}, \code{$LOCUS}, \code{$FREQ}, and \code{$INDS} for
+#' allele frequencies
+#'
+#' @param type Character: either \code{"genos"} or \code{"freqs"}.
+#'
+#' @param fstat Character: a vector containing the F-statistics to calculate
+#' when the data are genotypes. Must include one of \code{"FST"},
+#' \code{"FIS"}, or \code{"FIT"}.
+#'
+#' @returns Returns a list with \code{$genome}, the genome-wide F-statistic, and
+#' \code{$locus}, the per locus F-statistic.
+#'
+#' @examples
+#' data_Genos %>%
+#'    fstat_subfun(., type='genos', fstat=c('FST','FIS','FIT'))
+#'
+#' left_join(data_PoolFreqs, data_PoolInfo) %>%
+#'    setnames(., 'POOL', 'POP') %>%
+#'    fstat_subfun(., type='freqs')
+fstat_subfun <- function(dat, type, fstat=NULL){
+require(data.table); require(tidyverse)
+# Empty list
+result <- list(genome=NULL, locus=NULL)
+# If genotype data
+if(type=='genos'){
+# Summarise
+D <- list(
+dat[, .(P=sum(GT)/(length(GT)*2)), by=c('LOCUS','POP')],
+dat[, .(N=length(unique(SAMPLE))), by=c('LOCUS','POP')],
+dat[, .(H=sum(GT==1)/length(GT)), by=c('LOCUS','POP')]
+) %>%
+reduce(full_join, by=c('LOCUS','POP'))
+num.pops <- D$POP %>% unique %>% length
+# Variance components
+D.varcomp <- D[, fstat_varcomps(pi=P, ni=N, r=num.pops, hi=H, hetStand=TRUE), by=LOCUS]
+# Iterate through requested F-statistics
+for(f in fstat){
+if(f=='FST'){
+result$genome[[f]] <- D.varcomp[, sum(A)/sum(A+B+C)]
+result$locus[[f]] <- D.varcomp[, .(FST=A/(A+B+C)), by=LOCUS]
+} else if(f=='FIS'){
+result$genome[[f]] <- D.varcomp[, 1-(sum(C)/sum(B+C))]
+result$locus[[f]] <- D.varcomp[, .(FIS=1-(C/sum(B+C))), by=LOCUS]
+} else if(f=='FIT'){
+result$genome[[f]] <- D.varcomp[, 1-(sum(C)/sum(A+B+C))]
+result$locus[[f]] <- D.varcomp[, .(FIT=1-(C/sum(A+B+C))), by=LOCUS]
+}
+}
+# Output
+result <- list(
+genome=as.data.table(do.call('cbind', result$genome)),
+locus=result$locus %>% reduce(full_join, by='LOCUS')
+)
+}
+# If allele frequency data
+if(type=='freqs'){
+# Number of populations
+num.pops <- dat$POP %>% unique %>% length
+# Variance components
+D.varcomp <- dat[, fstat_varcomps(pi=FREQ, ni=INDS, r=num.pops, hetStand=FALSE), by=LOCUS]
+# Calculations
+result$genome <- D.varcomp[, .(FST=sum(MSP-MSG)/sum(MSP+((Nc-1)*MSG)))]
+result$locus <- D.varcomp[, .(FST=(MSP-MSG)/(MSP+((Nc-1)*MSG))), by=LOCUS]
+}
+# Output
+return(result)
+}
+fstat='FIS'
+# Make sure the specified value in fstat are correct
+!fstat %in% c('FST','FIS','FIT')
+# Make sure the specified value in fstat are correct
+sum(!fstat %in% c('FST','FIS','FIT'))
+fstat <- c('FST','FIS')
+# Make sure the specified value in fstat are correct
+sum(!fstat %in% c('FST','FIS','FIT'))
+fstat <- c('FST','FIS','fff')
+# Make sure the specified value in fstat are correct
+sum(!fstat %in% c('FST','FIS','FIT'))
+fstat
+fstat <- c('FST','FIS','FIT')
+fstat_subfun(dat, type='genos', fstat=fstat)
+result <- fstat_subfun(dat, type='genos', fstat=fstat)
+result
+dat
+numIters=100
+pop.tab <- dat[, c('POP','SAMPLE')] %>% unique
+pop.tab
+pop.tab.i <- pop.tab %>% copy
+pop.tab.i
+num.samps <- pop.tab %>% nrow
+num.samps
+pop.tab.i$SAMPLE <- sample(pop.tab.i$SAMPLE, size=num.samps, replace=FALSE)
+pop.tab.i
+dat[, c('SAMPLE','LOCUS','GT')]
+dat[, c('SAMPLE','LOCUS','GT')] %>%
+left_join(., pop.tab.i)
+pop.tab.i <- pop.tab %>% copy
+pop.tab.i$SAMPLE <- sample(pop.tab.i$SAMPLE, size=num.samps, replace=FALSE)
+pop.tab.i
+dat[, c('SAMPLE','LOCUS','GT')] %>%
+left_join(., pop.tab.i)
+dat[, c('SAMPLE','LOCUS','GT')] %>%
+left_join(., pop.tab.i) %>%
+fstat_subfun(., type='genos', fstat=fstat)
+dat[, c('SAMPLE','LOCUS','GT')] %>%
+left_join(., pop.tab.i) %>%
+fstat_subfun(., type='genos', fstat=fstat) %>%
+.[['global']]
+dat[, c('SAMPLE','LOCUS','GT')] %>%
+left_join(., pop.tab.i) %>%
+fstat_subfun(., type='genos', fstat=fstat) %>%
+.[['genome']]
+dat[, c('SAMPLE','LOCUS','GT')] %>%
+left_join(., pop.tab.i) %>%
+fstat_subfun(., type='genos', fstat=fstat) %>%
+.[['genome']] %>%
+data.table(ITER=i, .)
+lapply(1:numIters, function(i){
+pop.tab.i <- pop.tab %>% copy
+pop.tab.i$SAMPLE <- sample(pop.tab.i$SAMPLE, size=num.samps, replace=FALSE)
+dat[, c('SAMPLE','LOCUS','GT')] %>%
+left_join(., pop.tab.i) %>%
+fstat_subfun(., type='genos', fstat=fstat) %>%
+.[['genome']] %>%
+data.table(ITER=i, .)
+})
+lapply(1:numIters, function(i){
+pop.tab.i <- pop.tab %>% copy
+pop.tab.i$SAMPLE <- sample(pop.tab.i$SAMPLE, size=num.samps, replace=FALSE)
+dat[, c('SAMPLE','LOCUS','GT')] %>%
+left_join(., pop.tab.i, by='SAMPLE') %>%
+fstat_subfun(., type='genos', fstat=fstat) %>%
+.[['genome']] %>%
+data.table(ITER=i, .)
+}) %>%
+do.call('rbind',.)
+numIters=10
+result <- lapply(1:numIters, function(i){
+pop.tab.i <- pop.tab %>% copy
+pop.tab.i$SAMPLE <- sample(pop.tab.i$SAMPLE, size=num.samps, replace=FALSE)
+dat[, c('SAMPLE','LOCUS','GT')] %>%
+left_join(., pop.tab.i, by='SAMPLE') %>%
+fstat_subfun(., type='genos', fstat=fstat) %>%
+.[['genome']] %>%
+data.table(ITER=i, .)
+}) %>%
+do.call('rbind',.)
+requires(tidyverse)
+requires('tidyverse')
+require('tidyverse')
+require('tidyverse'); require('doParallel')
+require('tidyverse'); require('doParallel'); require('data.table')
+pop.tab <- dat[, c('POP','SAMPLE')] %>% unique
+num.samps <- pop.tab %>% nrow
+my.cluster <- makeCluster(numCores)
+registerDoParallel(my.cluster)
+my.cluster <- makeCluster(numCores)
+numCores=3
+my.cluster <- makeCluster(numCores)
+registerDoParallel(my.cluster)
+foreach(i=1:numCores) %dopar% {
+require('tidyverse'); require('data.table')
+pop.tab.i <- pop.tab %>% copy
+pop.tab.i$SAMPLE <- sample(pop.tab.i$SAMPLE, size=num.samps, replace=FALSE)
+dat[, c('SAMPLE','LOCUS','GT')] %>%
+left_join(., pop.tab.i, by='SAMPLE') %>%
+fstat_subfun(., type='genos', fstat=fstat) %>%
+.[['genome']] %>%
+data.table(ITER=i, .)
+} %>%
+do.call('rbind',.)
+foreach(i=1:numIters) %dopar% {
+require('tidyverse'); require('data.table')
+pop.tab.i <- pop.tab %>% copy
+pop.tab.i$SAMPLE <- sample(pop.tab.i$SAMPLE, size=num.samps, replace=FALSE)
+dat[, c('SAMPLE','LOCUS','GT')] %>%
+left_join(., pop.tab.i, by='SAMPLE') %>%
+fstat_subfun(., type='genos', fstat=fstat) %>%
+.[['genome']] %>%
+data.table(ITER=i, .)
+} %>%
+do.call('rbind',.)
+result <- foreach(i=1:numIters) %dopar% {
+require('tidyverse'); require('data.table')
+pop.tab.i <- pop.tab %>% copy
+pop.tab.i$SAMPLE <- sample(pop.tab.i$SAMPLE, size=num.samps, replace=FALSE)
+dat[, c('SAMPLE','LOCUS','GT')] %>%
+left_join(., pop.tab.i, by='SAMPLE') %>%
+fstat_subfun(., type='genos', fstat=fstat) %>%
+.[['genome']] %>%
+data.table(ITER=i, .)
+} %>%
+do.call('rbind',.)
+stopCluster(my.cluster)
+result
+pop.tab <- dat[, c('POP','SAMPLE')] %>% unique
+num.samps <- pop.tab %>% nrow
+if(numCores==1){
+result <- lapply(1:numIters, function(i){
+pop.tab.i <- pop.tab %>% copy
+pop.tab.i$SAMPLE <- sample(pop.tab.i$SAMPLE, size=num.samps, replace=FALSE)
+dat[, c('SAMPLE','LOCUS','GT')] %>%
+left_join(., pop.tab.i, by='SAMPLE') %>%
+fstat_subfun(., type='genos', fstat=fstat) %>%
+.[['genome']] %>%
+data.table(PERM=i, .)
+}) %>%
+do.call('rbind',.)
+}
+if(numCores>1){
+my.cluster <- makeCluster(numCores)
+registerDoParallel(my.cluster)
+result <- foreach(i=1:numIters) %dopar% {
+require('tidyverse'); require('data.table')
+pop.tab.i <- pop.tab %>% copy
+pop.tab.i$SAMPLE <- sample(pop.tab.i$SAMPLE, size=num.samps, replace=FALSE)
+dat[, c('SAMPLE','LOCUS','GT')] %>%
+left_join(., pop.tab.i, by='SAMPLE') %>%
+fstat_subfun(., type='genos', fstat=fstat) %>%
+.[['genome']] %>%
+data.table(PERM=i, .)
+} %>%
+do.call('rbind',.)
+stopCluster(my.cluster)
+}
+result
+#' @param numCores Integer: The number of cores to use. Default = 1. When 1,
+#' this will be a single core processes using lapply. If >1, then this will
+#' utilise the doParallel package to run on a mini cluster.
+#'
+#' @returns Returns a data table of permuted F-statistics for each permutation.
+#'
+#' @examples
+#' data(data_Genos)
+#'
+#'
+fstat_permute <- function(dat, fstat, numIters, numCores=1){
+require('tidyverse'); require('doParallel'); require('data.table')
+pop.tab <- dat[, c('POP','SAMPLE')] %>% unique
+num.samps <- pop.tab %>% nrow
+if(numCores==1){
+result <- lapply(1:numIters, function(i){
+pop.tab.i <- pop.tab %>% copy
+pop.tab.i$SAMPLE <- sample(pop.tab.i$SAMPLE, size=num.samps, replace=FALSE)
+dat[, c('SAMPLE','LOCUS','GT')] %>%
+left_join(., pop.tab.i, by='SAMPLE') %>%
+fstat_subfun(., type='genos', fstat=fstat) %>%
+.[['genome']] %>%
+data.table(PERM=i, .)
+}) %>%
+do.call('rbind',.)
+}
+if(numCores>1){
+my.cluster <- makeCluster(numCores)
+registerDoParallel(my.cluster)
+result <- foreach(i=1:numIters) %dopar% {
+require('tidyverse'); require('data.table')
+pop.tab.i <- pop.tab %>% copy
+pop.tab.i$SAMPLE <- sample(pop.tab.i$SAMPLE, size=num.samps, replace=FALSE)
+dat[, c('SAMPLE','LOCUS','GT')] %>%
+left_join(., pop.tab.i, by='SAMPLE') %>%
+fstat_subfun(., type='genos', fstat=fstat) %>%
+.[['genome']] %>%
+data.table(PERM=i, .)
+} %>%
+do.call('rbind',.)
+stopCluster(my.cluster)
+}
+return(result)
+}
+fstat_permute(dat_Genos, 'FST', 100, 1)
+fstat_permute(data_Genos, 'FST', 100, 1)
+fstat_permute(data_Genos, c('FST','FIT','FIS'), 100, 3)
+library(genomalicious)
+if(numCores>1){
+my.cluster <- makeCluster(numCores)
+registerDoParallel(my.cluster)
+result <- foreach(i=1:numIters) %dopar% {
+require('genomalicious')
+pop.tab.i <- pop.tab %>% copy
+pop.tab.i$SAMPLE <- sample(pop.tab.i$SAMPLE, size=num.samps, replace=FALSE)
+dat[, c('SAMPLE','LOCUS','GT')] %>%
+left_join(., pop.tab.i, by='SAMPLE') %>%
+fstat_subfun(., type='genos', fstat=fstat) %>%
+.[['genome']] %>%
+data.table(PERM=i, .)
+} %>%
+do.call('rbind',.)
+stopCluster(my.cluster)
+}
+result
+fstat_permute <- function(dat, fstat, numIters, numCores=1){
+require('tidyverse'); require('doParallel'); require('data.table')
+pop.tab <- dat[, c('POP','SAMPLE')] %>% unique
+num.samps <- pop.tab %>% nrow
+if(numCores==1){
+result <- lapply(1:numIters, function(i){
+pop.tab.i <- pop.tab %>% copy
+pop.tab.i$SAMPLE <- sample(pop.tab.i$SAMPLE, size=num.samps, replace=FALSE)
+dat[, c('SAMPLE','LOCUS','GT')] %>%
+left_join(., pop.tab.i, by='SAMPLE') %>%
+fstat_subfun(., type='genos', fstat=fstat) %>%
+.[['genome']] %>%
+data.table(PERM=i, .)
+}) %>%
+do.call('rbind',.)
+}
+if(numCores>1){
+my.cluster <- makeCluster(numCores)
+registerDoParallel(my.cluster)
+result <- foreach(i=1:numIters) %dopar% {
+require('genomalicious')
+pop.tab.i <- pop.tab %>% copy
+pop.tab.i$SAMPLE <- sample(pop.tab.i$SAMPLE, size=num.samps, replace=FALSE)
+dat[, c('SAMPLE','LOCUS','GT')] %>%
+left_join(., pop.tab.i, by='SAMPLE') %>%
+fstat_subfun(., type='genos', fstat=fstat) %>%
+.[['genome']] %>%
+data.table(PERM=i, .)
+} %>%
+do.call('rbind',.)
+stopCluster(my.cluster)
+}
+return(result)
+}
+data(data_Genos)
+fstat_permute(data_Genos, 'FST', 100, 1)
+fstat_permute(data_Genos, c('FST','FIT','FIS'), 100, 3)
+?genomalicious
+?poolne_estim_input
+?mitoGbk2DT
+find.package('genomalicious')
+find.package('genomalicious')
+path2genom <- find.package('genomalicious')
+path2genom
+fileVC <- paste0(path2genom, 'R/fstat_varcomps.R')
+source(fileVC)
+fileVC <- paste0(path2genom, '/R/fstat_varcomps.R')
+source(fileVC)
+path2genom
+list.files(path2genom)
+getwd
+getwd()
+list.files(path2genom)
+list.files(paste0(path2genom,'/R')
+)
+library(genomalicious)
+data(data_Genos)
+library(genomalicious)
+fstat_permute(data_Genos, 'FST', 100, 1)
+fstat_permute(data_Genos, c('FST','FIT','FIS'), 100, 3)
+# Developer libraries
+libs <- c('devtools', 'roxygen2', 'testthat', 'knitr', 'data.table', 'tidyverse')
+for(L in libs){require(L, character.only=TRUE)}
+# Make documents
+roxygenise(clean=TRUE)
+library(genomalicious)
+data(data_Genos)
+fstat_permute(data_Genos, 'FST', 100, 1)
+fstat_permute(data_Genos, c('FST','FIT','FIS'), 100, 3)
+.Internal('fstat_subfun')
+.Internal(fstat_subfun)
+# Developer libraries
+libs <- c('devtools', 'roxygen2', 'testthat', 'knitr', 'data.table', 'tidyverse')
+for(L in libs){require(L, character.only=TRUE)}
+# Make documents
+roxygenise(clean=TRUE)
+libs <- c('devtools', 'roxygen2', 'testthat', 'knitr', 'data.table', 'tidyverse')
+for(L in libs){require(L, character.only=TRUE)}
+# Make documents
+roxygenise(clean=TRUE)
+data(data_Genos)
+fstat_permute(data_Genos, 'FST', 100, 1)
+fstat_permute(data_Genos, c('FST','FIT','FIS'), 100, 3)
+?fstat_permute
+?fstat_varcomps
+library(genomalicious)
+?fstat_varcomps
+# Developer libraries
+libs <- c('devtools', 'roxygen2', 'testthat', 'knitr', 'data.table', 'tidyverse')
+for(L in libs){require(L, character.only=TRUE)}
+# Make documents
+roxygenise(clean=TRUE)
+library(genomalicious)
+# Developer libraries
+libs <- c('devtools', 'roxygen2', 'testthat', 'knitr', 'data.table', 'tidyverse')
+for(L in libs){require(L, character.only=TRUE)}
+# Make documents
+roxygenise(clean=TRUE)

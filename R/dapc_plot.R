@@ -41,15 +41,14 @@
 #' \code{'top'}, but could also be one of, \code{'right'}, \code{'bottom'},
 #' \code{'left'}, or \code{'none'}.
 #'
-#' @param showPlot Logical: Should the plot be shown automatically? Default is
-#' \code{TRUE}, otherwise \code{FALSE}.
-#'
 #' @details If you want to produce a DAPC scatterplot (\code{type=='scatter'}) or
 #' a probability plot (\code{type=='probs'}), then this function receives the
 #' output of \code{dapc_fit(..., type='fit')}. If instead, you have performed
 #' as assignment analysis with \code{dapc_fit(..., type='loo_cv')} or
 #' \code{dapc_fit(..., type='traint_test')}, then you want to parameterise with
 #' \code{type=='assign'}.
+#'
+#' @return Returns a ggplot object.
 #'
 #' @examples
 #' library(genomalicious)
@@ -90,7 +89,7 @@
 #' @export
 dapc_plot <- function(
   dapcList, type, scatterLook='ggplot', axisIndex=c(1,2), popBarScale=1,
-  sampleShow=TRUE, plotColours=NULL, legendPos='top', showPlot=TRUE
+  sampleShow=TRUE, plotColours=NULL, legendPos='top'
 ){
   # --------------------------------------------+
   # Libraries and assertions
@@ -190,7 +189,7 @@ dapc_plot <- function(
       stop('Argument `plotColours` requires 2 or more colours.')
     }
     if(is.null(plotColours)){
-      plotColours <- c('#0030C1', '#EA49DF', '#D6012C')
+      plotColours <- c('white', '#0030C1', '#D6012C')
     }
   }
 
@@ -306,12 +305,14 @@ dapc_plot <- function(
       geom_tile(colour='grey20') +
       scale_x_discrete(expand=c(0,0)) +
       scale_y_discrete(expand=c(0,0)) +
-      scale_fill_gradientn(colours=plotColours) +
+      scale_fill_gradientn(
+        colours=plotColours,
+        guide = guide_colorbar(frame.colour = "grey20", ticks.colour = "grey20")
+        ) +
       labs(x='Observed', y='Predicted', fill='Assignment rate')
   }
 
   ### Output
-  plot(gg)
   return(gg)
 }
 

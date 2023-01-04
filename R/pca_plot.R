@@ -37,11 +37,7 @@
 #' \code{'top'}, but could also be one of, \code{'right'}, \code{'bottom'},
 #' \code{'left'}, or \code{'none'}.
 #'
-#' @param showPlot Logical: Should the plot be shown automatically? Default is
-#' \code{TRUE}, otherwise \code{FALSE}.
-#'
-#' @return Prints the plot to screen, and also returns an object of
-#' \code{gg}/\code{ggplot} class.
+#' @return Returns a ggplot object.
 #'
 #' @examples
 #' # Data
@@ -60,13 +56,13 @@
 #'             , axisIndex=c(2,3)
 #'             , pops=pca$pops
 #'             , plotColours=c(Pop1='gray30', Pop2='royalblue', Pop3='palevioletred3', Pop4='plum2')
-#'             , look='classic', showPlot=TRUE)
+#'             , look='classic')
 #'
 #'
 #' @export
 pca_plot <- function(
     pcaObj, type='scatter', axisIndex=NULL, pops=NULL,
-    plotColours=NULL, look='ggplot', legendPos='top', showPlot=TRUE){
+    plotColours=NULL, look='ggplot', legendPos='top'){
 
   # --------------------------------------------+
   # Libraries and assertions
@@ -202,6 +198,5 @@ pca_plot <- function(
   }
 
   # Plot and return
-  if(showPlot==TRUE){plot(gg)}
   return(gg)
 }

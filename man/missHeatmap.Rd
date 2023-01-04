@@ -11,8 +11,7 @@ missHeatmap(
   genoCol = "GT",
   popCol = NA,
   plotColours = "white",
-  plotNCol = 2,
-  showPlot = TRUE
+  plotNCol = 2
 )
 }
 \arguments{
@@ -44,9 +43,9 @@ is the non-missing colour.}
 \item{plotNCol}{Integer: The number of columns to arrange indiviudal
 population plots into. Only takes effect when \code{popCol} is specified.
 Default = 2.}
-
-\item{showPlot}{Logical: Should the plot be shown automatically? Default is
-\code{TRUE}, otherwise \code{FALSE}.}
+}
+\value{
+Returns a ggplot object.
 }
 \description{
 Use to visualise the presence or absence of genetic information

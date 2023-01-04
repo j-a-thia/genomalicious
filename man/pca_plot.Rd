@@ -11,8 +11,7 @@ pca_plot(
   pops = NULL,
   plotColours = NULL,
   look = "ggplot",
-  legendPos = "top",
-  showPlot = TRUE
+  legendPos = "top"
 )
 }
 \arguments{
@@ -49,13 +48,9 @@ when set to \code{'classic'}, produces a base R style plot.}
 \item{legendPos}{Character: Where should the legend be positioned? Default is
 \code{'top'}, but could also be one of, \code{'right'}, \code{'bottom'},
 \code{'left'}, or \code{'none'}.}
-
-\item{showPlot}{Logical: Should the plot be shown automatically? Default is
-\code{TRUE}, otherwise \code{FALSE}.}
 }
 \value{
-Prints the plot to screen, and also returns an object of
-\code{gg}/\code{ggplot} class.
+Returns a ggplot object.
 }
 \description{
 Plots results of a PCA, e.g., scatterplot, screeplot, and cumulative
@@ -78,7 +73,7 @@ pca_plot(pca
             , axisIndex=c(2,3)
             , pops=pca$pops
             , plotColours=c(Pop1='gray30', Pop2='royalblue', Pop3='palevioletred3', Pop4='plum2')
-            , look='classic', showPlot=TRUE)
+            , look='classic')
 
 
 }
