@@ -1,9 +1,9 @@
-#' Plot PCA results
+#' Plot PCoA results
 #'
-#' Plots results of a PCA, e.g., scatterplot, screeplot, and cumulative
-#' explained variance plots. Takes \code{prcomp} object as the main input.
+#' Plots results of a PCoA, e.g., scatterplot, screeplot, and cumulative
+#' explained variance plots. Takes \code{pcoa} object as the main input.
 #'
-#' @param pcaObj Prcomp object: A PCA of genotype data fitted using the
+#' @param pcoaObj Prcomp object: A PCA of genotype data fitted using the
 #' \code{prcomp} function. Either manually fitted, or using \code{genomalicious::pca_genos}.
 #'
 #' @param type Character: What type of plot to make: a scatterplot (\code{'scatter'}),
@@ -17,8 +17,8 @@
 #' represent the desired PC axes to plot.
 #'
 #' @param pops Character: A vector of population IDs, should match the
-#' rows in \code{pcaObj$x}, but is an optional argument. Default = \code{NULL}.
-#' The function will search for \code{pcaObj$pops} to assign to this argument
+#' rows in \code{pcoaObj$x}, but is an optional argument. Default = \code{NULL}.
+#' The function will search for \code{pcoaObj$pops} to assign to this argument
 #' if not specified. Only valid when \code{type=='scatter'}.
 #'
 #' @param plotColours Character: A vector of colours to use for plotting,
@@ -41,32 +41,39 @@
 #'
 #' @examples
 #' library(genomalicious)
-#' data(data_Genos)
+#' data(data_PoolFreqs)
+#' data(data_PoolInfo)
 #'
-#' # Conduct the PCA with Patterson et al.'s (2006) normalisation, and
-#' # population specified
-#' PCA <- pca_genos(dat=data_Genos, scaling='patterson', popCol='POP')
+#' # Note columns in data_PoolFreqs
+#' colnames(data_PoolFreqs)
 #'
-#' # Plot the PCA
-#' pca_plot(PCA)
+#' # We need to add in the number of diploid individuals, $INDS
+#' newFreqData <- left_join(data_PoolFreqs, data_PoolInfo)
+#' head(newFreqData)
 #'
-#' # Plot axies 2 and 3, custom colours, and a classic look.
-#' pca_plot(
-#'    PCA,
-#'    axisIndex=c(2,3),
+#' # Fit the PCoA
+#' PCOA <-pcoa_freqs(newFreqData)
+#'
+#' # Plot scatter with default settings
+#' pcoa_plot(PCOA, type='scatter')
+#'
+#' # Plot scatter with custom colours and a classic look
+#' pcoa_plot(
+#'    PCOA,
+#'    type='scatter',
 #'    plotColours=c(Pop1='gray30', Pop2='royalblue', Pop3='palevioletred3', Pop4='plum2'),
 #'    look='classic'
-#'    )
+#' )
 #'
 #' # Explained variance
-#' pca_plot(PCA, type='scree')
+#' pcoa_plot(PCOA, type='scree')
 #'
-#' # Cumulative variance for the first 10 axes with custom colour
-#' pca_plot(PCA, type='cumvar', axisIndex=1:10, plotColours='royalblue')
+#' # Cumulative variance with custom colour
+#' pcoa_plot(PCOA, type='cumvar', plotColours='royalblue')
 #'
 #' @export
-pca_plot <- function(
-    pcaObj, type='scatter', axisIndex=NULL, pops=NULL,
+pcoa_plot <- function(
+    pcoaObj, type='scatter', axisIndex=NULL,
     plotColours=NULL, look='ggplot', legendPos='top'){
 
   # --------------------------------------------+
@@ -74,9 +81,9 @@ pca_plot <- function(
   # --------------------------------------------+
   for(lib in c('data.table', 'ggplot2')){ require(lib, character.only = TRUE)}
 
-  # Check the pcaObj is the correct data class
-  if(!'prcomp' %in% class(pcaObj)){
-    stop("Argument `pcaObj` must be a prcomp class object.")
+  # Check the pcoaObj is the correct data class
+  if(!'pcoa' %in% class(pcoaObj)){
+    stop("Argument `pcoaObj` must be a prcomp class object.")
   }
 
   # Check that type is specified correctly
@@ -88,9 +95,10 @@ pca_plot <- function(
   if(type=='scatter' & length(axisIndex)>2){
     stop("Argument `axisIndex` should only contain two integer values for type=='scatter'.")
   }
-  if(type%in%c('scree','cumvar') & sum(!axisIndex %in% 1:length(pcaObj$sdev))){
-    stop("Argument `axisIndex` should only contain values for indexes present in
-         pcaObj$sdev for type=='scree' or type=='cumvar'.")
+
+  if(type%in%c('scree','cumvar') & sum(!axisIndex %in% 1:nrow(pcoaObj$values))){
+    stop("Argument `axisIndex` should only contain values for the number of eigenvalues
+         stored in pcoaObj$values for type=='scree' or type=='cumvar'.")
   }
 
   # Check that look is ggplot or classic.
@@ -98,16 +106,15 @@ pca_plot <- function(
     stop("Argument `look` is not one of: 'ggplot' or 'classic'.")
   }
 
-  # Check if there is a $pops index in pcaObj and assign populations if the
-  # argument pops is NULL
-  if(is.null(pops)){
-    if(is.null(pcaObj$pops)==FALSE){ pops <- pcaObj$pops}
-  }
-
   # Check that specified populations in plotColours are all in pops.
-  if(type=='scatter' & is.null(pops)==FALSE & is.null(plotColours)==FALSE &
-     !sum(names(plotColours)%in%unique(pops))==length(unique(pops))){
-    stop("Argument plotColours misspecified: names of colours must be in argument pops.")
+  if(type=='scatter' & is.null(plotColours)==FALSE){
+    names.colours <- names(plotColours)
+    names.pops <- pcoaObj$vectors %>% rownames()
+
+    if(sum(names.pops %in% names.colours)!=length(names.pops)){
+      stop("Argument `plotColours` misspecified: names of colours must be in
+           rownames(pcoaObj$vectors).")
+    }
   }
 
   # Specify axes if unassigned
@@ -116,7 +123,7 @@ pca_plot <- function(
   }
 
   if(type%in%c('scree','cumvar') & is.null(axisIndex)){
-    axisIndex <- 1:length(pcaObj$sdev)
+    axisIndex <- 1:nrow(pcoaObj$values)
   }
 
   # Assign colour if unspecified for scree and cumulative variance plots.
@@ -136,12 +143,12 @@ pca_plot <- function(
       , axis.ticks.length=unit(0.2, 'cm'))
   }
 
-  # Make pcaObj a data table of PC scores
-  if(class(pcaObj)=='prcomp'){ plot.tab <- as.data.table(pcaObj$x) }
-
-  # If pops has been assigned, add this as a column to new pcaObj
-  if(is.null(pops)==FALSE){
-    plot.tab$POP <- pops
+  # Make pcoaObj a data table of PC scores
+  if(class(pcoaObj)=='pcoaObj'){
+    plot.tab <- pcoaObj$vectors %>%
+    as.data.frame() %>%
+    rownames_to_column(., 'POP') %>%
+    as.data.table()
   }
 
   # --------------------------------------------+
@@ -150,11 +157,11 @@ pca_plot <- function(
 
   if(type=='scatter'){
     # Get axes
-    axX <- paste0('PC', axisIndex[1])
-    axY <- paste0('PC', axisIndex[2])
+    axX <- paste0('Axis.', axisIndex[1])
+    axY <- paste0('Axis.', axisIndex[2])
 
     # Percent explained variance
-    eigvals <- pcaObj$sdev^2
+    eigvals <- pcoaObj$values$Eigenvalues
     varX <- round(eigvals[axisIndex[1]]/sum(eigvals) * 100, 2)
     varY <- round(eigvals[axisIndex[2]]/sum(eigvals) * 100, 2)
 
@@ -162,22 +169,21 @@ pca_plot <- function(
     gg <- ggplot(plot.tab, aes_string(x=axX, y=axY)) +
       plotTheme +
       labs(
-        x=paste0('PC', axisIndex[1], ' (', varX, '%)')
-        , y=paste0('PC', axisIndex[2], ' (', varY, '%)')
+        x=paste0('Axis ', axisIndex[1], ' (', varX, '%)')
+        , y=paste0('Axis ', axisIndex[2], ' (', varY, '%)')
       )
 
     # Add points and population colours if specified
-    if(is.null(pops)==TRUE){ gg <- gg + geom_point()
-    } else if(is.null(pops)==FALSE & is.null(plotColours)==TRUE){
+    if(is.null(plotColours)==TRUE){
       gg <- gg + geom_point(aes(colour=POP)) + labs(colour=NULL)
-    } else if(is.null(pops)==FALSE & is.null(plotColours)==FALSE){
+    } else if(is.null(plotColours)==FALSE){
       gg <- gg + geom_point(aes(colour=POP)) + scale_colour_manual(values=plotColours) + labs(colour=NULL)
     }
   }
 
   if(type %in% c('scree', 'cumvar')){
     # Vector of number PCs for X axis
-    S <- pcaObj$sdev^2
+    S <- pcoaObj$values$Eigenvalues
     X <- 1:length(S)
 
     # If explained variance, divide eigenvalues by sum,
@@ -198,7 +204,7 @@ pca_plot <- function(
            + plotTheme
            + geom_col(fill=plotColours)
            + scale_x_continuous(breaks = ~round(unique(pretty(.))))
-           + labs(x='PC axes', y=axY)
+           + labs(x='PCo axes', y=axY)
     )
   }
 

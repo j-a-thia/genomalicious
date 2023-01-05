@@ -56,7 +56,6 @@ colnames(data_PoolFreqs)
 # We need to add in the number of diploid individuals, $INDS
 newFreqData <- left_join(data_PoolFreqs, data_PoolInfo)
 head(newFreqData)
-newFreqData <- left_join(data_PoolFreqs, data_PoolInfo)
 
 # Fit the PCoA
 PCOA <-pcoa_freqs(newFreqData)
