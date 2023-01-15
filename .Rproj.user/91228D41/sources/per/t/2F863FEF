@@ -1,26 +1,26 @@
 {
-    "id": "BF588BC5",
-    "path": "~/GitHub/genomalicious/R/pca_genos.R",
-    "project_path": "R/pca_genos.R",
+    "id": "2F863FEF",
+    "path": "~/GitHub/genomalicious/R/fstat_calc.R",
+    "project_path": "R/fstat_calc.R",
     "type": "r_source",
-    "hash": "2464616029",
+    "hash": "892731966",
     "contents": "",
     "dirty": false,
-    "created": 1663463014420.0,
+    "created": 1673744609408.0,
     "source_on_save": false,
     "relative_order": 4,
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "95,2",
-        "scrollLine": "0"
+        "cursorPosition": "342,31",
+        "scrollLine": "152"
     },
     "folds": "",
-    "lastKnownWriteTime": 1663467292,
+    "lastKnownWriteTime": 1673745893,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1663467292222,
+    "last_content_update": 1673745893,
     "read_only": false,
     "read_only_alternatives": []
 }

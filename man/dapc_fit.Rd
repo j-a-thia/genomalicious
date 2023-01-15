@@ -71,6 +71,9 @@ Returns a list, whose contents depend on the \code{method} specified.
 If \code{method=='fit'}, the list contains:
 \enumerate{
   \item \code{$da.fit}: an \code{lda} object, a DA of genotypic PC axes.
+     If also contains the index \code{$exp.var}, which is the percent of among
+     population variance captured by each LD axis, and \code{$among.var}, the
+     percent of among population variance.
   \item \code{$da.tab}: a data table of LD axis scores, with columns \code{$POP},
      the designated population, \code{$SAMPLE}, the sample ID, \code{$[axis]},
      where each \code{[axes]} is a column for a different DA axis.
