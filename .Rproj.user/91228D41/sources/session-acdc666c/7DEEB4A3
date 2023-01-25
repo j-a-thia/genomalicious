@@ -1,0 +1,25 @@
+{
+    "id": "7DEEB4A3",
+    "path": null,
+    "project_path": null,
+    "type": "r_code_browser",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1674679074888.0,
+    "source_on_save": false,
+    "relative_order": 6,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "context": "namespace:ape:::pcoa"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 4261412864,
+    "encoding": "",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1674679074888,
+    "read_only": false,
+    "read_only_alternatives": []
+}

@@ -36,14 +36,14 @@ Default is \code{'FREQ'}.}
 contributing to the allele freuqency estimate. Default is \code{indsCol}.}
 }
 \value{
-Returns a list-like object of class \code{pcoa}, as per \code{ape::pcoa},
+Returns a list-like object of class \code{eigen}, as per \code{ape::pcoa},
 with an additional long-format data table of genome-wide pairiwse FST
 estimates in an index \code{$fst}.
 }
 \description{
 Takes a long-format data table of allele frequencies, calculates pairwise FST,
 and conducts a PCoA of these pairwise FST values using R's \code{ape::pcoa()}
-function.
+function (be sure to cite Paradis & Schliep 2019).
 }
 \examples{
 library(genomalicious)
@@ -72,4 +72,7 @@ PCOA$values
 # Pairwise FST in long-format data table
 PCOA$fst
 
+}
+\references{
+Paradis & Schliep (2019) Bioinformatics. DOI: 10.1093/bioinformatics/bty633
 }
