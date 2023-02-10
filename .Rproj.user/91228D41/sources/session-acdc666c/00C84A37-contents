@@ -1,0 +1,14 @@
+dat <- as.data.table(dat)
+
+# --------------------------------------------+
+# Code
+# --------------------------------------------+
+pair.fst <- dat %>%
+  fstat_calc(., type='freqs', pairwise=TRUE, global=FALSE)
+
+pair.mat <- pair.fst$genome %>%
+  pairwiseMat2DT(., flip=TRUE, X1='POP1', X2='POP2', Y='FST')
+
+PCOA <- 
+
+eig.gen$vectors %>% plot

@@ -144,7 +144,7 @@ pcoa_plot <- function(
   }
 
   # Make pcoaObj a data table of PC scores
-  if(class(pcoaObj)=='pcoaObj'){
+  if(class(pcoaObj)=='pcoa'){
     plot.tab <- pcoaObj$vectors %>%
     as.data.frame() %>%
     rownames_to_column(., 'POP') %>%
@@ -175,9 +175,9 @@ pcoa_plot <- function(
 
     # Add points and population colours if specified
     if(is.null(plotColours)==TRUE){
-      gg <- gg + geom_point(aes(colour=POP)) + labs(colour=NULL)
+      gg <- gg + geom_point(aes(colour=POP), size=3) + labs(colour=NULL)
     } else if(is.null(plotColours)==FALSE){
-      gg <- gg + geom_point(aes(colour=POP)) + scale_colour_manual(values=plotColours) + labs(colour=NULL)
+      gg <- gg + geom_point(aes(colour=POP), size=3) + scale_colour_manual(values=plotColours) + labs(colour=NULL)
     }
   }
 

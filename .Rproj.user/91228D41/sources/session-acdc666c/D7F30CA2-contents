@@ -1,7 +1,7 @@
-#' Filter for unlinked loci
+#' Filter for "unlinked" loci
 #'
-#' Parses a data table of sequence read information to draw one locus
-#' per contig.
+#' Parses a data table of genotypes/allele frequencies and returns a list of
+#' loci that are "unlinked", in the sense they occur on different contigs.
 #'
 #' Note, this function is specifically designed for RADseq data where
 #' contigs comprise small (100s bp) genomic regions assembed from restriction
@@ -27,25 +27,25 @@
 #' a single random SNP will be drawn per contig. Alternatively, \code{'first'} can
 #' be used to draw the first SNP in the contig.
 #'
-#' @return Returns a character vector of locus names in \code{dat$LOCUS} that are not on the same
-#' contig in \code{dat$CHROM}.
+#' @return Returns a character vector of locus names in \code{dat[[locusCol]]}
+#' that are not on the same contig in \code{dat[[chromCol]]}.
 #'
 #' @examples
-#' data(data_4pops)
+#' data(data_Genos)
 #'
 #' # Number of unique SNP per locus
-#' data_4pops[, length(unique(LOCUS)), by=CHROM]$V1 %>% table
+#' data_Genos[, length(unique(LOCUS)), by=CHROM]$V1 %>% table
 #'
 #' # Randomly sample 1 SNP per locus
-#' snp.rand.1st <- filter_unlink(data_4pops, method='random')
-#' snp.rand.2nd <- filter_unlink(data_4pops, method='random')
+#' snp.rand.1st <- filter_unlink(data_Genos, method='random')
+#' snp.rand.2nd <- filter_unlink(data_Genos, method='random')
 #'
 #' # Number of SNPs different between random sets
 #' setdiff(snp.rand.1st, snp.rand.2nd) %>% length
 #'
 #' # Sample first SNP per locus
-#' snp.first.1st <- filter_unlink(data_4pops, method='first')
-#' snp.first.2nd <- filter_unlink(data_4pops, method='first')
+#' snp.first.1st <- filter_unlink(data_Genos, method='first')
+#' snp.first.2nd <- filter_unlink(data_Genos, method='first')
 #'
 #' # Number of SNPs different between random sets
 #' setdiff(snp.first.1st, snp.first.2nd) %>% length
