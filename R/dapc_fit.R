@@ -72,6 +72,9 @@
 #'   \item \code{snp.contrib}: a data table of SNP contributions to LD axes,
 #'      with columns, \code{$LOCUS}, the SNP locus, \code{$LD[x]}, the individual
 #'      LD axes, with \code{[x]} denoting the axis number.
+#'   \item \code{manova}: a \code{manova} object, with the additional indexes,
+#'      \code{$summary}, the summary of the MANOVA model, and \code{$among.var},
+#'      the amount of variation in the predictor PC axes that is among populations.
 #' }
 #'
 #' If \code{method=='loo_cv'} or \code{method=='train_test'}, the list contains:
@@ -290,11 +293,19 @@ dapc_fit <- function(
       left_join(., popRefs) %>%
       melt(., id.vars=c('POP','SAMPLE'), variable.name='POP.PRED', value.name='PROB')
 
+    # MANOVA
+    MoV <- manova(as.matrix(X) ~ pops)
+    MoV$summary <- summary(MoV)
+    MoV$among.var <- sum(diag(MoV$summary$SS$pops)) /
+      (sum(diag(MoV$summary$SS$pops)) + sum(diag(MoV$summary$SS$Residuals))) *
+      100
+
     # Output
     output <- list(
       da.fit=DA, da.tab=DA.tab, da.prob=DA.prob,
       pca.fit=PCA, pca.tab=PCA.tab,
-      snp.contrib=snp.da.contr
+      snp.contrib=snp.da.contr,
+      manova=MoV
     )
   }
 
