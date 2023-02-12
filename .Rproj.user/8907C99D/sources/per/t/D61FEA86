@@ -1,0 +1,26 @@
+{
+    "id": "D61FEA86",
+    "path": "C:/Users/thiaj/Documents/GitHub/genomalicious/R/dapc_fit.R",
+    "project_path": "R/dapc_fit.R",
+    "type": "r_source",
+    "hash": "1265411916",
+    "contents": "",
+    "dirty": false,
+    "created": 1676163416869.0,
+    "source_on_save": false,
+    "relative_order": 2,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "438,0",
+        "scrollLine": "305"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1676163713,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1676163713390,
+    "read_only": false,
+    "read_only_alternatives": []
+}

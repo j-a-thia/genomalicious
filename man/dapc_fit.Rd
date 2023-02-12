@@ -89,9 +89,6 @@ If \code{method=='fit'}, the list contains:
   \item \code{snp.contrib}: a data table of SNP contributions to LD axes,
      with columns, \code{$LOCUS}, the SNP locus, \code{$LD[x]}, the individual
      LD axes, with \code{[x]} denoting the axis number.
-  \item \code{manova}: a \code{manova} object, with the additional indexes,
-     \code{$summary}, the summary of the MANOVA model, and \code{$among.var},
-     the amount of variation in the predictor PC axes that is among populations.
 }
 
 If \code{method=='loo_cv'} or \code{method=='train_test'}, the list contains:
