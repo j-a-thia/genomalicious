@@ -37,6 +37,7 @@
 #' the Ref allele frequency.
 #'
 #' @examples
+#' library(genomalicious)
 #' data(data_Genos)
 #'
 #' # Convert a long data table to a wide matrix

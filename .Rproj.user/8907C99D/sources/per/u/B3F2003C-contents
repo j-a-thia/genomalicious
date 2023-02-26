@@ -1,4 +1,0 @@
-combn(unique(dat$POP), 2) %>% 
-  t() %>% 
-  as.data.table() %>% 
-  setnames(., new=c('POP1','POP2'))
