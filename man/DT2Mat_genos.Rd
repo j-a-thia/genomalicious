@@ -52,6 +52,7 @@ a matrix in wide format (loci in columns and individuals in rows). The reverse
 can also be done. See also \code{DT2Mat_freqs} for converting matrix of frequencies.
 }
 \examples{
+library(genomalicious)
 data(data_Genos)
 
 # Convert a long data table to a wide matrix

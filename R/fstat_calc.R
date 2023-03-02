@@ -65,6 +65,8 @@
 #'
 #' @param numPerms Integer: The number of permutations to perform. Default is 100.
 #'
+#' @param numCores Integer: The number of cores to use when running permutations. Default is 1.
+#'
 #' @details With genotype data, the F-statistics FST, FIS, and FIT can be calculated.
 #' Only FST can be calculated from allele frequency data.
 #'

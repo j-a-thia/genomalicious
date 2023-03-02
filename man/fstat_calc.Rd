@@ -81,6 +81,8 @@ statistical significance of F-statistics? Default is \code{FALSE}.
 Can only be performed on genotype data, i.e., \code{type=='genos'}.}
 
 \item{numPerms}{Integer: The number of permutations to perform. Default is 100.}
+
+\item{numCores}{Integer: The number of cores to use when running permutations. Default is 1.}
 }
 \value{
 A list is returned with three indexes.

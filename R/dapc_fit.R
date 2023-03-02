@@ -254,7 +254,7 @@ dapc_fit <- function(
     popRefs <- dat[, c('POP','SAMPLE')] %>% unique()
 
     # Fit the PCA
-    PCA <- pca_genos(dat, scaling=scaling, popCol=popCol)
+    PCA <- pca_genos(dat, scaling=scaling, popCol='POP')
 
     # Populations as vector in PCA
     pops <- PCA$pops %>%  as.factor()
