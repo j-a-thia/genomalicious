@@ -5,6 +5,13 @@
 #' then be used to test the power to discern between individuals with different
 #' levels of relatedness. Assumes diploid genotypes.
 #'
+#' The output can be used to generate a simulated genetic relationship matrix (GRM)
+#' that can be compared against an observed GRM using the function,
+#' \code{family_sim_compare}. This can provide a graphical comparison
+#' between the observed and expected (simulated) distribution of relatedness
+#' values that you might expect for different familial relationships, given the
+#' number of loci and their allele frequencies.
+#'
 #' @param freqData Data.table: Population allele frequencies.
 #'
 #' @param locusCol Character: Column name in \code{freqData} with the locus IDs.
@@ -93,20 +100,29 @@
 #' relComp <- family_sim_compare(
 #'    simFamily=simFamily,
 #'    simGRM=simGRM,
-#'    obsGRM=obsGRM
+#'    obsGRM=obsGRM,
+#'    look='classic'
 #' )
 #'
 #' # The data
 #' relComp$data
 #'
-#' # Plot of relatedness values
+#' # Plot of relatedness values. Dashed lines denote relatedness
+#' # values of 0, 0.125, 0.25, and 0.5, which are the theoretical
+#' # expectations for unrelated individuals, cousins, half-siblings,
+#' # and siblings, respectively.
+#' # You will note a large variance are the expected values, which
+#' # is not surprising for this very small SNP dataset (200 loci).
 #' relComp$plot
 #'
 #' # Take a look at the "known" relationships in the observed dataset
+#' # Note, siblings and parent-offspring pairs have a theoretical
+#' # relatedness of 0.5. But you will probably find the "observed"
+#' # relatedness values are much lower.
 #' relComp$data[SAMPLE1=='Child_1.2_1' & SAMPLE2%in%c('Child_1.2_2','Ind1_1','Ind1_2')]
 #' relComp$data[SAMPLE1=='Child_29.30_1' & SAMPLE2%in%c('Child_29.30_2','Ind1_29','Ind1_30')]
 #'
-#' # Now take a look at the simulated distribution
+#' # Now take a look at the simulated distribution.
 #' relComp$data[FAMILY=='Half-siblings']$RELATE %>% summary()
 #' relComp$data[FAMILY=='Siblings']$RELATE %>% summary()
 #'
