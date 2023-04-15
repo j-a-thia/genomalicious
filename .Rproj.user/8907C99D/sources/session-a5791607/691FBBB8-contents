@@ -7,8 +7,10 @@
 libs <- c('devtools', 'roxygen2', 'testthat', 'knitr', 'data.table', 'tidyverse')
 for(L in libs){require(L, character.only=TRUE)}
 
-# Make documents
+# Make all documents
 roxygenise(clean=TRUE)
+
+# Make just those documents that have changed
 roxygenise()
 
 # Load currently installed genomalicious
