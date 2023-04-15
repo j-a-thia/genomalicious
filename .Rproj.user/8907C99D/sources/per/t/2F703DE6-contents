@@ -232,10 +232,19 @@ dapc_plot <- function(
     plot.tab <- dapcList$da.prob
 
     samp.order <- plot.tab %>%
-      .[, c('POP','SAMPLE')] %>%
-      unique %>%
-      setorder(., POP, SAMPLE) %>%
-      .[, ORDER:=(1:.N)]
+      # Split by pop
+      split(., by='POP') %>%
+      # Iterate through pop, and order by probability
+      lapply(., function(D){
+        pop <- D$POP[1]
+        D[POP.PRED==pop] %>%
+          setorder(., -PROB) %>%
+          .[, c('POP','SAMPLE')]
+      }) %>%
+      # Combine
+      do.call('rbind', .) %>%
+      # Add in an order ID
+      .[, ORDER:=1:.N]
 
     plot.tab <- left_join(plot.tab, samp.order) %>% as.data.table
 

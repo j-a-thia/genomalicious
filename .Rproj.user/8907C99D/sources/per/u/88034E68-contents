@@ -1,0 +1,10 @@
+plot.tab %>% 
+  split(., by='POP') %>% 
+  lapply(., function(D){
+    pop <- D$POP[1]
+    D[POP.PRED==pop] %>% 
+      setorder(., -PROB) %>%
+      .[, c('POP','SAMPLE')]
+  }) %>% 
+  do.call('rbind', .) %>% 
+  .[, ORDER:=1:.N]
