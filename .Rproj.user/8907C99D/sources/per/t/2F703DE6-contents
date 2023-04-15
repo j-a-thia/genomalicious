@@ -261,8 +261,8 @@ dapc_plot <- function(
       geom_rect(
         data=plot.pops,
         mapping=aes(xmin=MIN, xmax=MAX, fill=POP),
-        ymax=-0.01,
-        ymin=-0.025*popBarScale,
+        ymax=-0.02,
+        ymin=-0.04*popBarScale,
         inherit.aes=FALSE
       ) +
       scale_x_continuous(
@@ -272,7 +272,7 @@ dapc_plot <- function(
       ) +
       scale_y_continuous(
         expand=c(0,0),
-        limits=c(-0.025*popBarScale, 1.01)
+        limits=c(-0.04*popBarScale, 1.01)
       ) +
       labs(x='Samples', y='Probability', fill=NULL)
 
