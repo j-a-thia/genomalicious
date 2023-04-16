@@ -106,7 +106,10 @@ DT2Mat_freqs <- function(dat, popCol='POP', locusCol='LOCUS', freqCol='FREQ', fl
   # --------------------------------------------+
   if(flip==FALSE){
     # Spread out the data table
-    freqDT <- spread(dat[, c(popCol, freqCol, locusCol), with=FALSE], key=locusCol, value=freqCol)
+    freqDT <- dat %>%
+      .[, c(popCol, freqCol, locusCol), with=FALSE] %>%
+      spread(., key=locusCol, value=freqCol) %>%
+      as.data.table()
     # Get the population column values
     popVals <- freqDT[[popCol]]
     # Turn the data table into a matrix
