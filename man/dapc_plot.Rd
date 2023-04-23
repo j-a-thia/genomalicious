@@ -7,10 +7,11 @@
 dapc_plot(
   dapcList,
   type,
-  scatterLook = "ggplot",
+  plotLook = "ggplot",
   axisIndex = c(1, 2),
   popBarScale = 1,
   sampleShow = TRUE,
+  sampleOrder = "by_id",
   plotColours = NULL,
   legendPos = "top"
 )
@@ -24,7 +25,7 @@ scatter plot is produced. If \code{'probs'}, a plot of posterior probability
 for populations identity is produced. If \code{'assign'}, a heatmap of
 assignment rates among population pairs is produced.}
 
-\item{scatterLook}{Character: The plot theme, only applicable when
+\item{plotLook}{Character: The plot theme, only applicable when
 \code{type=='scatter'}. Default = \code{'ggplot'}, the typical gray
 background with gridlines produced by \code{ggplot2}. Alternatively,
 when set to \code{'classic'}, produces a base R style plot.}
@@ -41,6 +42,10 @@ with \code{popBarScale}. Default is 1, and the value must be >= 1.}
 \item{sampleShow}{Logical: Should the sample names be displayed in the
 probability plot? Only applicable when \code{type=='probs'}.
 Default is \code{TRUE}.}
+
+\item{sampleOrder}{Logical: Should the samples be ordered by their IDs
+('by_id') or by their estimated  probability ('by_probs') in the probability
+plot? Only applicable when \code{type=='probs'}. Default is \code{'by_id'}.}
 
 \item{plotColours}{Character: A vector of colours to use. If \code{type=='scatter'}
 or \code{type=='probs'}, then this needs to be a named vector, where the values
@@ -68,6 +73,13 @@ output of \code{dapc_fit(..., type='fit')}. If instead, you have performed
 as assignment analysis with \code{dapc_fit(..., type='loo_cv')} or
 \code{dapc_fit(..., type='traint_test')}, then you want to parameterise with
 \code{type=='assign'}.
+
+In the probability plot is requested (\code{type=='probs'}), you can choose
+to order samples by their estimated probabilities for their designated
+population by setting \code{sampleOrder='by_probs'}. The default is
+\code{sampleOrder='by_id'}, in which case, samples are ordered
+alpha-numerically by populations and their sample ID, i.e., the command:
+\code{data.table::setorder(.., POP, SAMPLE)}.
 }
 \examples{
 library(genomalicious)
@@ -84,7 +96,7 @@ DAPC.tt <- dapc_fit(data_Genos, pcPreds=3, method='train_test')
 dapc_plot(DAPC.fit, type='scatter', axisIndex=c(1,2))
 
 # Scatterplot, LD2 and LD3, with manual colours, and classic look
-dapc_plot(DAPC.fit, type='scatter', axisIndex=c(2,3), scatterLook='classic',
+dapc_plot(DAPC.fit, type='scatter', axisIndex=c(2,3), plotLook='classic',
 plotColours=c(Pop1='#08c7e0', Pop2='#4169e1', Pop3='#e46adf', Pop4='#ce0073')
 )
 
