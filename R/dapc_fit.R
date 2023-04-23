@@ -263,7 +263,7 @@ dapc_fit <- function(
     X <- PCA$x[, 1:pcPreds] %>% as.data.frame()
 
     # Fit the DA
-    DA <- lda(X, pops, prior=rep(1,k)/k, tol=1e-30)
+    DA <- lda(X, pops, tol=1e-30)
 
     # Add in the explained variance
     DA$exp.var <- round((DA$svd^2)/sum(DA$svd^2)*100, digits=2)
@@ -334,7 +334,6 @@ dapc_fit <- function(
       DA.train <- lda(
         x=as.data.frame(PCA.train$x[, 1:pcPreds]),
         grouping=PCA.train$pops,
-        prior=rep(1,k)/k,
         tol=1e-30)
 
       # Data for testing set
@@ -389,7 +388,6 @@ dapc_fit <- function(
     DA.train <- lda(
       x=PCA.train$x[, 1:pcPreds],
       grouping=PCA.train$pops,
-      prior=rep(1,k)/k,
       tol=1e-30
     )
 
