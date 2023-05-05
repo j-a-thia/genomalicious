@@ -131,15 +131,15 @@ vcf2DT <- function(vcfFile, dropCols=NULL, keepComments=FALSE, keepInfo=FALSE){
 
   # ... Separate by $FORMAT names
   vcfDT <- vcfDT[, !'FORMAT'] %>%
-    as.data.table(
       separate(col='DATA', into=formatNames, sep=':')
-    )
 
   # .... Replace '.' values in the data columns with NA
   for(f in formatNames){
     vcfDT[[f]][vcfDT[[f]]=='.'] <- NA
   }
 
+  vcfDT <- as.data.table(vcfDT)
+  
   # Make sure DP and RO integers
   if('DP' %in% colnames(vcfDT)){ vcfDT[, DP:=as.integer(DP)] }
   if('RO' %in% colnames(vcfDT)){ vcfDT[, RO:=as.integer(RO)] }
