@@ -131,7 +131,9 @@ vcf2DT <- function(vcfFile, dropCols=NULL, keepComments=FALSE, keepInfo=FALSE){
 
   # ... Separate by $FORMAT names
   vcfDT <- vcfDT[, !'FORMAT'] %>%
-    separate(col='DATA', into=formatNames, sep=':')
+    as.data.table(
+      separate(col='DATA', into=formatNames, sep=':')
+    )
 
   # .... Replace '.' values in the data columns with NA
   for(f in formatNames){
