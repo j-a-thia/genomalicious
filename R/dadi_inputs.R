@@ -169,10 +169,10 @@ dadi_inputs <- function(
   # For genotype data
   if(type=='genos'){
     r <- spread(dat[, (length(SAMPLE)*2) - sum(GT), by=c('LOCUS', 'POP', 'REF')]
-                , key='POP', value='V1')
+                , key='POP', value='V1') %>% as.data.table()
     setorder(r, 'LOCUS'); setnames(r, 'REF', 'Allele1')
     a <- spread(dat[, sum(GT), by=c('LOCUS', 'POP', 'ALT')], key='POP', value='V1')
-    setorder(a, 'LOCUS'); setnames(a, 'ALT', 'Allele2')
+    setorder(a, 'LOCUS'); setnames(a, 'ALT', 'Allele2') %>% as.data.table()
 
     if(!is.null(popLevels)){
       r <- r[, c('LOCUS','Allele1',popLevels),with=FALSE]
