@@ -4,10 +4,17 @@
 \alias{dna2codonDT}
 \title{DNA to a condon data.table}
 \usage{
-dna2codonDT(cds.seq)
+dna2codonDT(cdsSeq, compressTab = FALSE, geneticCode = 1)
 }
 \arguments{
-\item{cds.seq}{Character = A DNA coding sequence.}
+\item{cdsSeq}{Character = A DNA coding sequence.}
+
+\item{compressTab}{Logical = Should the table be compressed? Default is TRUE,
+in which case, each row is a unique codon. If FALSE, then each codon is represented
+by 3 rows, one for each nucleotide comprising the codon.}
+
+\item{geneticCode}{Integer = A value relating to the \code{numcode} argument in
+\code{seqinr::translate}.}
 }
 \value{
 Returns a data.table with the following columns:
@@ -24,11 +31,13 @@ Convert a DNA coding sequence into a data.table of codons and amino acids.
 }
 \details{
 Assumes that the sequence is in its correct reading frame, that is,
-the first DNA nucleotide is the first base of the first codon.
+the first DNA nucleotide is the first base of the first codon. Default is 1.
 }
 \examples{
 X <- 'ATGCGTACTTCA'
 
-dna2codonDT(X)
+dna2codonDT(X, compressTab=TRUE)
+
+dna2codonDT(X, compressTab=FALSE)
 
 }

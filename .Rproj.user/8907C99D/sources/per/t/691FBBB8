@@ -1,6 +1,6 @@
 {
     "id": "691FBBB8",
-    "path": "C:/Users/thiaj/Documents/GitHub/genomalicious/DEV.R",
+    "path": "~/GitHub/genomalicious/DEV.R",
     "project_path": "DEV.R",
     "type": "r_source",
     "hash": "462172957",
@@ -12,8 +12,8 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "15,0",
-        "scrollLine": "0"
+        "cursorPosition": "14,0",
+        "scrollLine": "7"
     },
     "folds": "",
     "lastKnownWriteTime": 1681522843,
