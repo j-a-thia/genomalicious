@@ -29,15 +29,12 @@ Returns a data.table with the following columns when \code{compressTab==TRUE}:
 
 Otherwise, if \code{compressTab==FALSE}:
 
-Returns a data.table with the following columns when \code{compressTab==TRUE}:
-
 \enumerate{
    \item \code{$CODON} = The codon number, 1:N.
    \item \code{$NUC.GENE} = The nucleotides position within the gene, from
    from 1 to the gene's length.
    \item \code{$NUC.CODON} = The nucleotides positions within the codon, from
    1 to 3.
-   \item \code{$DNA} = The DNA bases.
    \item \code{$DNA} = The DNA bases.
    \item \code{$AMINO} = The amino acid residue.
 }

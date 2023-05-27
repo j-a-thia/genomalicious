@@ -27,15 +27,12 @@
 #'
 #' Otherwise, if \code{compressTab==FALSE}:
 #'
-#' Returns a data.table with the following columns when \code{compressTab==TRUE}:
-#'
 #' \enumerate{
 #'    \item \code{$CODON} = The codon number, 1:N.
 #'    \item \code{$NUC.GENE} = The nucleotides position within the gene, from
 #'    from 1 to the gene's length.
 #'    \item \code{$NUC.CODON} = The nucleotides positions within the codon, from
 #'    1 to 3.
-#'    \item \code{$DNA} = The DNA bases.
 #'    \item \code{$DNA} = The DNA bases.
 #'    \item \code{$AMINO} = The amino acid residue.
 #' }
@@ -85,7 +82,7 @@ dna2codonDT <- function(cdsSeq, compressTab=FALSE, geneticCode=1){
         CODON=i,
         NUC.GENE=c(n-2, n-1, n),
         NUC.CODON=1:3,
-        DNA=strsplit('ATG', '')[[1]],
+        DNA=strsplit(cod, '')[[1]],
         AMINO=amino
       )
     }
