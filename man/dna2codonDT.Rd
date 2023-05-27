@@ -17,13 +17,29 @@ by 3 rows, one for each nucleotide comprising the codon.}
 \code{seqinr::translate}.}
 }
 \value{
-Returns a data.table with the following columns:
+Returns a data.table with the following columns when \code{compressTab==TRUE}:
 
 \enumerate{
    \item \code{$CODON} = The codon number, 1:N.
-   \item \code{$NUC} = The nucleotides comprising the codon.
-   \item \code{$AMINO} = The amino acid residue.
+   \item \code{$NUC} = The nucleotides positions comprising the codon, from
+   1 to the gene's length.
    \item \code{$DNA} = The DNA bases.
+   \item \code{$AMINO} = The amino acid residue.
+}
+
+Otherwise, if \code{compressTab==FALSE}:
+
+Returns a data.table with the following columns when \code{compressTab==TRUE}:
+
+\enumerate{
+   \item \code{$CODON} = The codon number, 1:N.
+   \item \code{$NUC.GENE} = The nucleotides position within the gene, from
+   from 1 to the gene's length.
+   \item \code{$NUC.CODON} = The nucleotides positions within the codon, from
+   1 to 3.
+   \item \code{$DNA} = The DNA bases.
+   \item \code{$DNA} = The DNA bases.
+   \item \code{$AMINO} = The amino acid residue.
 }
 }
 \description{

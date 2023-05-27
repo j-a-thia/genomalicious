@@ -15,13 +15,29 @@
 #' the first DNA nucleotide is the first base of the first codon. Default is 1.
 #'
 #' @return
-#' Returns a data.table with the following columns:
+#' Returns a data.table with the following columns when \code{compressTab==TRUE}:
 #'
 #' \enumerate{
 #'    \item \code{$CODON} = The codon number, 1:N.
-#'    \item \code{$NUC} = The nucleotides comprising the codon.
-#'    \item \code{$AMINO} = The amino acid residue.
+#'    \item \code{$NUC} = The nucleotides positions comprising the codon, from
+#'    1 to the gene's length.
 #'    \item \code{$DNA} = The DNA bases.
+#'    \item \code{$AMINO} = The amino acid residue.
+#' }
+#'
+#' Otherwise, if \code{compressTab==FALSE}:
+#'
+#' Returns a data.table with the following columns when \code{compressTab==TRUE}:
+#'
+#' \enumerate{
+#'    \item \code{$CODON} = The codon number, 1:N.
+#'    \item \code{$NUC.GENE} = The nucleotides position within the gene, from
+#'    from 1 to the gene's length.
+#'    \item \code{$NUC.CODON} = The nucleotides positions within the codon, from
+#'    1 to 3.
+#'    \item \code{$DNA} = The DNA bases.
+#'    \item \code{$DNA} = The DNA bases.
+#'    \item \code{$AMINO} = The amino acid residue.
 #' }
 #'
 #' @examples
@@ -60,16 +76,17 @@ dna2codonDT <- function(cdsSeq, compressTab=FALSE, geneticCode=1){
       tab <- data.table(
         CODON=i,
         NUC=paste(n-2, n-1, n, sep='|'),
-        AMINO=amino,
-        DNA=cod
+        DNA=cod,
+        AMINO=amino
       )
     } else if(compressTab==FALSE){
       # Uncompressed table format
       tab <- data.table(
         CODON=i,
-        NUC=c(n-2, n-1, n),
-        AMINO=amino,
-        DNA=strsplit('ATG', '')[[1]]
+        NUC.GENE=c(n-2, n-1, n),
+        NUC.CODON=1:3,
+        DNA=strsplit('ATG', '')[[1]],
+        AMINO=amino
       )
     }
   }) %>%
