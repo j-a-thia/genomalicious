@@ -1,0 +1,26 @@
+{
+    "id": "327D7085",
+    "path": "~/GitHub/genomalicious/R/dna2codonDT.R",
+    "project_path": "R/dna2codonDT.R",
+    "type": "r_source",
+    "hash": "4090619926",
+    "contents": "",
+    "dirty": false,
+    "created": 1685169026719.0,
+    "source_on_save": false,
+    "relative_order": 2,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "32,0",
+        "scrollLine": "25"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1685169084,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1685169084339,
+    "read_only": false,
+    "read_only_alternatives": []
+}
