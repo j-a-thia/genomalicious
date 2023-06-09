@@ -43,10 +43,11 @@ columns) and converts it into a long-format data table. This function can
 also be flipped, i.e., going from a pairwise data table to a pairwise matrix.
 }
 \examples{
+library(genomalicious)
 data(data_Genos)
 
 # Calculate pairwise FST
-pairFst <- fst_calc(data_Genos, type='genos', global=FALSE, pairwise=TRUE)
+pairFst <- fstat_calc(data_Genos, type='genos', fstat='FST', global=FALSE, pairwise=TRUE)
 
 # Convert into a pairwise matrix
 pairMat <- pairwiseMat2DT(

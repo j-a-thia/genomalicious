@@ -1,26 +1,26 @@
 {
-    "id": "327D7085",
-    "path": "~/GitHub/genomalicious/R/dna2codonDT.R",
-    "project_path": "R/dna2codonDT.R",
+    "id": "DEE909B4",
+    "path": "~/GitHub/genomalicious/R/pairwiseMat2DT.R",
+    "project_path": "R/pairwiseMat2DT.R",
     "type": "r_source",
-    "hash": "235663906",
+    "hash": "1564883284",
     "contents": "",
     "dirty": false,
-    "created": 1685169026719.0,
+    "created": 1686301419745.0,
     "source_on_save": false,
     "relative_order": 2,
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "25,4",
-        "scrollLine": "20"
+        "cursorPosition": "54,0",
+        "scrollLine": "42"
     },
     "folds": "",
-    "lastKnownWriteTime": 1685184834,
+    "lastKnownWriteTime": 1686302841,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1685184834031,
+    "last_content_update": 1686302841252,
     "read_only": false,
     "read_only_alternatives": []
 }
