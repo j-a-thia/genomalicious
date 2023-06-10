@@ -171,8 +171,13 @@ dadi_inputs <- function(
     r <- spread(dat[, (length(SAMPLE)*2) - sum(GT), by=c('LOCUS', 'POP', 'REF')]
                 , key='POP', value='V1')
     setorder(r, 'LOCUS'); setnames(r, 'REF', 'Allele1')
+    
+    r <- as.data.table(r)
+    
     a <- spread(dat[, sum(GT), by=c('LOCUS', 'POP', 'ALT')], key='POP', value='V1')
     setorder(a, 'LOCUS'); setnames(a, 'ALT', 'Allele2')
+    
+    a <- as.data.table(a)
 
     if(!is.null(popLevels)){
       r <- r[, c('LOCUS','Allele1',popLevels),with=FALSE]
@@ -219,9 +224,13 @@ dadi_inputs <- function(
     # Some manipulations
     r <- spread(dat[,c('LOCUS', 'REF', 'POP', 'REF.COUNT')], key=POP, value=REF.COUNT)
     setorder(r, 'LOCUS'); setnames(r, 'REF', 'Allele1')
+    
+    r <- as.data.table(r)
 
     a <- spread(dat[,c('LOCUS', 'ALT', 'POP', 'ALT.COUNT')], key=POP, value=ALT.COUNT)
     setorder(a, 'LOCUS'); setnames(a, 'ALT', 'Allele2')
+    
+    a <- as.data.table(a)
 
     if(!is.null(popLevels)){
       r <- r[, c('LOCUS','Allele1',popLevels),with=FALSE]
