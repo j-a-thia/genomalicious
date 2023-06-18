@@ -1,26 +1,26 @@
 {
-    "id": "DEE909B4",
-    "path": "~/GitHub/genomalicious/R/pairwiseMat2DT.R",
-    "project_path": "R/pairwiseMat2DT.R",
+    "id": "229BC429",
+    "path": "~/GitHub/genomalicious/R/vcf2DT.R",
+    "project_path": "R/vcf2DT.R",
     "type": "r_source",
-    "hash": "1564883284",
+    "hash": "3899351826",
     "contents": "",
     "dirty": false,
-    "created": 1686301419745.0,
+    "created": 1687100985144.0,
     "source_on_save": false,
     "relative_order": 2,
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "54,0",
-        "scrollLine": "42"
+        "cursorPosition": "131,17",
+        "scrollLine": "124"
     },
     "folds": "",
-    "lastKnownWriteTime": 1686302841,
+    "lastKnownWriteTime": 1687101538,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1686302841252,
+    "last_content_update": 1687101538301,
     "read_only": false,
     "read_only_alternatives": []
 }
