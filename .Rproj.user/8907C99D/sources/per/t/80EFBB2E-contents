@@ -75,22 +75,25 @@ filter_space_loci <- function(dat, chromCol='CHROM', posCol='POS', locusCol='LOC
       D.chr.sub.loci <- D.uniq.loci[CHROM==chrom] %>%
         setorder(., POS)
 
-      # Default keep the first locus
-      D.chr.sub.loci[1, KEEP:=TRUE]
+      # Iterate over loci if more than 1 per contig
+      if(nrow(D.chr.sub.loci)>1){
+        # Default keep the first locus
+        D.chr.sub.loci[1, KEEP:=TRUE]
 
-      # Iterate through each subsequent locus, keep if >= stepSize from
-      # the previous locus.
-      for(i in 2:nrow(D.chr.sub.loci)){
-        pos.diff <- D.chr.sub.loci$POS[i] - D.chr.sub.loci$POS[i-1]
-        if(pos.diff >= stepSize){
-          D.chr.sub.loci$KEEP[i] <- TRUE
-        } else{
-          D.chr.sub.loci$KEEP[i] <- FALSE
+        # Iterate through each subsequent locus, keep if >= stepSize from
+        # the previous locus.
+        for(i in 2:nrow(D.chr.sub.loci)){
+          pos.diff <- D.chr.sub.loci$POS[i] - D.chr.sub.loci$POS[i-1]
+          if(pos.diff >= stepSize){
+            D.chr.sub.loci$KEEP[i] <- TRUE
+          } else{
+            D.chr.sub.loci$KEEP[i] <- FALSE
+          }
         }
-      }
 
-      # Output
-      D.chr.sub.loci
+        # Output
+        D.chr.sub.loci
+      }
     }) %>%
     # Combine all chromosomes
     do.call('rbind', .)

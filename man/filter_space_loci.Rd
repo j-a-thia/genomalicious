@@ -36,10 +36,7 @@ Default = \code{'LOCUS'}.}
 \item{stepSize}{Integer: the size of steps between loci.}
 }
 \value{
-Returns a data.table with the columns \code{$CHROM},
-\code{$POS}, and \code{$LOCUS}, which are the chromosome, position, and
-locus columns, as well as \code{$KEEP}, a column of logoical values TRUE or
-FALSE as to whether the locus should be kept.
+Returns a vector of loci IDs to be kept.
 }
 \description{
 A function to space loci based on a particular step size.
