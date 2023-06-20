@@ -17,8 +17,8 @@ roxygenise()
 library(genomalicious)
 
 # # Make the 4 pop genotype dataset
-# fsc_genos <- fread('inst/extdata/fsc2_radseq_sim_1_1.gen', skip=1)
-# fsc_head <- colnames(fread('inst/extdata/fsc2_radseq_sim_1_1.gen', nrow=0))
+# fsc_genos <- fread('inst/extdata/fsc2_sim_radseq_1_1.gen', skip=1)
+# fsc_head <- colnames(fread('inst/extdata/fsc2_sim_radseq_1_1.gen', nrow=0))
 #
 # fsc_tab <- fsc_genos[, 1:(ncol(fsc_genos)-1)] %>%
 #   setnames(., new=fsc_head) %>%
@@ -33,8 +33,7 @@ library(genomalicious)
 #     variable.name='SAMPLE',
 #     value.name='GT'
 #   ) %>%
-#   .[, SAMPLE:=as.character(SAMPLE)] %>%
-#   .[, SAMPLE:=sub('A_', 'Ind', SAMPLE)] %>%
+#   .[, SAMPLE:=sub('G_', 'Ind', SAMPLE)] %>%
 #   .[, POP:=sub('Ind', 'Pop', sub('\\_.*', '', SAMPLE))] %>%
 #   .[, CHROM:=paste0('Contig', CHROM)] %>%
 #   .[, LOCUS:=paste(CHROM, POS, sep='_')] %>%
@@ -43,15 +42,14 @@ library(genomalicious)
 #
 # fsc_tab[, length(unique(LOCUS)), by=CHROM]$V1 %>%  table
 #
-# keep.loci <- fsc_tab[LOCUS %in% filter_maf(fsc_tab, type='genos', maf=0.05)]$LOCUS %>%
+# keep.loci <- fsc_tab[LOCUS %in% filter_maf(fsc_tab, type='genos', maf=0.01)]$LOCUS %>%
 #   unique() %>% .[1:200]
 #
 # fsc_tab[LOCUS %in% keep.loci, length(unique(LOCUS)), by=CHROM]$V1 %>%  table
 #
-# fsc_tab[GT=='1/0', GT:='0/1']
 # data_Genos <- fsc_tab[LOCUS %in% keep.loci] %>%
 #   .[, DP:=rnbinom(n=1, size=15, prob=0.3), by=c('CHROM','SAMPLE')] %>%
-#   .[, AO:=rbinom(n=1, size=DP, prob=0.5), by=c('CHROM','SAMPLE')] %>%
+#   .[, AO:=rbinom(n=1, size=DP, prob=GT/2), by=c('CHROM','SAMPLE')] %>%
 #   .[, RO:=DP-AO]
 #
 # locs_Genos <- data_Genos[, c('LOCUS')] %>% unique()
@@ -156,3 +154,4 @@ library(genomalicious)
 # readLines('inst/extdata/data_poolseq.vcf') %>%
 #   c(vcf_head, .) %>%
 #   writeLines(., 'inst/extdata/data_poolseq.vcf')
+

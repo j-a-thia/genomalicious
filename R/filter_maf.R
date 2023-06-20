@@ -73,7 +73,7 @@ filter_maf <- function(
   # --------------------------------------------+
   # Libraries and assertions
   # --------------------------------------------+
-  libs <- library(data.table)
+  libs <- c('data.table','tidyverse')
   for(L in libs){ require(L, character.only=TRUE)}
 
   # Test that the data table is the correct class.
