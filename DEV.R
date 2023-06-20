@@ -42,7 +42,7 @@ library(genomalicious)
 #
 # fsc_tab[, length(unique(LOCUS)), by=CHROM]$V1 %>%  table
 #
-# keep.loci <- fsc_tab[LOCUS %in% filter_maf(fsc_tab, type='genos', maf=0.01)]$LOCUS %>%
+# keep.loci <- fsc_tab[LOCUS %in% filter_maf(fsc_tab, type='genos', maf=0.05)]$LOCUS %>%
 #   unique() %>% .[1:200]
 #
 # fsc_tab[LOCUS %in% keep.loci, length(unique(LOCUS)), by=CHROM]$V1 %>%  table

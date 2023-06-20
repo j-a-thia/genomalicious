@@ -44,14 +44,30 @@
 #' they will match \code{dat}. This facilitates merging of the original data and results.
 #'
 #' @examples
-#' library(genomaliciuos)
+#' library(genomalicious)
 #' data(data_Genos)
 #'
 #' # Take a look at the read distribution for alternate alleles
 #' hist(data_Genos$AO, xlab='Alt allele read counts', main='')
 #'
-#' # Let's make a really hard requirements on at least 10 reads supporting
-#' # each allele.
+#' # Let's find those sample + loci observations where there are not
+#' # at least 5 reads supporting each allele
+#' suppTest <- filter_supporting_reads(data_Genos, suppReads=5)
+#'
+#' head(suppTest)
+#'
+#' suppTest[KEEP==FALSE]
+#'
+#' # You could use this information to filter loci. For example, removing
+#' # a locus if any sample does not meet the supporting read threshold for
+#' # both alleles.
+#' uniq_bad_loci <- unique(suppTest[KEEP==FALSE]$LOCUS)
+#'
+#' uniq_bad_loci
+#'
+#' data_Genos[!LOCUS %in% uniq_bad_loci]
+#'
+#' @export
 
 
 filter_supporting_reads <- function(dat, sampCol='SAMPLE', locusCol='LOCUS', dpCol='DP', aoCol='AO', suppReads=3){
@@ -85,9 +101,13 @@ filter_supporting_reads <- function(dat, sampCol='SAMPLE', locusCol='LOCUS', dpC
     setnames(., c(sampCol, locusCol, dpCol, aoCol), c('SAMPLE','LOCUS','DP','AO')) %>%
     .[, RO:=DP-AO]
 
-  # Output
-  dat[DP==RO | DP==AO, KEEP:=TRUE]
-  dat[DP!=AO & DP!=RO, KEEP:=FALSE]
+  # Assign "zygosity"
+  dat[, ZYG:=if_else(DP==RO | DP==AO, 'Hom', 'Het')]
 
-  return(result)
+  # Assign "keep" status based on zygosity and supporting read threshold
+  dat[ZYG=='Hom', KEEP:=TRUE]
+  dat[ZYG=='Het', KEEP:=if_else(RO>=suppReads & AO>=suppReads, TRUE, FALSE)]
+
+  # Out
+  return(dat[, c('SAMPLE','LOCUS','KEEP')])
 }

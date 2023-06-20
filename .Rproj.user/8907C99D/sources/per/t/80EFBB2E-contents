@@ -28,10 +28,7 @@
 #'
 #' @param stepSize Integer: the size of steps between loci.
 #'
-#' @returns Returns a data.table with the columns \code{$CHROM},
-#' \code{$POS}, and \code{$LOCUS}, which are the chromosome, position, and
-#' locus columns, as well as \code{$KEEP}, a column of logoical values TRUE or
-#' FALSE as to whether the locus should be kept.
+#' @returns Returns a vector of loci IDs to be kept.
 #'
 #' @export
 
@@ -69,22 +66,22 @@ filter_space_loci <- function(dat, chromCol='CHROM', posCol='POS', locusCol='LOC
     setnames(., c(chromCol, posCol, locusCol), c('CHROM','POS','LOCUS'))
 
   # Get unique loci
-  D.uniq.loci <- dat[, c('CHROM','PPOS','LOCUS')] %>% unique()
+  D.uniq.loci <- dat[, c('CHROM','POS','LOCUS')] %>% unique()
 
   # Iterate over chromosomes
   D.keep.loci <- unique(D.uniq.loci$CHROM) %>%
     lapply(., function(chrom){
       # Subset the chormosome
       D.chr.sub.loci <- D.uniq.loci[CHROM==chrom] %>%
-        setorder(., Pos)
+        setorder(., POS)
 
       # Default keep the first locus
-      D.chr.sub.loci[1, KEEP:=1]
+      D.chr.sub.loci[1, KEEP:=TRUE]
 
       # Iterate through each subsequent locus, keep if >= stepSize from
       # the previous locus.
       for(i in 2:nrow(D.chr.sub.loci)){
-        pos.diff <- D.chr.sub.loci$Pos[i] - D.chr.sub.loci$Pos[i-1]
+        pos.diff <- D.chr.sub.loci$POS[i] - D.chr.sub.loci$POS[i-1]
         if(pos.diff >= stepSize){
           D.chr.sub.loci$KEEP[i] <- TRUE
         } else{
@@ -98,5 +95,7 @@ filter_space_loci <- function(dat, chromCol='CHROM', posCol='POS', locusCol='LOC
     # Combine all chromosomes
     do.call('rbind', .)
 
+  # Output
+  return(D.keep.loci[KEEP==TRUE]$LOCUS)
   # ... END
 }
