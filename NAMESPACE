@@ -2,6 +2,7 @@
 
 export(DT2Mat_freqs)
 export(DT2Mat_genos)
+export(DT2RADdata)
 export(DT2fasta)
 export(adegenet_DT2genX)
 export(align_many_genes_dna)

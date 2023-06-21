@@ -21,7 +21,7 @@ filter_maf(
 recorded either as '/' separated alleles (0/0, 0/1 1/1), or as counts of the
 Alt allele (0, 1, 2). If allele frequencies, can be either the Ref or Alt
 allele, so long as it is consistent across samples, populations, loci, etc.
-Eexpects the columns:
+Expects the columns:
 \enumerate{
    \item The sample ID (see param \code{sampCol}), for genotype datasets only.
    \item The locus ID (see param \code{locusCol}).

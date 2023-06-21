@@ -1,2 +1,0 @@
-left_join(data_Genos, suppTest) %>% 
-  .[KEEP==FALSE]

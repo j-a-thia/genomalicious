@@ -1,11 +1,11 @@
 {
     "id": "BDDED367",
-    "path": null,
-    "project_path": null,
+    "path": "~/GitHub/genomalicious/R/DT2RADdata.R",
+    "project_path": "R/DT2RADdata.R",
     "type": "r_source",
-    "hash": "4114767955",
+    "hash": "1982957090",
     "contents": "",
-    "dirty": true,
+    "dirty": false,
     "created": 1687279548293.0,
     "source_on_save": false,
     "relative_order": 5,
@@ -13,15 +13,15 @@
         "tempName": "Untitled1",
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "2,0",
-        "scrollLine": "0"
+        "cursorPosition": "137,12",
+        "scrollLine": "135"
     },
     "folds": "",
-    "lastKnownWriteTime": 4050478929350386789,
-    "encoding": "",
+    "lastKnownWriteTime": 1687340323,
+    "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1687279574823,
+    "last_content_update": 1687340323061,
     "read_only": false,
     "read_only_alternatives": []
 }
