@@ -1,0 +1,27 @@
+NAME,FEATURE,DETAIL
+ND1,gene,ND1
+ND2,gene,ND2
+COX1,gene,COX1
+COX2,gene,COX2
+ATP8,gene,ATP8
+ATP6,gene,ATP6
+COX3,gene,COX3
+ND3,gene,ND3
+ND4L,gene,ND4L
+ND4,gene,ND4
+ND5,gene,ND5
+ND6,gene,ND6
+CYTB,gene,CYTB
+ND1,CDS,NADH dehydrogenase subunit 1
+ND2,CDS,NADH dehydrogenase subunit 2
+COX1,CDS,Cytochrome c oxidase subunit 1
+COX2,CDS,Cytochrome c oxidase subunit 2
+ATP8,CDS,ATP synthase F0 subunit 8
+ATP6,CDS,ATP synthase F0 subunit 6
+COX3,CDS,Cytochrome c oxidase subunit 3
+ND3,CDS,NADH dehydrogenase subunit 3
+ND4L,CDS,NADH dehydrogenase subunit 4L
+ND4,CDS,NADH dehydrogenase subunit 4L
+ND5,CDS,NADH dehydrogenase subunit 5
+ND6,CDS,NADH dehydrogenase subunit 5
+CYTB,CDS,Cytochrome b

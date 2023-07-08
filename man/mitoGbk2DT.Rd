@@ -40,7 +40,7 @@ library(genomalicious)
 genomaliciousExtData <- paste0(find.package('genomalicious'), '/extdata')
 
 # Read in a GENBANK file
-gbk.read <- mitoGbk2DT(paste(genomaliciousExtData, 'data_Bcocosensis.gbk', sep='/'))
+gbk.read <- mitoGbk2DT(paste(genomaliciousExtData, 'data_Bcocosensis_mitogenome.gbk', sep='/'))
 gbk.read
 
 }
