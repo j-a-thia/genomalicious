@@ -15,15 +15,13 @@
 #' @param threshold Integer: the minimum string of 'N's to consider a gap.
 #'
 #' @param correct Integer: the standardised number of 'N's for gaps of unknown size.
-#'
-#' @param numCores Integer: the number of cores for parallel processing. Default is 2.
-#'
+
 #' @returns Returns the genome assembly back as a DNAStringSet object with all
 #' gaps meeting the threshold size standardized to the corrected size.
 #' Sequences with corrected gaps are labelled with '_correct_gaps'.
 #'
 #' @export
-assembly_correct_gaps <- function(genomeSS, threshold, correct, numCores=2){
+assembly_correct_gaps <- function(genomeSS, threshold, correct){
   require(Biostrings); require(data.table); require(doParallel); require(tidyverse)
 
   # Quick checks
@@ -39,17 +37,13 @@ assembly_correct_gaps <- function(genomeSS, threshold, correct, numCores=2){
     stop('Argument `correct` must be an "integer" class with a values >0. See ?assembly_correct_gaps.')
   }
 
-  if(class(numCores)!='integer' | numCores<1){
-    stop('Argument `numCores` must be an "integer" class with a values >0. See ?assembly_correct_gaps.')
-  }
-
-  # Set up cluster
-  my_cluster <- makeCluster(numCores)
-
-  registerDoParallel(my_cluster)
-
   # Iterate through each ith genomic sequence
-  resultsList <- foreach(i=1:length(genomeSS)) %dopar% {
+  resultsList <- list()
+
+  num_seqs <- length(genomeSS)
+  for(i in 1:num_seqs){
+    cat(i, '/', num_seqs, '\n')
+
     require(Biostrings); require(data.table); require(tidyverse)
     # Convert the sequence into a long-format data table
     seq_i_tab <- genomeSS[i] %>%
@@ -110,7 +104,11 @@ assembly_correct_gaps <- function(genomeSS, threshold, correct, numCores=2){
         .[, START:=INDEX==min(INDEX), by=GAP]
 
       # Add in the info for the gaps to keep
-      seq_i_tab <- left_join(seq_i_tab, keep_i_tab)
+      seq_i_tab <- left_join(
+        seq_i_tab, keep_i_tab,
+        by=c('DNA','INDEX','IS.N')
+        ) %>%
+        as.data.table()
 
       # Replace the string of the start site for each gap
       seq_i_tab[!is.na(GAP) & START==TRUE, DNA:=n_string]
@@ -133,12 +131,10 @@ assembly_correct_gaps <- function(genomeSS, threshold, correct, numCores=2){
 
     # Cleanup and return results
     gc()
-    result_i
+    resultsList[[i]] <- result_i
+
+    # End ith iteration
   }
-
-  stopCluster(my_cluster)
-
-  gc()
 
   do.call('c', resultsList)
 }

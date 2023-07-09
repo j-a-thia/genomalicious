@@ -4,7 +4,7 @@
 \alias{assembly_correct_gaps}
 \title{Correct uneven gaps in an assembled genome}
 \usage{
-assembly_correct_gaps(genomeSS, threshold, correct, numCores = 2)
+assembly_correct_gaps(genomeSS, threshold, correct)
 }
 \arguments{
 \item{genomeSS}{DNAStringSet: the genome assembly as a 'DNAStringSet'
@@ -13,8 +13,6 @@ object from the \code{Biostrings} package.}
 \item{threshold}{Integer: the minimum string of 'N's to consider a gap.}
 
 \item{correct}{Integer: the standardised number of 'N's for gaps of unknown size.}
-
-\item{numCores}{Integer: the number of cores for parallel processing. Default is 2.}
 }
 \value{
 Returns the genome assembly back as a DNAStringSet object with all
