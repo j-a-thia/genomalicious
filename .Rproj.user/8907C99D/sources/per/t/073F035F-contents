@@ -34,7 +34,7 @@
 #'
 #' \enumerate{
 #'    \item \code{$CODON} = The codon number, 1:N.
-#'    \item \code{$NUC} = The nucleotides positions comprising the codon, from
+#'    \item \code{$NUC.GENE} = The nucleotides positions comprising the codon, from
 #'    1 to the gene's length.
 #'    \item \code{$DNA} = The DNA bases.
 #'    \item \code{$AMINO} = The amino acid residue.
@@ -115,7 +115,7 @@ dna2codonDT <- function(dnaSeq, type, compressTab=FALSE, geneticCode=1){
         # Compressed table format
         tab <- data.table(
           CODON=i,
-          NUC=paste(n-2, n-1, n, sep='|'),
+          NUC.GENE=paste(n-2, n-1, n, sep='|'),
           DNA=cod,
           AMINO=amino
         )
@@ -142,6 +142,7 @@ dna2codonDT <- function(dnaSeq, type, compressTab=FALSE, geneticCode=1){
   # If only providing coding sequence as single character string
   if(type=='cds'){
     result <- FUN_dna_2_cod(seq_as_char=dnaSeq, compressTab=compressTab)
+    attributes(result)$codonDT <- 'cds'
   }
 
   # If providing exons as list of character strings
@@ -169,14 +170,15 @@ dna2codonDT <- function(dnaSeq, type, compressTab=FALSE, geneticCode=1){
     if(compressTab==TRUE){
       # Align in the compressed nucleotide indexes against exons and codons
       nucGeneIndex <- result %>%
-        .[, .(NUC.GENE=as.integer(unlist(str_split(NUC, '\\|')))), by=c('CODON','NUC')] %>%
-        left_join(., nucGeneIndex, by='NUC.GENE')
+        .[, .(NUC.GENE.LONG=as.integer(unlist(str_split(NUC.GENE, '\\|')))), by=c('CODON','NUC.GENE')] %>%
+        left_join(., nucGeneIndex, by=c('NUC.GENE.LONG'='NUC.GENE')) %>%
+        as.data.table()
 
       exonByCodon <- nucGeneIndex %>%
         .[, .(EXON=paste(sort(unique(EXON)),collapse='|')), by=CODON]
 
       # Combine
-      result <- left_join(result, exonByCodon)
+      result <- as.data.table(left_join(result, exonByCodon))
     }
   }
 
