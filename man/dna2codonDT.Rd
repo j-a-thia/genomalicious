@@ -2,7 +2,7 @@
 % Please edit documentation in R/dna2codonDT.R
 \name{dna2codonDT}
 \alias{dna2codonDT}
-\title{DNA to a translated codon data.table}
+\title{Translate a list of coding sequences into a codon data.table}
 \usage{
 dna2codonDT(dnaSeq, type, compressTab = FALSE, geneticCode = 1)
 }
@@ -47,7 +47,9 @@ Otherwise, if \code{compressTab==FALSE}:
 }
 }
 \description{
-Convert a DNA coding sequence into a data.table of codons and amino acids.
+Convert a DNA coding sequence into a data.table of codons, nucleotide indexes,
+DNA triplet sequences, and amino acids. If provided with coding sequences split
+into exons, these will also be incorporated into the table.
 }
 \details{
 The argument \code{type} dictates what to pass to the argument
