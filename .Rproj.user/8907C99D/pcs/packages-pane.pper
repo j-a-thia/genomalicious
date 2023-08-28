@@ -1,7 +1,7 @@
 {
     "installOptions": {
         "installFromRepository": true,
-        "libraryPath": "C:/Users/thiaj/AppData/Local/R/win-library/4.2",
+        "libraryPath": "C:/Users/thiaj/AppData/Local/R/win-library/4.3",
         "installDependencies": true
     }
 }

@@ -2,18 +2,23 @@
 % Please edit documentation in R/dna2codonDT.R
 \name{dna2codonDT}
 \alias{dna2codonDT}
-\title{DNA to a condon data.table}
+\title{DNA to a translated codon data.table}
 \usage{
-dna2codonDT(cdsSeq, compressTab = FALSE, geneticCode = 1)
+dna2codonDT(dnaSeq, type, compressTab = FALSE, geneticCode = 1)
 }
 \arguments{
-\item{cdsSeq}{Character = A DNA coding sequence.}
+\item{dnaSeq}{Character: For a coding sequence (e.g., cDNA transcript), a single
+character vector. For a group of exons, a list of character vectors.
+See argument \code{type} and Details.}
 
-\item{compressTab}{Logical = Should the table be compressed? Default is TRUE,
+\item{type}{Character: one of \code{'cds'} (coding sequence) or \code{'exons'}
+(exon regions). See Details.}
+
+\item{compressTab}{Logical: Should the table be compressed? Default is TRUE,
 in which case, each row is a unique codon. If FALSE, then each codon is represented
 by 3 rows, one for each nucleotide comprising the codon.}
 
-\item{geneticCode}{Integer = A value relating to the \code{numcode} argument in
+\item{geneticCode}{Integer: A value relating to the \code{numcode} argument in
 \code{seqinr::translate}.}
 }
 \value{
@@ -25,6 +30,7 @@ Returns a data.table with the following columns when \code{compressTab==TRUE}:
    1 to the gene's length.
    \item \code{$DNA} = The DNA bases.
    \item \code{$AMINO} = The amino acid residue.
+   \item \code{$EXON} = The exon number, but only when \code{type=='exon'}.
 }
 
 Otherwise, if \code{compressTab==FALSE}:
@@ -37,14 +43,25 @@ Otherwise, if \code{compressTab==FALSE}:
    1 to 3.
    \item \code{$DNA} = The DNA bases.
    \item \code{$AMINO} = The amino acid residue.
+   \item \code{$EXON} = The exon number, but only when \code{type=='exon'}.
 }
 }
 \description{
 Convert a DNA coding sequence into a data.table of codons and amino acids.
 }
 \details{
-Assumes that the sequence is in its correct reading frame, that is,
-the first DNA nucleotide is the first base of the first codon. Default is 1.
+The argument \code{type} dictates what to pass to the argument
+\code{dnaSeq}. If you want to translate a coding sequence (cDNA transcript),
+then \code{type=='cds'} and \code{dnaSeq} must recieve a single character,
+the DNA sequence.
+
+If you want to translate a series of exons, then \code{type='exon'} and
+\code{dnaSeq} must receive a list, where each indexed item in the list is
+a character vector, the DNA exon sequence. Note, it is assumed that the
+exon sequences are ordered correctly, from first to last.
+
+For both cases, the function assumes that the sequence is in the correct
+reading frame.
 }
 \examples{
 X <- 'ATGCGTACTTCA'
