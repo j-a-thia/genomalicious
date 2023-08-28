@@ -167,13 +167,15 @@ dna2codonDT <- function(dnaSeq, type, compressTab=FALSE, geneticCode=1){
     }
 
     if(compressTab==TRUE){
-      nucGeneIndex <- left_join(
-        nucGeneIndex,
-        result[, c('CODON','NUC.GENE','NUC.CODON')]
-      )
+      # Align in the compressed nucleotide indexes against exons and codons
+      nucGeneIndex <- result %>%
+        .[, .(NUC.GENE=as.integer(unlist(str_split(NUC, '\\|')))), by=c('CODON','NUC')] %>%
+        left_join(., nucGeneIndex, by='NUC.GENE')
 
-      exonByCodon <- nucGeneIndex[, .(EXON=paste(sort(unique(EXON)),collapse='|')), by=CODON]
+      exonByCodon <- nucGeneIndex %>%
+        .[, .(EXON=paste(sort(unique(EXON)),collapse='|')), by=CODON]
 
+      # Combine
       result <- left_join(result, exonByCodon)
     }
   }
