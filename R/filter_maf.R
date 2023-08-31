@@ -119,8 +119,8 @@ filter_maf <- function(
   # If the input if a data.table of individuals and genotypes.
   if(type=='genos'){
     # Reassign column names
-    colReass <- match(c(sampCol, locusCol, genoCol), colnames(dat))
-    colnames(dat)[colReass] <- c('SAMPLE', 'LOCUS', 'GT')
+    colReass <- match(c(sampCol, locusCol, genoCol, popCol), colnames(dat))
+    colnames(dat)[colReass] <- c('SAMPLE', 'LOCUS', 'GT', 'POP')
 
     # Frequencies
     datF <- dat[, .(FREQ=sum(GT)/(length(GT)*2)), by=c('POP','LOCUS')]
