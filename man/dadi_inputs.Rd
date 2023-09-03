@@ -122,7 +122,7 @@ newFreqData <- left_join(data_PoolFreqs, data_PoolInfo)
 colnames(newFreqData)
 
 # Three
-dadi_inputs(newFreqData, type='freqs', freqMethod='probs', )
+dadi_inputs(dat=newFreqData, type='freqs', freqMethod='probs', )
 
 }
 \references{
