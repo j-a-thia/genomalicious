@@ -1,7 +1,7 @@
 Package: genomalicious
 Type: Package
 Title: A smorgasbord of R functions for population genomic analyses
-Version: 0.6-7
+Version: 0.6-8
 Author: Joshua Thia
 Maintainer: Joshua Thia <josh.thia@live.com>
 Description: Functions for importing, manipulating, and reformatting pooled and individually sequenced RAD-seq data in R.
