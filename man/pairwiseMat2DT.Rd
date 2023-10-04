@@ -4,7 +4,7 @@
 \alias{pairwiseMat2DT}
 \title{Convert a pairwise matrix into a pairwise data table}
 \usage{
-pairwiseMat2DT(dat, flip = FALSE, X1, X2, Y)
+pairwiseMat2DT(dat, flip = FALSE, X1, X2, Y, diagAdd = TRUE, diagVal = 0)
 }
 \arguments{
 \item{dat}{Matrix or Data table: The default parameterisation (\code{flip==FALSE})
@@ -36,6 +36,12 @@ If \code{flip==FALSE}, then \code{Y} will take the values in the off-diagonal
 in the matrix and put them into the third column of the output data table.
 If \code{flip==TRUE}, then \code{Y} will be take the column in the data table and
 put it as values in the off-diagonal in the output matrix.}
+
+\item{diagAdd}{Logical: Should the diagonal be added? Default is
+\code{TRUE}. Only takes effect if \code{flip==TRUE}.}
+
+\item{diagVal}{Numeric: The value to add along the diagonal when
+\code{diagAdd==TRUE}. Default is 0.}
 }
 \description{
 This function takes pairwise matrix (all possible combinations in rows and
@@ -51,7 +57,8 @@ pairFst <- fstat_calc(data_Genos, type='genos', fstat='FST', global=FALSE, pairw
 
 # Convert into a pairwise matrix
 pairMat <- pairwiseMat2DT(
-   dat=pairFst$genome, flip=TRUE, X1='POP1', X2='POP2', Y='FST'
+   dat=pairFst$genome, flip=TRUE, X1='POP1', X2='POP2', Y='FST',
+   diagAdd=TRUE, diagVal=0
 )
 pairMat
 
