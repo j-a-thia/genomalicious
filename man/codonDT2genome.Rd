@@ -31,6 +31,9 @@ a GFF3 annotations file. Each row should be an exon. The required columns are:
    "start" of the exon (relative to the reverse strand).
    \item \code{$EXON}: Integer, the exon ID.
 }}
+
+\item{isCompressed}{Logical: Is the codon data table provided in \code{codonDT}
+compressed? See \code{dna2codonDT}.}
 }
 \value{
 Returns the codon table but with the additional column \code{$CHROM}
