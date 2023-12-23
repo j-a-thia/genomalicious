@@ -9,11 +9,13 @@ pairwiseMat2DT(dat, flip = FALSE, X1, X2, Y, diagAdd = TRUE, diagVal = 0)
 \arguments{
 \item{dat}{Matrix or Data table: The default parameterisation (\code{flip==FALSE})
 is expecting a pairwise matrix. This matrix needs to be symmetrical, with a
-zero on the diagonal and the off-diagonal containing the measured variable
-values between pairs. There should be row and column names. If instead you
-want to go in the flipped parameterisation (\code{flip==TRUE}), then a
-data table is expected, where pair combinations are represented into two
-columns and the measured variable is in a third column.}
+values on the diagonal representing comparisons within a subject, and values on
+the off-diagonal containing the measures between subject pairs.
+There should be row and column names. If instead you want to go in the
+flipped parameterisation (\code{flip==TRUE}), then a data table is expected,
+where pair combinations are represented into two columns and the measured
+variable is in a third column. In this second parameterisation, the data table
+does not need to have within-subject comparisons (diagonals; you can add these in).}
 
 \item{flip}{Logical: Should the function be flipped? Default is \code{FALSE},
 a pairwise matrix should be converted into a pairwise data table. If set to

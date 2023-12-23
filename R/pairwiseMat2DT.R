@@ -6,11 +6,13 @@
 #'
 #' @param dat Matrix or Data table: The default parameterisation (\code{flip==FALSE})
 #' is expecting a pairwise matrix. This matrix needs to be symmetrical, with a
-#' zero on the diagonal and the off-diagonal containing the measured variable
-#' values between pairs. There should be row and column names. If instead you
-#' want to go in the flipped parameterisation (\code{flip==TRUE}), then a
-#' data table is expected, where pair combinations are represented into two
-#' columns and the measured variable is in a third column.
+#' values on the diagonal representing comparisons within a subject, and values on
+#' the off-diagonal containing the measures between subject pairs.
+#' There should be row and column names. If instead you want to go in the
+#' flipped parameterisation (\code{flip==TRUE}), then a data table is expected,
+#' where pair combinations are represented into two columns and the measured
+#' variable is in a third column. In this second parameterisation, the data table
+#' does not need to have within-subject comparisons (diagonals; you can add these in).
 #'
 #' @param flip Logical: Should the function be flipped? Default is \code{FALSE},
 #' a pairwise matrix should be converted into a pairwise data table. If set to
@@ -79,10 +81,28 @@ pairwiseMat2DT <- function(dat, flip=FALSE, X1, X2, Y, diagAdd=TRUE, diagVal=0){
 
   if(flip==TRUE){
     dat <- as.data.table(dat)
+
+    # Check for appropriate columns
     if(sum(c(X1, X2, Y) %in% colnames(dat))!=3){
       stop('Argument `flip` is "TRUE", i.e., turn a pairwise data table into a
            matrix, but not all the the required columns appear to be in `dat`.
            Check parameterisation of `X1`, `X2`, and `Y`. See ?pairwiseMat2DT.')
+    }
+
+    # Check to make sure diagonal parameterisation is correct. If the data.table
+    # already contains information for the diagonal, then choosing `diagAdd==TRUE`
+    # will cause an error.
+    x1 <- dat[[X1]] %>% unique()
+    within <- which(dat[[X1]]==x1 & dat[[X2]]==x1)
+    within.len <- length(within)
+    if(length(within.len)>0 & diagAdd==TRUE){
+      stop_msg <- paste0(
+        'Argument `diagAdd` is "TRUE", but there are ', within.len,
+        ' within-subject comparisons and a total of ', length(x1), ' subjects: ',
+        '`diagAdd` should only be "TRUE" if there are no within-subject',
+        'measurements. See ?pairwiseMat2DT'
+      )
+      stop(stop_msg)
     }
   }
 
@@ -114,14 +134,14 @@ pairwiseMat2DT <- function(dat, flip=FALSE, X1, X2, Y, diagAdd=TRUE, diagVal=0){
     if(diagAdd==TRUE){
       dat2cast <- rbind(
         # Data in X1-X2 orientation
-        dat,
+        dat[, c('X1','X2','Y')],
         # Data in X2-X1 orientation
         data.table(X1=dat$X2, X2=dat$X1, Y=dat$Y),
         # The diagonal
         data.table(X1=samp.uniq, X2=samp.uniq, Y=diagVal)
       )
     } else if(diagAdd==FALSE){
-      dat2cast <- dat
+      dat2cast <- dat[, c('X1','X2','Y')]
     }
 
     output <- dat2cast %>%
