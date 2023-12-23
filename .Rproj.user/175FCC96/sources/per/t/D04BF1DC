@@ -1,0 +1,26 @@
+{
+    "id": "D04BF1DC",
+    "path": "~/GitHub/genomalicious/R/pairwiseMat2DT.R",
+    "project_path": "R/pairwiseMat2DT.R",
+    "type": "r_source",
+    "hash": "2742569169",
+    "contents": "",
+    "dirty": false,
+    "created": 1696414408367.0,
+    "source_on_save": false,
+    "relative_order": 5,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "0,0",
+        "scrollLine": "0"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1703283155,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1703283155543,
+    "read_only": false,
+    "read_only_alternatives": []
+}
