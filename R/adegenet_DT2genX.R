@@ -77,7 +77,7 @@ adegenet_DT2genX <- function(dat, genX, sampCol='SAMPLE', locusCol='LOCUS', geno
       dat[[genoCol]] <- genoscore_converter(dat[[genoCol]])
     }
 
-    genoMat <- DT2Mat_genos(dat, 'SAMPLE', 'LOCUS', 'GT')
+    genoMat <- DT2Mat_genos(dat, sampCol=sampCol, locusCol=locusCol, genoCol=genoCol)
     genLight <- new('genlight', as.list(as.data.frame(t(genoMat))))
 
     # Add in locus names

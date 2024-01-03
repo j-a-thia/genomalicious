@@ -123,10 +123,11 @@ DT2Mat_genos <- function(dat, sampCol='SAMPLE', locusCol='LOCUS', genoCol='GT', 
   if(flip==FALSE){
     genoMat <- dat %>%
       .[, c(sampCol, locusCol, genoCol), with=FALSE] %>%
-      spread(., key=locusCol, value=genoCol) %>%
-      as.data.table
-    sampVals <- genoMat[[sampCol]]
-    genoMat <- as.matrix(genoMat[, !(sampCol), with=FALSE])
+      setnames(., c(sampCol, locusCol, genoCol), c('SAMPLE','LOCUS','GT')) %>%
+      as.data.table %>%
+      dcast(., SAMPLE ~ LOCUS, value.var = 'GT')
+    sampVals <- genoMat[['SAMPLE']]
+    genoMat <- as.matrix(genoMat[, !('SAMPLE'), with=FALSE])
     row.names(genoMat) <- sampVals
 
     return(genoMat)
