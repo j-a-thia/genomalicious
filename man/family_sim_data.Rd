@@ -46,8 +46,8 @@ and a family of four individuals. Simulated samples have the naming convention
 [simulation]_[code], with simulations, "S[number]", and codes denoting family
 relationships within their simulation. Samples with the code, "UR" are an
 unrelated pair. Samples with the codes "G3.1" and "G3.2" are siblings.
-Samples with the code "G3.3" are half-siblings with "G3.1" and "G3.2".
-Samples with the code "G3.4" are cousins with "G3.1" and "G3.2".
+Samples with the code "G3.3" are half-siblings to "G3.1" and "G3.2".
+Samples with the code "G3.4" are cousins to "G3.1" and "G3.2".
 }
 \examples{
 library(genomalicious)
@@ -68,7 +68,7 @@ simFamily <- family_sim_data(
 )
 
 # Create some siblings in Pop1 from two sets of parents
-parentList <- list(c('Ind1_1','Ind1_2'), c('Ind1_29','Ind1_30'))
+parentList <- list(c('Ind1_1','Ind1_2'), c('Ind1_3','Ind1_4'))
 genosSibs <- lapply(1:2, function(i){
   parents <- parentList[[i]]
 
@@ -84,7 +84,7 @@ genosSibs <- lapply(1:2, function(i){
 
   rbind(gamete1, gamete2) \%>\%
     .[, .(GT=sum(GAMETE)), by=c('LOCUS','SIB')] \%>\%
-    .[, SAMPLE:=paste0('Child_',child,'_',SIB)] \%>\% print
+    .[, SAMPLE:=paste0('Child_',child,'_',SIB)]
 }) \%>\%
   do.call('rbind', .)
 
@@ -130,7 +130,7 @@ relComp$plot
 # relatedness of 0.5. But you will probably find the "observed"
 # relatedness values are much lower.
 relComp$data[SAMPLE1=='Child_1.2_1' & SAMPLE2\%in\%c('Child_1.2_2','Ind1_1','Ind1_2')]
-relComp$data[SAMPLE1=='Child_29.30_1' & SAMPLE2\%in\%c('Child_29.30_2','Ind1_29','Ind1_30')]
+relComp$data[SAMPLE1=='Child_3.4_1' & SAMPLE2\%in\%c('Child_3.4_2','Ind1_3','Ind1_4')]
 
 # Now take a look at the simulated distribution.
 relComp$data[FAMILY=='Half-siblings']$RELATE \%>\% summary()
