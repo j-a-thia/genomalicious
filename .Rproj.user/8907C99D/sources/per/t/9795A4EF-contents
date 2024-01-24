@@ -25,11 +25,15 @@
 #'
 #' @details Each simulation generates 6 indivduals. A pair of unrelated individuals,
 #' and a family of four individuals. Simulated samples have the naming convention
-#' [simulation]_[code], with simulations, "S[number]", and codes denoting family
-#' relationships within their simulation. Samples with the code, "UR" are an
-#' unrelated pair. Samples with the codes "G3.1" and "G3.2" are siblings.
-#' Samples with the code "G3.3" are half-siblings to "G3.1" and "G3.2".
-#' Samples with the code "G3.4" are cousins to "G3.1" and "G3.2".
+#' '[simulation]_[code]', with 'simulation' following the convention 'S[sim number]'
+#' and 'code' following the following convetions:
+#' \itemize{
+#'  \item 'unrel_1' and 'unrel_2' are two completely unrelated individuals.
+#'  \item 'sib_1' and 'sib_2' are full siblings.
+#'  \item 'halfsib_1' are 'halfsib_2' are half siblings.
+#'  \item 'cous_1' and 'cous_2' are cousins.
+#'  \item 'halfcous_1' and 'halfcous_2' are half cousins.
+#' }
 #'
 #' @returns Returns a data.table with the following columns:
 #' \enumerate{
@@ -107,22 +111,30 @@
 #' # The data
 #' relComp$data
 #'
+#' # Simulated dataset
+#' relComp$data[!is.na(SIM)]
+#'
+#' # The observed dataset
+#' relComp$data[is.na(SIM)]
+#'
 #' # Plot of relatedness values. Dashed lines denote relatedness
-#' # values of 0, 0.125, 0.25, and 0.5, which are the theoretical
-#' # expectations for unrelated individuals, cousins, half-siblings,
+#' # values of 0, 0.0625, 0.125, 0.25, and 0.5, which are the theoretical
+#' # expectations for unrelated individuals, half-cousins, cousins, half-siblings,
 #' # and siblings, respectively.
 #' # You will note a large variance are the expected values, which
 #' # is not surprising for this very small SNP dataset (200 loci).
 #' relComp$plot
 #'
-#' # Take a look at the "known" relationships in the observed dataset
+#' # Take a look at the "known" relationships in the observed dataset using the
+#' # offspring we created.
 #' # Note, siblings and parent-offspring pairs have a theoretical
 #' # relatedness of 0.5. But you will probably find the "observed"
-#' # relatedness values are much lower.
+#' # relatedness might be lower.
 #' relComp$data[SAMPLE1=='Child_1.2_1' & SAMPLE2%in%c('Child_1.2_2','Ind1_1','Ind1_2')]
 #' relComp$data[SAMPLE1=='Child_3.4_1' & SAMPLE2%in%c('Child_3.4_2','Ind1_3','Ind1_4')]
 #'
-#' # Now take a look at the simulated distribution.
+#' # Now take a look at the simulated distribution: the possible values for
+#' # siblings given this dataset are quite wide.
 #' relComp$data[FAMILY=='Half-siblings']$RELATE %>% summary()
 #' relComp$data[FAMILY=='Siblings']$RELATE %>% summary()
 #'
@@ -201,40 +213,63 @@ family_sim_data <- function(freqData, locusCol='LOCUS', freqCol='FREQ', numSims=
   # Code
   # --------------------------------------------+
   simFamily <- lapply(1:numSims, function(sim){
-    # Unrelated parents in G1
-    G1.1 <- FUN_draw_genos(freqData, ploidy=2)
-    G1.2 <- FUN_draw_genos(freqData, ploidy=2)
+    # Note, 'g[x]' indicates generation in each group.
 
-    # Siblings in G2
-    G2.1 <- FUN_make_diploid_offspring(G1.1, G1.2)
-    G2.2 <- FUN_make_diploid_offspring(G1.1, G1.2)
+    # Create sibling pair
+    sib.g1.1 <- FUN_draw_genos(freqData, ploidy=2)
+    sib.g1.2 <- FUN_draw_genos(freqData, ploidy=2)
 
-    # Unrelated individuals in G2
-    G2.3 <- FUN_draw_genos(freqData, ploidy=2)
-    G2.4 <- FUN_draw_genos(freqData, ploidy=2)
-    G2.5 <- FUN_draw_genos(freqData, ploidy=2)
+    sib.g2.1 <- FUN_make_diploid_offspring(sib.g1.1, sib.g1.2)
+    sib.g2.2 <- FUN_make_diploid_offspring(sib.g1.1, sib.g1.2)
 
-    # Siblings in G3
-    G3.1 <- FUN_make_diploid_offspring(G2.1, G2.3)
-    G3.2 <- FUN_make_diploid_offspring(G2.1, G2.3)
+    # Create half sibling pair
+    hsib.g1.1 <- FUN_draw_genos(freqData, ploidy=2)
+    hsib.g1.2 <- FUN_draw_genos(freqData, ploidy=2)
+    hsib.g1.3 <- FUN_draw_genos(freqData, ploidy=2)
 
-    # Half siblings in G3
-    G3.3 <- FUN_make_diploid_offspring(G2.1, G2.4)
+    hsib.g2.1 <- FUN_make_diploid_offspring(hsib.g1.1, hsib.g1.2)
+    hsib.g2.2 <- FUN_make_diploid_offspring(hsib.g1.1, hsib.g1.3)
 
-    # Cousins in G3
-    G3.4 <- FUN_make_diploid_offspring(G2.2, G2.5)
+    # Create cousin pair
+    cuz.g1.1 <- FUN_draw_genos(freqData, ploidy=2)
+    cuz.g1.2 <- FUN_draw_genos(freqData, ploidy=2)
+
+    cuz.g2.1 <- FUN_draw_genos(freqData, ploidy=2)
+    cuz.g2.2 <- FUN_draw_genos(freqData, ploidy=2)
+    cuz.g2.3 <- FUN_make_diploid_offspring(cuz.g1.1, cuz.g1.2)
+    cuz.g2.4 <- FUN_make_diploid_offspring(cuz.g1.1, cuz.g1.2)
+
+    cuz.g3.g1 <- FUN_make_diploid_offspring(cuz.g2.3, cuz.g2.1)
+    cuz.g3.g2 <- FUN_make_diploid_offspring(cuz.g2.4, cuz.g2.2)
+
+    # Create half cousing pair
+    hcuz.g1.1 <- FUN_draw_genos(freqData, ploidy=2)
+    hcuz.g1.2 <- FUN_draw_genos(freqData, ploidy=2)
+    hcuz.g1.3 <- FUN_draw_genos(freqData, ploidy=2)
+
+    hcuz.g2.1 <- FUN_draw_genos(freqData, ploidy=2)
+    hcuz.g2.2 <- FUN_draw_genos(freqData, ploidy=2)
+    hcuz.g2.3 <- FUN_make_diploid_offspring(hcuz.g1.1, hcuz.g1.2)
+    hcuz.g2.4 <- FUN_make_diploid_offspring(hcuz.g1.1, hcuz.g1.3)
+
+    hcuz.g3.1 <- FUN_make_diploid_offspring(hcuz.g2.3, hcuz.g2.1)
+    hcuz.g3.2 <- FUN_make_diploid_offspring(hcuz.g2.4, hcuz.g2.2)
 
     # Random completely unrelated individuals
-    UR.1 <- FUN_draw_genos(freqData, ploidy=2)
-    UR.2 <- FUN_draw_genos(freqData, ploidy=2)
+    unrel.g1.1 <- FUN_draw_genos(freqData, ploidy=2)
+    unrel.g1.2 <- FUN_draw_genos(freqData, ploidy=2)
 
     rbind(
-      UR.1 %>% data.table(SIM=sim, SAMPLE=paste0('S',sim,'_UR.1')),
-      UR.2 %>% data.table(SIM=sim, SAMPLE=paste0('S',sim,'_UR.2')),
-      G3.1 %>% data.table(SIM=sim, SAMPLE=paste0('S',sim,'_G3.1')),
-      G3.2 %>% data.table(SIM=sim, SAMPLE=paste0('S',sim,'_G3.2')),
-      G3.3 %>% data.table(SIM=sim, SAMPLE=paste0('S',sim,'_G3.3')),
-      G3.4 %>% data.table(SIM=sim, SAMPLE=paste0('S',sim,'_G3.4'))
+      unrel.g1.1 %>% data.table(SIM=sim, SAMPLE=paste0('S',sim,'_unrel_1')),
+      unrel.g1.2 %>% data.table(SIM=sim, SAMPLE=paste0('S',sim,'_unrel_2')),
+      sib.g2.1 %>% data.table(SIM=sim, SAMPLE=paste0('S',sim,'_sib_1')),
+      sib.g2.2 %>% data.table(SIM=sim, SAMPLE=paste0('S',sim,'_sib_2')),
+      hsib.g2.1 %>% data.table(SIM=sim, SAMPLE=paste0('S',sim,'_halfsib_1')),
+      hsib.g2.2 %>% data.table(SIM=sim, SAMPLE=paste0('S',sim,'_halfsib_2')),
+      cuz.g3.g1 %>% data.table(SIM=sim, SAMPLE=paste0('S',sim,'_cous_1')),
+      cuz.g3.g2 %>% data.table(SIM=sim, SAMPLE=paste0('S',sim,'_cous_2')),
+      hcuz.g3.1 %>% data.table(SIM=sim, SAMPLE=paste0('S',sim,'_halfcous_1')),
+      hcuz.g3.2 %>% data.table(SIM=sim, SAMPLE=paste0('S',sim,'_halfcous_2'))
     )
   }) %>%
     do.call('rbind', .) %>%
@@ -243,5 +278,3 @@ family_sim_data <- function(freqData, locusCol='LOCUS', freqCol='FREQ', numSims=
   # Output
   return(simFamily[, c('SIM','SAMPLE','LOCUS','GT')])
 }
-
-

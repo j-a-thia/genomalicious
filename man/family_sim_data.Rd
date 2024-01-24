@@ -43,11 +43,15 @@ number of loci and their allele frequencies.
 
 Each simulation generates 6 indivduals. A pair of unrelated individuals,
 and a family of four individuals. Simulated samples have the naming convention
-[simulation]_[code], with simulations, "S[number]", and codes denoting family
-relationships within their simulation. Samples with the code, "UR" are an
-unrelated pair. Samples with the codes "G3.1" and "G3.2" are siblings.
-Samples with the code "G3.3" are half-siblings to "G3.1" and "G3.2".
-Samples with the code "G3.4" are cousins to "G3.1" and "G3.2".
+'[simulation]_[code]', with 'simulation' following the convention 'S[sim number]'
+and 'code' following the following convetions:
+\itemize{
+ \item 'unrel_1' and 'unrel_2' are two completely unrelated individuals.
+ \item 'sib_1' and 'sib_2' are full siblings.
+ \item 'halfsib_1' are 'halfsib_2' are half siblings.
+ \item 'cous_1' and 'cous_2' are cousins.
+ \item 'halfcous_1' and 'halfcous_2' are half cousins.
+}
 }
 \examples{
 library(genomalicious)
@@ -117,22 +121,30 @@ relComp <- family_sim_compare(
 # The data
 relComp$data
 
+# Simulated dataset
+relComp$data[!is.na(SIM)]
+
+# The observed dataset
+relComp$data[is.na(SIM)]
+
 # Plot of relatedness values. Dashed lines denote relatedness
-# values of 0, 0.125, 0.25, and 0.5, which are the theoretical
-# expectations for unrelated individuals, cousins, half-siblings,
+# values of 0, 0.0625, 0.125, 0.25, and 0.5, which are the theoretical
+# expectations for unrelated individuals, half-cousins, cousins, half-siblings,
 # and siblings, respectively.
 # You will note a large variance are the expected values, which
 # is not surprising for this very small SNP dataset (200 loci).
 relComp$plot
 
-# Take a look at the "known" relationships in the observed dataset
+# Take a look at the "known" relationships in the observed dataset using the
+# offspring we created.
 # Note, siblings and parent-offspring pairs have a theoretical
 # relatedness of 0.5. But you will probably find the "observed"
-# relatedness values are much lower.
+# relatedness might be lower.
 relComp$data[SAMPLE1=='Child_1.2_1' & SAMPLE2\%in\%c('Child_1.2_2','Ind1_1','Ind1_2')]
 relComp$data[SAMPLE1=='Child_3.4_1' & SAMPLE2\%in\%c('Child_3.4_2','Ind1_3','Ind1_4')]
 
-# Now take a look at the simulated distribution.
+# Now take a look at the simulated distribution: the possible values for
+# siblings given this dataset are quite wide.
 relComp$data[FAMILY=='Half-siblings']$RELATE \%>\% summary()
 relComp$data[FAMILY=='Siblings']$RELATE \%>\% summary()
 

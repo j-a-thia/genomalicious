@@ -107,7 +107,7 @@ simFamily <- family_sim_data(
 )
 
 # Create some siblings in Pop1 from two sets of parents
-parentList <- list(c('Ind1_1','Ind1_2'), c('Ind1_29','Ind1_30'))
+parentList <- list(c('Ind1_1','Ind1_2'), c('Ind1_3','Ind1_4'))
 genosSibs <- lapply(1:2, function(i){
   parents <- parentList[[i]]
 
@@ -123,7 +123,7 @@ genosSibs <- lapply(1:2, function(i){
 
   rbind(gamete1, gamete2) \%>\%
     .[, .(GT=sum(GAMETE)), by=c('LOCUS','SIB')] \%>\%
-    .[, SAMPLE:=paste0('Child_',child,'_',SIB)] \%>\% print
+    .[, SAMPLE:=paste0('Child_',child,'_',SIB)]
 }) \%>\%
   do.call('rbind', .)
 
@@ -156,22 +156,30 @@ relComp <- family_sim_compare(
 # The data
 relComp$data
 
+# Simulated dataset
+relComp$data[!is.na(SIM)]
+
+# The observed dataset
+relComp$data[is.na(SIM)]
+
 # Plot of relatedness values. Dashed lines denote relatedness
-# values of 0, 0.125, 0.25, and 0.5, which are the theoretical
-# expectations for unrelated individuals, cousins, half-siblings,
+# values of 0, 0.0625, 0.125, 0.25, and 0.5, which are the theoretical
+# expectations for unrelated individuals, half-cousins, cousins, half-siblings,
 # and siblings, respectively.
 # You will note a large variance are the expected values, which
 # is not surprising for this very small SNP dataset (200 loci).
 relComp$plot
 
-# Take a look at the "known" relationships in the observed dataset
+# Take a look at the "known" relationships in the observed dataset using the
+# offspring we created.
 # Note, siblings and parent-offspring pairs have a theoretical
 # relatedness of 0.5. But you will probably find the "observed"
-# relatedness values are much lower.
+# relatedness might be lower.
 relComp$data[SAMPLE1=='Child_1.2_1' & SAMPLE2\%in\%c('Child_1.2_2','Ind1_1','Ind1_2')]
-relComp$data[SAMPLE1=='Child_29.30_1' & SAMPLE2\%in\%c('Child_29.30_2','Ind1_29','Ind1_30')]
+relComp$data[SAMPLE1=='Child_3.4_1' & SAMPLE2\%in\%c('Child_3.4_2','Ind1_3','Ind1_4')]
 
-# Now take a look at the simulated distribution.
+# Now take a look at the simulated distribution: the possible values for
+# siblings given this dataset are quite wide.
 relComp$data[FAMILY=='Half-siblings']$RELATE \%>\% summary()
 relComp$data[FAMILY=='Siblings']$RELATE \%>\% summary()
 

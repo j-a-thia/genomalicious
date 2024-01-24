@@ -87,7 +87,7 @@
 #' )
 #'
 #' # Create some siblings in Pop1 from two sets of parents
-#' parentList <- list(c('Ind1_1','Ind1_2'), c('Ind1_29','Ind1_30'))
+#' parentList <- list(c('Ind1_1','Ind1_2'), c('Ind1_3','Ind1_4'))
 #' genosSibs <- lapply(1:2, function(i){
 #'   parents <- parentList[[i]]
 #'
@@ -103,7 +103,7 @@
 #'
 #'   rbind(gamete1, gamete2) %>%
 #'     .[, .(GT=sum(GAMETE)), by=c('LOCUS','SIB')] %>%
-#'     .[, SAMPLE:=paste0('Child_',child,'_',SIB)] %>% print
+#'     .[, SAMPLE:=paste0('Child_',child,'_',SIB)]
 #' }) %>%
 #'   do.call('rbind', .)
 #'
@@ -136,22 +136,30 @@
 #' # The data
 #' relComp$data
 #'
+#' # Simulated dataset
+#' relComp$data[!is.na(SIM)]
+#'
+#' # The observed dataset
+#' relComp$data[is.na(SIM)]
+#'
 #' # Plot of relatedness values. Dashed lines denote relatedness
-#' # values of 0, 0.125, 0.25, and 0.5, which are the theoretical
-#' # expectations for unrelated individuals, cousins, half-siblings,
+#' # values of 0, 0.0625, 0.125, 0.25, and 0.5, which are the theoretical
+#' # expectations for unrelated individuals, half-cousins, cousins, half-siblings,
 #' # and siblings, respectively.
 #' # You will note a large variance are the expected values, which
 #' # is not surprising for this very small SNP dataset (200 loci).
 #' relComp$plot
 #'
-#' # Take a look at the "known" relationships in the observed dataset
+#' # Take a look at the "known" relationships in the observed dataset using the
+#' # offspring we created.
 #' # Note, siblings and parent-offspring pairs have a theoretical
 #' # relatedness of 0.5. But you will probably find the "observed"
-#' # relatedness values are much lower.
+#' # relatedness might be lower.
 #' relComp$data[SAMPLE1=='Child_1.2_1' & SAMPLE2%in%c('Child_1.2_2','Ind1_1','Ind1_2')]
-#' relComp$data[SAMPLE1=='Child_29.30_1' & SAMPLE2%in%c('Child_29.30_2','Ind1_29','Ind1_30')]
+#' relComp$data[SAMPLE1=='Child_3.4_1' & SAMPLE2%in%c('Child_3.4_2','Ind1_3','Ind1_4')]
 #'
-#' # Now take a look at the simulated distribution.
+#' # Now take a look at the simulated distribution: the possible values for
+#' # siblings given this dataset are quite wide.
 #' relComp$data[FAMILY=='Half-siblings']$RELATE %>% summary()
 #' relComp$data[FAMILY=='Siblings']$RELATE %>% summary()
 #'
@@ -166,25 +174,25 @@ family_sim_compare <- function(
   # --------------------------------------------+
   require(data.table); require(ggplot2); require(tidyverse)
 
-  # Adjust values for curveOutline if NULL or if length != 5
+  # Adjust values for curveOutline if NULL or if length != 6
   if(is.null(curveOutline)){
-    curveOutline <- rep('grey20', 5)
+    curveOutline <- rep('grey20', 6)
   }
 
-  if(length(curveOutline)<5){
-    curveOutline <- rep(curveOutline[1], 5)
+  if(length(curveOutline)<6){
+    curveOutline <- rep(curveOutline[1], 6)
   }
 
   # Check that fill colours are specified correctly if NULL, and
   # if not NULL, make sure there are only 5 colours
   if(!is.null(curveFill)){
-    if(length(curveFill)!=5){
+    if(length(curveFill)!=6){
       stop('Argument `curveFill` must be a character vector of 5 colours. See ?family_sim_plot.')
     }
   }
 
   if(is.null(curveFill)){
-    curveFill <- c("#F05F5F", "#E8CE00", "#54C567", "#4F9CE6", "#B54ECD")
+    curveFill <- c("#F05F5F", "#E8CE00", "#54C567", "#02CEF2", "#4F74E6", "#DA5EE4")
   }
 
   # Legend position
@@ -219,21 +227,23 @@ family_sim_compare <- function(
     # Line up the known pairs. Note, that samples with "G3.2" are half-siblings
     # with "G3.3" and cousins with "G3.4". But these relationships are not
     # included to keep things balanced.
-    unrel <- c(paste0('S',sim,c('_UR.1','_UR.2')))
-    sibs <- c(paste0('S',sim,c('_G3.1','_G3.2')))
-    halfsibs <- c(paste0('S',sim,c('_G3.1','_G3.3')))
-    cousins <- c(paste0('S',sim,c('_G3.1','_G3.4')))
+    unrel <- c(paste0('S',sim,c('_unrel_1','_unrel_2')))
+    sibs <- c(paste0('S',sim,c('_sib_1','_sib_2')))
+    halfsibs <- c(paste0('S',sim,c('_halfsib_1','_halfsib_2')))
+    cousins <- c(paste0('S',sim,c('_cous_1','_cous_2')))
+    halfcousins <- c(paste0('S',sim,c('_halfcous_1','_halfcous_2')))
 
     data.table(
       SIM=sim,
-      SAMPLE1=c(unrel[1],sibs[1],halfsibs[1],cousins[1]),
-      SAMPLE2=c(unrel[2],sibs[2],halfsibs[2],cousins[2]),
-      FAMILY=c('Unrelated','Siblings','Half-siblings','Cousins'),
+      SAMPLE1=c(unrel[1],sibs[1],halfsibs[1],cousins[1],halfcousins[1]),
+      SAMPLE2=c(unrel[2],sibs[2],halfsibs[2],cousins[2],halfcousins[2]),
+      FAMILY=c('Unrelated','Siblings','Half-siblings','Cousins','Half-cousins'),
       RELATE=c(
         simGRM[unrel[1],unrel[2]],
         simGRM[sibs[1],sibs[2]],
         simGRM[halfsibs[1],halfsibs[2]],
-        simGRM[cousins[1],cousins[2]]
+        simGRM[cousins[1],cousins[2]],
+        simGRM[halfcousins[1],halfcousins[2]]
       )
     )
   }) %>%
@@ -242,19 +252,19 @@ family_sim_compare <- function(
   obsRel <- combn(colnames(obsGRM),2) %>%
     apply(., 2, function(x){
       data.table(SIM=NA, SAMPLE1=x[1], SAMPLE2=x[2], FAMILY='Observed', RELATE=obsGRM[x[1],x[2]])
-      }) %>%
+    }) %>%
     do.call('rbind', .)
 
   # Make the data
   rel_data <- rbind(obsRel, simRel) %>%
     as.data.table %>%
-    .[, FAMILY:=factor(FAMILY, levels=c('Unrelated','Cousins','Half-siblings','Siblings','Observed'))]
+    .[, FAMILY:=factor(FAMILY, levels=c('Unrelated','Half-cousins','Cousins','Half-siblings','Siblings','Observed'))]
 
   # Make the plot
   rel_gg <- ggplot(rel_data, aes(x=RELATE, fill=FAMILY, colour=FAMILY)) +
     plotTheme +
     geom_density(alpha=curveAlpha,position="identity") +
-    geom_vline(xintercept=c(0,0.125,0.25,0.5), linetype='longdash') +
+    geom_vline(xintercept=c(0,0.0625,0.125,0.25,0.5), linetype='longdash') +
     scale_colour_manual(values=curveOutline) +
     scale_fill_manual(values=curveFill) +
     scale_x_continuous(breaks=seq(-0.1, 1, 0.1)) +

@@ -3,7 +3,7 @@
     "path": "~/GitHub/genomalicious/R/family_sim_data.R",
     "project_path": "R/family_sim_data.R",
     "type": "r_source",
-    "hash": "2235158564",
+    "hash": "1974365420",
     "contents": "",
     "dirty": false,
     "created": 1705298751756.0,
@@ -12,15 +12,15 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "32,2",
-        "scrollLine": "0"
+        "cursorPosition": "280,0",
+        "scrollLine": "254"
     },
     "folds": "",
-    "lastKnownWriteTime": 1705299071,
+    "lastKnownWriteTime": 1706130691,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1705299071640,
+    "last_content_update": 1706130691666,
     "read_only": false,
     "read_only_alternatives": []
 }
