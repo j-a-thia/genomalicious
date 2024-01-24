@@ -92,14 +92,12 @@ pairwiseMat2DT <- function(dat, flip=FALSE, X1, X2, Y, diagAdd=TRUE, diagVal=0){
     # Check to make sure diagonal parameterisation is correct. If the data.table
     # already contains information for the diagonal, then choosing `diagAdd==TRUE`
     # will cause an error.
-    x1 <- dat[[X1]] %>% unique()
-    within <- which(dat[[X1]]==x1 & dat[[X2]]==x1)
-    within.len <- length(within)
-    if(length(within.len)>0 & diagAdd==TRUE){
+    within <- sum(dat[[X1]]==dat[[X2]])
+    if(within>0 & diagAdd==TRUE){
       stop_msg <- paste0(
-        'Argument `diagAdd` is "TRUE", but there are ', within.len,
-        ' within-subject comparisons and a total of ', length(x1), ' subjects: ',
-        '`diagAdd` should only be "TRUE" if there are no within-subject',
+        'Argument `diagAdd` is "TRUE", but there are ', within,
+        ' within-subject comparisons: ' ,
+        '`diagAdd` should only be "TRUE" if there are no within-subject ',
         'measurements. See ?pairwiseMat2DT'
       )
       stop(stop_msg)
