@@ -77,6 +77,9 @@ pairwiseMat2DT <- function(dat, flip=FALSE, X1, X2, Y, diagAdd=TRUE, diagVal=0){
       stop('Argument `dat` is not a matrix, but `type` is "FALSE", i.e.,
            turn a pairwise matrix into a pairwise data table. See ?pairwiseMat2DT.')
     }
+    if(sum(is.na(dat))>0){
+      stop('Argument `dat` has NAs. If there is missing data, please encode it in a different way.')
+    }
   }
 
   if(flip==TRUE){
@@ -110,11 +113,13 @@ pairwiseMat2DT <- function(dat, flip=FALSE, X1, X2, Y, diagAdd=TRUE, diagVal=0){
 
   # Convert a pairwise matrix into a data table
   if(flip==FALSE){
+    dat[upper.tri(dat, diag=FALSE)] <- NA
     output <- dat %>%
       as.data.frame() %>%
       rownames_to_column(., 'X1') %>%
       as.data.table %>%
       melt(., id.vars='X1', variable.name='X2', value.name='Y') %>%
+      .[!is.na(Y)] %>%
       setnames(., old=c('X1','X2','Y'), new=c(X1,X2,Y))
   }
 
