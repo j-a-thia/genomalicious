@@ -5,7 +5,6 @@
 \title{Compare simulated and observed inferred genetic relationships}
 \usage{
 family_sim_compare(
-  simFamily,
   simGRM,
   obsGRM,
   plotColous = NULL,
@@ -17,10 +16,6 @@ family_sim_compare(
 )
 }
 \arguments{
-\item{simFamily}{Data.table: The output from from the function \code{family_sim_data}.
-Contains a set of simulated individuals with known familial relationships,
-given a set of loci and their population allele frequencies.}
-
 \item{simGRM}{Matrix: The simulated GRM using the individuals generated
 from \code{family_sim_data}. See Details.}
 
@@ -147,7 +142,6 @@ simGRM <- Gmatrix(simGenosMat, method='Yang', ploidy=2)
 
 ### COMPARE THE OBSERVED AND SIMULATED
 relComp <- family_sim_compare(
-   simFamily=simFamily,
    simGRM=simGRM,
    obsGRM=obsGRM,
    look='classic'

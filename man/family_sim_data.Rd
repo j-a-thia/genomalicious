@@ -44,7 +44,7 @@ number of loci and their allele frequencies.
 Each simulation generates 6 indivduals. A pair of unrelated individuals,
 and a family of four individuals. Simulated samples have the naming convention
 '[simulation]_[code]', with 'simulation' following the convention 'S[sim number]'
-and 'code' following the following convetions:
+and 'code' following the following conventions:
 \itemize{
  \item 'unrel_1' and 'unrel_2' are two completely unrelated individuals.
  \item 'sib_1' and 'sib_2' are full siblings.
@@ -52,6 +52,11 @@ and 'code' following the following convetions:
  \item 'cous_1' and 'cous_2' are cousins.
  \item 'halfcous_1' and 'halfcous_2' are half cousins.
 }
+Note, that within the sth simulation, all pairs are unrelated to each other as
+well. For example, sib_1 and sib_2 are completely unrelated to halfsib_1 and
+halfsib_2. This means the number of unrelated pairs within an sth simulation,
+there are a total of 45 pairs, 4 of these are related (siblings, half-siblings,
+cousins, and half-cousins), and 41 are unrelated.
 }
 \examples{
 library(genomalicious)
@@ -112,7 +117,6 @@ simGRM <- Gmatrix(simGenosMat, method='Yang', ploidy=2)
 
 ### COMPARE THE OBSERVED AND SIMULATED
 relComp <- family_sim_compare(
-   simFamily=simFamily,
    simGRM=simGRM,
    obsGRM=obsGRM,
    look='classic'

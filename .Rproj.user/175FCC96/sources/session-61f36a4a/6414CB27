@@ -3,7 +3,7 @@
     "path": "~/GitHub/genomalicious/DESCRIPTION",
     "project_path": "DESCRIPTION",
     "type": "dcf",
-    "hash": "2508695503",
+    "hash": "0",
     "contents": "",
     "dirty": false,
     "created": 1706318964127.0,
@@ -12,15 +12,15 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "9,15",
+        "cursorPosition": "8,19",
         "scrollLine": "0"
     },
     "folds": "",
-    "lastKnownWriteTime": 1706318972,
+    "lastKnownWriteTime": 1706825142,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1706318972,
+    "last_content_update": 1706825142040,
     "read_only": false,
     "read_only_alternatives": []
 }
