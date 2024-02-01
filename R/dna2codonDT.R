@@ -74,7 +74,7 @@ dna2codonDT <- function(dnaSeq, type, compressTab=FALSE, geneticCode=1){
   ###   ASSERTIONS   ####
   # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-  if(!type %in% c('cds','exon')){
+  if(!type %in% c('cds','exons')){
     stop('Argument `type` must be one of "cds" or "exon". See dna2codonDT.')
   }
 
@@ -83,9 +83,9 @@ dna2codonDT <- function(dnaSeq, type, compressTab=FALSE, geneticCode=1){
          argument `type=="cds"`. See ?dna2codonDT.')
   }
 
-  if(type=='exon' & class(dnaSeq)!='list'){
+  if(type=='exons' & class(dnaSeq)!='list'){
     stop('Argument `dnaSeq` must be a list of character class vectors when
-         argument `type=="exon"`. See ?dna2codonDT.')
+         argument `type=="exons"`. See ?dna2codonDT.')
   }
 
   if(class(compressTab)!='logical'){
@@ -109,7 +109,7 @@ dna2codonDT <- function(dnaSeq, type, compressTab=FALSE, geneticCode=1){
   }
 
   ### IF EXON LIST OF SEQUENCES PROVIDED
-  if(type=='exon'){
+  if(type=='exons'){
     # Number of exons
     n <- length(dnaSeq)
 
