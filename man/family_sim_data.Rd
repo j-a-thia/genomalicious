@@ -28,8 +28,8 @@ Returns a data.table with the following columns:
 }
 }
 \description{
-This function produces families of siblings, half-siblings, and cousins
-from observed population allele frequencies. These simulations can
+This function produces families of siblings, half-siblings, cousins and
+half-cousins from observed population allele frequencies. These simulations can
 then be used to test the power to discern between individuals with different
 levels of relatedness. Assumes diploid genotypes.
 }
@@ -41,10 +41,14 @@ between the observed and expected (simulated) distribution of relatedness
 values that you might expect for different familial relationships, given the
 number of loci and their allele frequencies.
 
-Each simulation generates 6 indivduals. A pair of unrelated individuals,
-and a family of four individuals. Simulated samples have the naming convention
-'[simulation]_[code]', with 'simulation' following the convention 'S[sim number]'
-and 'code' following the following conventions:
+In this function, a 'simulation' comprises a draw of 10 individuals:
+2 are unrelated to each other and all other individuals in the simulation,
+2 are siblings, 2 are half-siblings, 2 are cousins, and 2 are half-cousins.
+
+Each simulation takes the naming convention 'S[sim number]', for example, S1
+S2 ... S10 if 10 simulations are requested. The naming convention for each
+simulated individual is 'S[sim number]_[relationship]', with the 'relationship'
+tag being one of the following:
 \itemize{
  \item 'unrel_1' and 'unrel_2' are two completely unrelated individuals.
  \item 'sib_1' and 'sib_2' are full siblings.
@@ -53,10 +57,12 @@ and 'code' following the following conventions:
  \item 'halfcous_1' and 'halfcous_2' are half cousins.
 }
 Note, that within the sth simulation, all pairs are unrelated to each other as
-well. For example, sib_1 and sib_2 are completely unrelated to halfsib_1 and
-halfsib_2. This means the number of unrelated pairs within an sth simulation,
-there are a total of 45 pairs, 4 of these are related (siblings, half-siblings,
-cousins, and half-cousins), and 41 are unrelated.
+well. For example, in simulation S1, sib_1 and sib_2 are completely unrelated
+to halfsib_1 and halfsib_2. This means the number of unrelated pairs within
+an sth simulation is 45 pairs, 4 of these are related (siblings, half-siblings,
+cousins, and half-cousins), and 41 are unrelated. Individuals from different
+simulation are completely unrelated. For example, all individuals from simulation
+S1 are completely unrelated to all individuals from simulation S2.
 }
 \examples{
 library(genomalicious)
@@ -97,7 +103,7 @@ genosSibs <- lapply(1:2, function(i){
 }) \%>\%
   do.call('rbind', .)
 
-### THE OBSERVED GENETIC RELATIONSHIPS MATRIX
+### THE OBSERVED GENOMIC RELATIONSHIPS MATRIX
 library(AGHmatrix)
 
 # Combine the population samples and the created siblings
@@ -108,7 +114,7 @@ obsGenosMat <- rbind(genosPop1, genosSibs[, c('SAMPLE','LOCUS','GT')]) \%>\%
 # Calculate the GRM
 obsGRM <- Gmatrix(obsGenosMat, method='Yang', ploidy=2)
 
-### THE SIMULATED GENETIC RELATIONSHIPS MATRIX
+### THE SIMULATED GENOMIC RELATIONSHIPS MATRIX
 # Convert simulated families into a genotype matrix
 simGenosMat <- DT2Mat_genos(simFamily)
 

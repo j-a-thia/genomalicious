@@ -103,7 +103,7 @@
 #' }) %>%
 #'   do.call('rbind', .)
 #'
-#' ### THE OBSERVED GENETIC RELATIONSHIPS MATRIX
+#' ### THE OBSERVED GENOMIC RELATIONSHIPS MATRIX
 #' library(AGHmatrix)
 #'
 #' # Combine the population samples and the created siblings
@@ -114,7 +114,7 @@
 #' # Calculate the GRM
 #' obsGRM <- Gmatrix(obsGenosMat, method='Yang', ploidy=2)
 #'
-#' ### THE SIMULATED GENETIC RELATIONSHIPS MATRIX
+#' ### THE SIMULATED GENOMIC RELATIONSHIPS MATRIX
 #' # Convert simulated families into a genotype matrix
 #' simGenosMat <- DT2Mat_genos(simFamily)
 #'
