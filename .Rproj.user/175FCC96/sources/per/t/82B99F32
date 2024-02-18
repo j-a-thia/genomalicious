@@ -1,0 +1,27 @@
+{
+    "id": "82B99F32",
+    "path": "~/GitHub/genomalicious/development/family_data_2.R",
+    "project_path": "development/family_data_2.R",
+    "type": "r_source",
+    "hash": "136962407",
+    "contents": "",
+    "dirty": false,
+    "created": 1708224636783.0,
+    "source_on_save": false,
+    "relative_order": 5,
+    "properties": {
+        "tempName": "Untitled1",
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "279,36",
+        "scrollLine": "269"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1708228119,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1708228119003,
+    "read_only": false,
+    "read_only_alternatives": []
+}

@@ -1,26 +1,26 @@
 {
-    "id": "2B314025",
-    "path": "~/GitHub/genomalicious/R/codonDT2genome.R",
-    "project_path": "R/codonDT2genome.R",
+    "id": "07676113",
+    "path": "~/GitHub/genomalicious/R/family_sim_annotate.R",
+    "project_path": "R/family_sim_annotate.R",
     "type": "r_source",
-    "hash": "1630455478",
+    "hash": "1966212406",
     "contents": "",
     "dirty": false,
-    "created": 1693223160409.0,
+    "created": 1708224530550.0,
     "source_on_save": false,
     "relative_order": 4,
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "5,35",
-        "scrollLine": "0"
+        "cursorPosition": "127,3",
+        "scrollLine": "118"
     },
     "folds": "",
-    "lastKnownWriteTime": 1693217598,
+    "lastKnownWriteTime": 1707025931,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1693217598,
+    "last_content_update": 1707025931,
     "read_only": false,
     "read_only_alternatives": []
 }
