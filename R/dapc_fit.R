@@ -358,7 +358,7 @@ dapc_fit <- function(
     } %>%
       do.call('rbind',.)
 
-    stopCluster(mu.cluster)
+    stopCluster(my.cluster)
   }
 
   ### Training-testing partitioning

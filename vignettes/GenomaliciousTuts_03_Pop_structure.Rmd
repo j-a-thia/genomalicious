@@ -1,0 +1,508 @@
+---
+title: '_Genomalicious_ tutorial 3: Population structure'
+author: "Joshua A. Thia"
+date: "25 Februrary 2024"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Preamble #
+
+Once you have your genetic data in hand, it is time to start analysing! An essential part of any population genetic study is an analysis of population structure. Population structure describes how genetic variation is partitioned among populations. In the simplest sense, a population is a group of individuals that interbreed freely with each other at the exclusion of other individuals outside this group. As a result, discrete populations are genetically differentiated; we want to measure and characterise this genetic differentiation.
+
+In this tutorial, you will:
+  
+1. Use _genomalicious_ to calculate *F*~ST~.
+2. Use _genomalicious_ to perform a principal components a analysis (PCA).
+3. Use _genomalicious_ to perform a discriminant analysis of principal components (DAPC).
+4. Use _genomalicious_ to visualise patterns of population structure.
+
+# Load _genomalicious_ #
+
+```{r, message=FALSE, warning=FALSE}
+library(genomalicious)
+```
+
+# Calculating *F*~ST~ #
+
+The classic measure of genetic differentiation among populations is the statistic, *F*~ST~. There are many different formulations of this statistic. The original was derived by Seawell Wright (Wright 1951) and was referred to as a fixation index: the probability that populations are fixed for different alleles. Regardless of the underlying calculation, as *F*~ST~ increases, populations are increasingly genetically differentiated. In its originally formulation as a probability, *F*~ST~ is bounded between 0 and 1, but some formulations may also produce negative values (<0), which are basically equivalent to *F*~ST~ = 0.
+
+In _genomalicious_, *F*~ST~ is calculated using the Weir and Cockerham formulation, which you may see in the literature as represented as $\theta$~WC~ (Weir & Cockerham 1984). This formulation is effectively the ratio of among population variance in allele frequencies relative to the total variance in allele frequencies. In this case, *F*~ST~ is bounded between $-1$ and 1.
+
+Let us prepare our data for analysis. We will start with a dataset of 4 populations genotyped at 200 SNP loci. Not all of these SNPs occur in different genomic regions, RADseq "contigs" in this case. We will therefore need to filter our SNPs to obtain just one SNP per contig before proceeding further.
+
+```{r, message=FALSE, warning=FALSE}
+# Load in the genotype data
+data(data_Genos)
+
+# Number of samples per population
+data_Genos[, .(NUM.SAMPLES=length(unique(SAMPLE))), by=POP]
+
+# Number of SNP loci
+data_Genos[, length(unique(LOCUS))]
+
+# Number of loci per contig
+data_Genos[, .(NUM.LOCI=length(unique(LOCUS))), by=CHROM] %>% 
+  .[NUM.LOCI>1]
+
+# Filter for "unlinked" loci
+loci.unlink <- filter_unlink(data_Genos)
+
+genoData <- data_Genos[LOCUS %in% loci.unlink]
+```
+
+Now that we have our filtered SNP loci, we can calcualte *F*~ST~. We can calculate a **global** *F*~ST~, which is a measure of genetic differentiation across all 4 populations, or a **pairwise** *F*~ST~ between each pair of populations. The _genomalicious_ function for calculating *F*~ST~ is `fstat_calc`. This function takes a long-format `data.table` object with information on individually sequenced genotypes or population allele frequencies at biallelic SNP loci.
+
+There are quite a few arguments for `fstat_calc` that enable this function to be very flexible with respect to the outputs it can produce and the data structure of the data table it can receive. We will walk through these argument before executing the function.
+
+The first argument, `dat`, takes our data table of genotypes of allele frequencies. The argument `type` is specified with either `"genos"` of `"freqs"` to tell the function that we want *F*~ST~ to be estimated from genotype or allele frequency data, respectively. 
+
+We need to tell the function whether we want a global or pairwise *F*~ST~ using the `global` and `pairwise` arguments in tandem. These are logical arguments and they must be directly contrasting. If you want a global *F*~ST~, you parameterisation must be `global=TRUE, pairwise=FALSE`; conversely, pairwise *F*~ST~ requires `global=FALSE, pairwise=TRUE`. 
+
+For genotype data we can also test the significance of our *F*~ST~ estimate relative to null expectations using a permutation test. To activate this permutation test, we use the argument `permute` which expects a logical value of `TRUE` to perform the permutation test, or `FALSE` if you do not want to perform the permutation test. The permutation test requires randomly shuffling individuals among populations for some desired number of iterations. The number of iterations is specified with `numPerms`. You can specify the number of cores to use for permutations using the argument `numCores`.
+
+Now, we need to make sure that we specify the columns in the data table that contain the relevant information on samples, populations, loci, and genotypes or allele frequencies. These are `sampCol`, `popCol`, `locusCol`, `genoCol`, `indsCol`, and `freqCol`, respectively. Note that if you are working with genotypes, you do not need to specify `indsCol` and `freqCol`. If you are working with allele frequencies, you do not need to specify `sampCol` and `genoCol`.
+
+The `fstat_calc` function can actually calculates a suite of *F*-statistics from genotype data. Aside from *F*~ST~, you can also calculate *F*~IS~ and *F*~IT~, the inbreeding coefficients within populations and in the total sample, respectively, following Weir & Cockerham (1984). You can specify which of these you want with the `fstat` argument. By default, this argument is `NULL`, so you must specify at least one of `FST`, `FIS`, or `FIT` in a character vector. If working with allele frequencies, leave this argument as `NULL`. For this tutorial, we will just focus on *F*~ST~ and calculate it for both genotype and allele frequency data.
+
+OK, after all that, let us run `fstat_calc` and estimate a global *F*~ST~. The function call will produce a list with three indexes: `$genome`, which contains a single value, the genome-wide *F*~ST~ across all loci; `$locus`, which contains a data table of per locus *F*~ST~ and their respective numerator and denominator variance components; and `$permute`, a list itself with `$fst` with the permuted *F*~ST~ estimates, and `$pval` for the permuted *p*-value. The `$permute` index will not be present if permutations are not requested.
+
+ 
+```{r, message=FALSE, warning=FALSE}
+# Global FST with 100 permutations
+fstGenoGlobal <- fstat_calc(
+  dat=genoData, type='genos', fstat=c('FST'), popCol='POP', sampCol='SAMPLE', 
+  locusCol='LOCUS', genoCol='GT', global=TRUE, permute=TRUE, numPerms=100
+)
+
+# The genome-wide estimate of the global FST.
+fstGenoGlobal$genome
+
+# The per locus estimate of global FST
+fstGenoGlobal$locus
+
+# Take a look at the indexes within the `permute` index.
+fstGenoGlobal$permute %>% names()
+
+# Permuted FST
+fstGenoGlobal$permute$fst
+
+# Permuted p-value
+fstGenoGlobal$permute$pval
+```
+And here is an example with pairwise *F*~ST~. We will use a smaller number of permutations so that the function call runs faster.
+
+```{r, message=FALSE, warning=FALSE}
+# Pairwise FST with 30 permutations.
+fstGenoPairs <- fstat_calc(
+  dat=genoData, type='genos', fstat=c('FST'), popCol='POP', sampCol='SAMPLE', 
+  locusCol='LOCUS', genoCol='GT', global=FALSE, pairwise=TRUE, 
+  permute=TRUE, numPerms=30
+)
+
+# The genome-wide estimate of pairwise FST
+fstGenoPairs$genome
+
+# The per locus estiamte of pairwise FST
+fstGenoPairs$locus
+
+# Permuted FST
+fstGenoPairs$permute$fst
+
+# Permuted p-value
+fstGenoPairs$permute$pval
+```
+
+For pool-seq projects, you will not have individually sequenced genotypes, but instead, allele frequencies per populations. The parameterisation is basically the same. We will take a look using a pool-seq dataset comprising 4 populations and 200 RADseq SNP loci.
+
+```{r, message=FALSE, warning=FALSE}
+# The dataset of allele frequencies
+data("data_PoolFreqs")
+head(data_PoolFreqs)
+
+# The metadata of pooled samples
+data('data_PoolInfo')
+data_PoolInfo
+
+# You need to add in the information of number of pooled individuals into the 
+# data table of allele frequencies. Let's do this with `left_join`.
+data_PoolFreqs <- left_join(data_PoolFreqs, data_PoolInfo, by=c('POOL'))
+head(data_PoolFreqs)
+
+# There are some RAD contigs with more than one SNP locus
+data_PoolFreqs[, .(NUM.LOCI=length(unique(LOCUS))), by=CHROM] %>% 
+  .[NUM.LOCI>1]
+
+# Get the "unlinked" loci.
+loci.unlink.freq <- filter_unlink(dat=data_PoolFreqs)
+
+# Subset for one SNP per RAD contig.
+freqData <- data_PoolFreqs[LOCUS %in% loci.unlink.freq]
+
+# Calculate pairwise FST with 30 iterations.
+fstFreqsPairs <- fstat_calc(
+  dat=freqData, type='freqs', fstat=NULL, popCol='POOL',
+  locusCol='LOCUS', freqCol='FREQ', indsCol='INDS',
+  global=FALSE, pairwise=TRUE, numPerms=30
+)
+
+# The genome-wide pairwise FST.
+fstFreqsPairs$genome
+
+# The per locus pairiwse FST.
+fstFreqsPairs$locus
+```
+
+# Principal components analysis (PCA) #
+
+PCA is a multivariate statistical technique for summarising (co)variation among a set of measured variables. Datasets with many measured variables often suffer from collinearity, that is, when different variables covary (are correlated). The goal of PCA is to reduce the dimensionality across these measured variables. PCA creates new "synthetic" axis from combinations of the original variables, based on their covariance (or correlation). 
+
+The number of PC axes created equal to the number of measured variables, or the sample size, whichever is smallest. These PC axes are constrained to be orthogonal (at right angles) and describe decreasingly less variation. The first PC axis will describe the greatest amount of variation, the second PC axes will describe the second most variation, etc. The new set of PC axes generated is often referred to as the **PC space**.
+
+PCA provides a useful way for summarising genetic differences among individuals and populations. We expect that across multiple loci, individuals from the sample population have more similar genotypes than individuals from different populations. These genotypic covariances across multiple loci can be summarised. Individuals can be plotted in the new PC space to visualise genetic relationships. From a population genomics perspective, PCA is very useful because the number of loci can range from hundreds, to thousands, to millions. 
+
+In _genomalicious_, we use the `pca_genos` function for performing a PCA on genotype data. Our main data input is `dat`, a long-format `data.table` object of genotypes for multiple individuals and loci. We use the `scaling` argument to define how we want genotypes to be scaled. Use `"covar"` for covariance, `"corr"` for correlation, or `"patterson"` for the scaling described in Patterson et al. (2006). The sample, locus, and genotype columns need to be specified with `sampCol`, `locusCol`, and `genoCol`, respectively. The population column, `popCol`, is an optional argument; you should specify this column if you want to do downstream analyses with _genomalicious_.
+
+The function `pca_genos` is in fact a wrapper for R's internal function, `prcomp`. You will be returned a `prcomp` object from `pca_genos`. If you have specified the `popCol`, then the output will have an additional `$pops` index with the population designation.
+
+```{r, warning=FALSE, message=FALSE}
+# Fit the PCA
+PCA <- pca_genos(
+  dat=genoData, scaling='covar', 
+  sampCol='SAMPLE', locusCol='LOCUS', genoCol='GT', popCol='POP'
+)
+
+# Take a look at the class
+class(PCA)
+
+# See the indexes in this object
+names(PCA)
+
+# Note the $pops index. Here are the populations of the first 40 individuals.
+PCA$pops %>% head(., 40)
+
+# The combinations of loci contributing to each PC axes are stored
+# in the $rotation index. Here are the first 3 PC axes and the 
+# first 8 loci.
+PCA$rotation[1:8, 1:3]
+
+# The scores for individuals in the new PC space are stored in 
+# the $x index. Here are the first 3 PC axes and first 8 individuals.
+PCA$x[1:8,1:3]
+
+# You can convert the PCA result into a long-format data table
+# with the genomalicious function, `pca2DT`.
+PCA.tab <- pca2DT(PCA, subAxes=1:5)
+
+head(PCA.tab)
+```
+
+OK, so we have performed a PCA and summarised the genotypic covariances and we have scores for individuals projected into the new PC space. We can use the _genomalicious_ function `pca_plot` to visualise our PCA results. This function takes in a `prcomp` object as its input using the `pcaObj` argument.
+
+Additional arguments for `pca_plot` allow us to customise the output. There are three different types of plots that can be obtained using the `type` argument: `"scatter"` returns a scatterplot of individuals projected into PC space; `"scree"` returns a screeplot of explained variances for each PC axis; and `"cumvar"` returns a barplot of cumulative variance for each PC axis. The `axisIndex` argument takes an integer vector, the PC axes to plot. The `pops` argument is optional, and is only used if you want to colour samples by population in the scatterplot. The function will search for a `$pops` index in the `pcaObj` input, but you can manually specify this if you prefer. The `plotColours` argument is a vector of colours for manually specifying the colour palette of your plot. The `look` argument is used to specify whether you want your plot to have a ggplot2 stype, `"ggplot"`, or a classic R style, `"classic"`.
+
+Let us first start by looking at how our PC axes describe the variaiton in our genotype dataset. We will first make a screeplot, which illustrates how much variation is captured by each PC axes.
+
+```{r, message=FALSE, warning=FALSE}
+# Two screeplots: one using the default settings and another zooming in on the
+# leading 20 PC axes.
+plot.pca.scree.1 <- pca_plot(PCA, type='scree')
+plot.pca.scree.2 <- pca_plot(PCA, type='scree', axisIndex=1:20)
+
+ggarrange(
+  plot.pca.scree.1 + 
+    ggtitle('All PC axes') +
+    theme(plot.title=element_text(hjust=0.5)), 
+  plot.pca.scree.2 + 
+    ggtitle('Leading 20 PC axes') +
+    theme(plot.title=element_text(hjust=0.5))
+  )
+
+```
+
+The screeplot places the PC axes on the x-axis and the percent of total explained variance on the y-axis. You can see that the explained variance decreases with each successive PC axis. However, this decline is not necessarily even. If we zoom in on the leading 20 PC axes, we can see that the first 3 PC axes describe the most variation, then there is quite a large jump in explained varaince from PC axes 3 to 4. From PC axis 4 and beyond, there is a more gradual decline in explained variance. 
+
+The break in the pattern of explained variance arises from a unique property of PCA to capture the major axes of population structure for *k* populations on the first *k* $-$ 1 PC axes. Our dataset comprises *k* = 4 populations, therefore, all important genetic covariances describing the population structure among these populations is summarised by PC axes 1, 2, and 3. Beyond PC axis 3, the PC axes describe noise and random covariances in our genotype dataset. Whereas the leading *k* $-$ 1 PC axes are **biologically informative**, the PC axes $>=$ *k* are **biologically uninformative**. (for more reading, see Patterson et al. 2006 *PLOS Genetics*, and Thia 2022 *Mol. Ecol.*)
+
+Understanding which PC axes describe biologically informative variation is important for our interpretation of PCA results. Typically, you will at least want to visualise the PC1 and 2, but if other PC axes are important, you may also want to look at those too. Knowledge of the biologically informative PC axes is also essential for modelling populations structure, but we will get to that a bit later in this lesson.
+
+Another way to visualise the explained variance is through a barplot of the cumulative variance. This explains the total explained variance with each successive PC axis:
+
+```{r, message=FALSE, warning=FALSE}
+# A barplot of cumulative variance using default settings
+plot.pca.cumvar <- pca_plot(PCA, type='cumvar')
+plot.pca.cumvar 
+```
+
+Now that we understand how variance is captured on our PC axes, let us now visualise the projections of samples into PC space using scatterplots. We will look at projections from PC axes 1 to 5, but remember, only the leading 3 PC axes describe biologically informative variation.
+
+```{r, message=FALSE, warning=FALSE}
+# Create an empty list to hold the plots
+scatterPlotList <- list()
+
+# Create a list of axis combinations
+axis.combos <- list(1:2, 2:3, 3:4, 4:5)
+
+# Iterate through each ith axis combination, make a plot, and store in the list.
+# These plots illustrate the subsetting of axes, custom colours for populations, 
+# and specifying a classic plot look.
+for(i in 1:length(axis.combos)){
+  scatterPlotList[[i]] <- pca_plot(
+    PCA, type='scatter', axisIndex=axis.combos[[i]], 
+    plotColours=c(Pop1='#08c7e0', Pop2='#4169e1', Pop3='#e46adf', Pop4='#ce0073'),
+    look='classic'
+  )
+}
+
+# Check out the length of the list.
+length(scatterPlotList)
+
+# Combine into a single figure.
+ggarrange(plotlist=scatterPlotList, common.legend=TRUE)
+```
+
+Our scatterplots highlight the unique combinations genotypic covariances described by our PCA on PC axes 1, 2, and 3. We can see that on each of these leading 3 PC axes, there is separation of populations into discrete regions of PC space; we often describe this separation as "clustering". However, once we get to PC axis 4, this clustering disappears. On PC axes 4 and 5, all samples collapse into a single "cloud" of points. This illustrates the lack of population structure on PC axis 4 and beyond. 
+
+# Discriminant analysis of principal components (DAPC) #
+
+DAPC has become a popular method for studying population structure following its introduction by Jombart et al.'s (2010). This method begins with a PCA to reduce dimensionality in a genotype dataset. Some number of leading PC axes are then chosen as **predictors** of population structure. These are then used to fit a model of among population differences using discriminatory analysis (DA). DA then produces a set of linear discriminant (LD) axes that best separate populations using linear combinations of scores on the predictor PC axes. The new multidimensional space that describes the maximal among population differences can be described as the **LD space**.
+
+It is important to keep in mind that populations are not always clearly defined units. Where population structure exists, there is a value of *k* that describes the effective number of populations. This effective number of biological populations may or may not be the same as our pre-conceived expectations of what the populations are. It is therefore important to clearly communicate how you parameterise a DAPC to ensure that biological patterns are not confounded by statistical artefacts and misinterpretations of the results (Miller et al. 2020; Thia 2022)
+
+There are two important parameters in a DA. The first is *k*~DA~, the number of populations a researcher wants to discriminate. The second is *p*~axes~, the number of PC axes to use as predictors of the among-population differences. 
+
+The choice of *k*~DA~ depends on whether a researcher is interested in building a model that describes differences among a set of *a priori* defined populations, or a set of *de novo* defined populations. It is important to decide this in advance **before** analysing your data because you must allocate indiviudals to these defined populations before fitting your DA model. *A priori* defined populations might constitute sampling sites that you want to test for population structure using a DA, this may or may not be equivalent to *k*. *De novo* defined populations are inferred from clustering in the data and a DA is used to model the differences among these groups, and typically this is chosen to match the inferred *k*.
+
+The choice of *p*~axes~ is dependent on the number of biologically informative PC axes. As described above, only a limited number of PC axes describe population structure in a genotype dataset. For *k* effective populations, no more than *k* $-$ 1 leading PC axes should be used as predictors of among-population differences in a DA. 
+
+Thia (2022 *Mol. Ecol*) provides recommendations on best practise guidelines for parameterising and interpreting DAPC on genotype datasets. We will go over these recommendations in this lesson using _genomalicious_.
+
+## Inferring the *k* effective populations ##
+
+As we saw earlier, an examination of the PCA screeplot of explained variances and the scatterplot of projections can help us visually assess the number of biologically informative PC axes. Aside from these visual examinations, we can also perform statistical tests to infer *k*. One of the most widely implemented methods (in the context of DAPC) is *K*-means clustering (Jombart et al. 2010 *BMC Genetics*).
+
+*K*-means clustering involves dividing samples into some specified number of groups based on a set of measured variables. We can use our PC axes of genotypic variation as predictors of different numbers of potential groups (populations) in our dataset. We can then calculate a test statistic for these different fits to identify the most likely *k*. Note, that *K*-means is a modelling approach, so parameterisation matters; this was highlighted in Thia (2022). It is therefore important to try different parameterisations to see: (1) whether different parameterisation converge on the same solution; and (2) whether these parameterisations produce consistent results to those in our visual inspection of PCA results.
+
+In _genomalicious_, the `dapc_infer` function can be used to help summarise PCA results and different parameterisations of *K*-means clustering on a genotype dataset. As usual, the input is a long-format genotype `data.table` object. We specify the scaling for PCA using the `scaling` argument, and the arguments `sampCol`, `locusCol`, and `genoCol` to specify where to find the sample, locus, and genotype information, respectively.
+
+The parameterisations for the *K*-means clustering are set with `kTest`, an integer vector of values of *k* to test, and `pTest`, an integer vector of the number of PC axes to use as predictors. The argument `screeMax` is a single integer, specifying the number of PC axes to show in the returned screeplot. And the `look` argument is used to control whether a `"ggplot"` or `"classic"` stype plot should be returned.
+
+The function returns a `list` object, with the indexes:
+
+1. `$tab`, a table of *K*-means test statistics for each fit, the BIC score (lower the more likely). 
+2. `$fit` a list of `kmeans` objects, one for each parameterisation.
+3. `$plot` a `gg` object, a plot summarising the PCA and *K*-means results.
+
+```{r, warning=FALSE, message=FALSE}
+# Perform a PCA using a covariance scaling. Fit K-means with k ranging from 1
+# to 10. Use 4, 10, 20 and 40 PC axes as predictors. Display only the first
+# 20 PC axes for the screeplot.
+DAPC.infer <- dapc_infer(
+  genoData, scaling='covar', sampCol='SAMPLE', locusCol='LOCUS', genoCol='GT',
+  kTest=1:10, pTest=c(4,10,20,40), screeMax=20
+)
+
+# Take a look at the indexes
+names(DAPC.infer)
+
+# The table of BIC test statistics in the $tab index, the first 10 rows
+DAPC.infer$tab %>% head(., 10)
+
+# Take a look at the names in the $fit index
+DAPC.infer$fit %>% names()
+
+# The indexes within $fit are themselves kmeans objects.
+DAPC.infer$fit$`k=1,p=10` %>% class
+
+# Note, you can find the assigned clusters for the K-means fits.
+# Here are the assigned clusters for k=1 and p=10.
+DAPC.infer$fit$`k=1,p=10`$cluster
+```
+```{r, warning=FALSE, message=FALSE, fig.width=7, fig.height=7}
+# Take a look at the visual summary in the $plot index. Illustrates the 
+# screeplot and the estimated BIC for each parameterisation set.
+DAPC.infer$plot
+```
+
+Let us consider the returned summary plot. As expected, there is a clear break in the screeplot at PC axis 3 (the *k* $-$ 1 PC axis), which we expect for 3 populations in this simulated dataset. The *K*-means clustering are all consistent with *k* = 4 populations. However you can clearly see that different parameterisations produce quite different outcomes with respect to the magnitude of the test statistic and the test statistic curves. Nonetheless, everything is pointing to using *k* $-$ 1 = 3 PC axes to model differences among *k* = 4 populations.
+
+## Fitting a DAPC ##
+
+Alright, we now know how we want to parameterise our DAPC, so we can turn to the function `dapc_fit` to fit our model of among-population differences. This function has a lot of similar arguments to those we have already seen. We need to provide our data as a long-format `data.table` object. We specify the scaling method for PCA with the `scaling` argument. We have the arguments `sampCol`, `locusCol`, and `genoCol` to indicate the columns with the sample, locus, and genotype information.
+
+Importantly, this time we also have the `popCol` argument, which specifies the column with population information. This column represents the populations that we will be discriminating among in our DAPC. They could be *a priori* definitions of populations, or *de novo* inferred definitions based on some other clustering methods prior to performing DAPC.
+
+The `dapc_fit` function has a 3 different methods that can be run using the argument `method`. The default value is `"fit"`, which simply runs the DAPC fit on the entire dataset. We will focus on the `method=="fit"` parameterisation of the `dapc_fit` function first before discussing alternate settings.   
+
+When `method=="fit"`, a DA of PC axes predictors is fit using R's internal `lda` function from the _MASS_ package. The `dapc_fit` function returns a `list` object with multiple indexes.
+
+1. `$da.fit` is an `lda` class object, the DA of among-population differences using PC axes as predictors.
+2. `$da.tab` is a `data.table` object of LD scores for each sample.
+3. `da.prob` is a `data.table` object of posterior probabilities of populaton identity for each sample.
+4. `$pca.fit` is a `prcomp` object of the PCA fit.
+5. `$pca.tab` is a `data.table` object of PC scores for each sample.
+6. `$snp.contrib` is a `data.table` object of SNP contributions (proportion of variation) to each LD axis (values for each axis sums to 1).
+
+```{r, message=FALSE, warning=FALSE}
+# Fit the DAPC with a PCA of genotype covariances, using 3 PC axes as
+# predictors of among-population differences.
+DAPC.fit <- dapc_fit(
+  genoData, scaling='covar', sampCol='SAMPLE', locusCol='LOCUS', genoCol='GT',
+  popCol='POP', pcPreds=3, method='fit'
+)
+
+# The output is a list
+class(DAPC.fit)
+
+# Take a look at the classes of all the indexes
+lapply(DAPC.fit, class)
+
+# The LD scores
+DAPC.fit$da.tab
+
+# The population posterior probabilities
+DAPC.fit$da.prob
+
+# SNP contributions to LD1
+DAPC.fit$snp.contrib[['LD1']] %>% 
+  hist(., main='SNP contributions on LD1', xlab='Proportion of variation')
+
+# Sums for each axis column
+DAPC.fit$snp.contrib[['LD1']] %>% sum
+DAPC.fit$snp.contrib[['LD2']] %>% sum
+DAPC.fit$snp.contrib[['LD2']] %>% sum
+```
+
+The output from `dapc_fit(..., method=="fit")` can be passed directly to the function `dapc_plot` to visualise the results, for which we use the `type` argument to generate either a scatterplot with `"scatter"`, or a barplot of posterior probabilities for population identities using `"probs"`. 
+
+If we set `dapc_plot(..., type="scatter")`, we can control the LD axes to display with the argument `axisIndex`, which takes an integer vector of 2 values. The argument `plotColours` takes a named character vector of colours for each population, `legendPos` is used to specify the positioning of the legend.
+
+```{r, message=FALSE, warning=FALSE}
+plot.dapc.scatter <- dapc_plot(
+  DAPC.fit, type='scatter', axisIndex=c(1,2), 
+  plotColours=c(Pop1='#08c7e0', Pop2='#4169e1', Pop3='#e46adf', Pop4='#ce0073'),
+  legendPos='right'
+)
+plot.dapc.scatter
+```
+If we set `dapc_plot(..., type="probs")`, there are a number of arguments to manipulate the barplot. By default, samples are ordered by their designated population, with barplots illustrating the relative composition of posterior probabilities. Underneath the samples, a horizontal bar is used to highlight the designated populations, and sample names are plotted. Let us take a look at this default output:
+
+```{r, warning=FALSE, message=FALSE}
+# The default posterior probability barplot, only specifying custom colours.
+plot.dapc.probs.default <- dapc_plot(
+  DAPC.fit, type='probs', 
+  plotColours=c(Pop1='#08c7e0', Pop2='#4169e1', Pop3='#e46adf', Pop4='#ce0073')
+)
+plot.dapc.probs.default
+```
+That is a bit messy, is it not? This time, let us hide the sample names and increase the bar that delimits the original population designations. We can hide the samples using the `sampleShow` argument, and setting it to `FALSE`. We can increase the size of the population designation bar using the argument `popBarScale`, which takes a numeric value as the relative scaling size.
+
+```{r, warning=FALSE, message=FALSE}
+# The customised posterior probability barplot
+plot.dapc.probs.custom <- dapc_plot(
+  DAPC.fit, type='probs', sampleShow=FALSE, popBarScale=2,
+  plotColours=c(Pop1='#08c7e0', Pop2='#4169e1', Pop3='#e46adf', Pop4='#ce0073')
+)
+plot.dapc.probs.custom
+```
+
+## Assessing model fit ##
+
+Because DAPC constructs a model of population structure, it is important to assess the fit of this model. Assessing model fit requires using the model to predict the population identity of samples that were not used to predict the model. If our model predicts population identities that are congruent with the original population designation, then our model is well fit. 
+
+There are two general approaches we can take. A **leave-one-out cross-validation** can be used when samples sizes are small, whereby samples are omitted one-by-one, the model is refit multiple times and tested on each omitted sample. However, if you can, it is better to use a **training-testing** partitioning approach, whereby the data is divided into a training set to build the model, which is then used to predict the testing set.
+
+Again, we can use the `dapc_fit` function to assess model fit, except this time we change the `type` argument to either `"loo_cv"` to perform leave-one-out cross-validation, or `"train_test"` to perform training-testing partitioning. All the arguments are the same as if we fitting a DAPC to the entire dataset (as above). However, if `dapc_fit(..., type="train_test")`, we must also specify the argument `trainProp`, which is a numeric value between 0 and 1 that represents the proportion of the original dataset to hold as the training set. The training set will comprise `trainProp` proportion of samples from each population, so that each population is represented equally.
+
+```{r, warning=FALSE, message=FALSE}
+DAPC.loo.cv <- dapc_fit(
+  genoData, scaling='covar', sampCol='SAMPLE', locusCol='LOCUS', genoCol='GT',
+  popCol='POP', pcPreds=3, method='loo_cv', 
+)
+
+DAPC.train.test <- dapc_fit(
+  genoData, scaling='covar', sampCol='SAMPLE', locusCol='LOCUS', genoCol='GT',
+  popCol='POP', pcPreds=3, method='train_test', trainProp=0.8
+)
+```
+
+The outputs of these function calls is a `list` object with the following indexes:
+
+1. `$tab` is a `data.table` of predicted populations for each sample.
+2. `$global` is a single numeric value, which represents the global assignment rate of samples correctly assigned to their original designated population across the entire dataset.
+3. `$pairs.long` is a `data.table` of pairwise population assignment rates in long-format.
+4. `$pairs.wide` is a `data.table` of pairwise population assignment rates in wide-format.
+
+```{r, warning=FALSE, message=FALSE}
+# List names
+names(DAPC.train.test)
+
+# Table of predictions for training-testing
+DAPC.train.test$tab
+
+# Global assignment rate for training-testing
+DAPC.train.test$global
+
+# Compare to the global assignment rate for leave-one-out cross-validation
+DAPC.loo.cv$global
+
+# The two pairiwse assignment rate data tables
+DAPC.train.test$pairs.long
+
+DAPC.train.test$pairs.wide
+```
+
+In the above, we can see that the leave-one-out cross-validation global assignment rate was higher than that for the training-testing partitioning? (Note, your exact result may differ slightly from the one here). Leave-one-out cross-validation may be upwardly biased because only a single sample is predicted at a time and the rest of the dataset (minus 1) is used to fit the model. 
+
+We can pass the output from `dapc_fit(..., type="assign")` to `dapc_plot` to visualise the pairwise assignment rates. We must set the `type` argument in `dapc_plot` to `"assign"`. Let us take a look at the default plot and compare the pairwise outputs for leave-one-out cross-validation and training-testing partitioning side-by-side:
+
+```{r, warning=FALSE, message=FALSE}
+plot.dapc.loo.cv <- dapc_plot(DAPC.loo.cv, type='assign')
+plot.dapc.tt <- dapc_plot(DAPC.train.test, type='assign')
+
+ggarrange(
+  plot.dapc.loo.cv + 
+    ggtitle('Leave-one-out') +
+    theme(plot.title=element_text(hjust=0.5)),
+  plot.dapc.tt + 
+    ggtitle('Train-test') +
+    theme(plot.title=element_text(hjust=0.5)),
+  common.legend=TRUE
+)
+
+```
+
+By default, `dapc_plot(..., type="assign")` will use a gradient from blue to red to represent assignment rates from 0 to 1. We can override this colour gradient by specifying our own spectrum of colours with the `plotColours` argument:
+
+```{r, warning=FALSE, message=FALSE}
+plot.dapc.assign.custom <- dapc_plot(
+  DAPC.train.test, type='assign', 
+  plotColours=c('#E2D007','#41C126','#468ED2','#9B37B3'),
+  )
+
+plot.dapc.assign.custom
+```
+
+# Postamble #
+
+In this lesson, you have learnt how to analyse population structure with _genomalicious_. You should be familiar with how to calculate *F*~ST~ and perform PCA and DAPC. You should also be familiar with the _genomalicious_ functions that can help you visualise patterns of population structure.
+
+# References #
+
+Jombart et al. (2010) Discriminant analysis of principal components: a new method for the analysis of genetically structured populations. *BMC Genetiics*. doi: 10.1186/1471-2156-11-94. doi: 10.1038/s41437-020-0348-2.
+
+Miller et al. (2020) The influence of a priori grouping on inference of genetic clusters: simulation study and literature review of the DAPC method. *Heredity*. 
+
+Patterson et al. (2006) Population structure and eigenanalysis. *PLoS Genetics*. doi: 10.1371/journal.pgen.0020190.
+
+Thia (2022) Guidelines for standardising the application of discriminant analysis of principal components to genotype data. *Molecular Ecology Resources*. doi: 10.1111/1755-0998.13706.
+
+Weir & Cockerham (1984) Estimating F-statistics for the analysis of population structure. *Evolution*. doi: 10.1111/j.1558-5646.1984.tb05657.x.
+
+Wright (1951) The genetical structure of populations. *Annals of Human Genetics*. doi: 10.1111/j.1469-1809.1949.tb02451.x
