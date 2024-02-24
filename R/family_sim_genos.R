@@ -99,7 +99,7 @@
 #' freqsPop1 <- genosPop1[, .(FREQ=sum(GT)/(length(GT)*2)), by=LOCUS]
 #'
 #' # Simulate 100 familial relationships of each class
-#' simFamily <- family_sim_data(
+#' simFamily <- family_sim_genos(
 #'    freqData=freqsPop1,
 #'    locusCol='LOCUS',
 #'    freqCol='FREQ',
@@ -174,7 +174,7 @@
 #'
 #' @export
 
-family_sim_data <- function(
+family_sim_genos <- function(
     freqData, locusCol='LOCUS', freqCol='FREQ', numSims=100L,
     returnParents=FALSE, returnPedigree=FALSE){
   # --------------------------------------------+
@@ -265,35 +265,35 @@ family_sim_data <- function(
     # Note, 'g[x]' indicates generation in each group.
 
     # Random completely unrelated individuals
-    unrel.g1.1 <- FUN_draw_genos(freqData, ploidy=2)
-    unrel.g1.2 <- FUN_draw_genos(freqData, ploidy=2)
+    unrel_ind_1 <- FUN_draw_genos(freqData, ploidy=2)
+    unrel_ind_2 <- FUN_draw_genos(freqData, ploidy=2)
 
-    unrel.names <- paste0('S',sim,c('_unrel_1','_unrel_2'))
+    unrel.names <- paste0('S',sim,c('_unrel_ind_1','_unrel_ind_2'))
 
     # Create parent-offspring pair
-    po.g1.1 <- FUN_draw_genos(freqData, ploidy=2)
-    po.g1.2 <- FUN_draw_genos(freqData, ploidy=2)
+    po_dam_1 <- FUN_draw_genos(freqData, ploidy=2)
+    po_sire_1 <- FUN_draw_genos(freqData, ploidy=2)
 
-    po.g2.1 <- FUN_make_diploid_offspring(po.g1.1, po.g1.2)
+    po_ind_1 <- FUN_make_diploid_offspring(po_dam_1, po_sire_1)
 
     po.names <- paste0('S',sim,c('_po_ind_1','_po_dam_1','_po_sire_1'))
 
     # Create sibling pair
-    sib.g1.1 <- FUN_draw_genos(freqData, ploidy=2)
-    sib.g1.2 <- FUN_draw_genos(freqData, ploidy=2)
+    sib_dam_1 <- FUN_draw_genos(freqData, ploidy=2)
+    sib_sire_1 <- FUN_draw_genos(freqData, ploidy=2)
 
-    sib.g2.1 <- FUN_make_diploid_offspring(sib.g1.1, sib.g1.2)
-    sib.g2.2 <- FUN_make_diploid_offspring(sib.g1.1, sib.g1.2)
+    sib_ind_1 <- FUN_make_diploid_offspring(sib_dam_1, sib_sire_1)
+    sib_ind_2 <- FUN_make_diploid_offspring(sib_dam_1, sib_sire_1)
 
     sib.names <- paste0('S',sim,c('_sib_ind_1','_sib_ind_2','_sib_dam_1','_sib_sire_1'))
 
     # Create half sibling pair
-    hsib.g1.1 <- FUN_draw_genos(freqData, ploidy=2)
-    hsib.g1.2 <- FUN_draw_genos(freqData, ploidy=2)
-    hsib.g1.3 <- FUN_draw_genos(freqData, ploidy=2)
+    hsib_dam_1 <- FUN_draw_genos(freqData, ploidy=2)
+    hsib_sire_1 <- FUN_draw_genos(freqData, ploidy=2)
+    hsib_sire_2 <- FUN_draw_genos(freqData, ploidy=2)
 
-    hsib.g2.1 <- FUN_make_diploid_offspring(hsib.g1.1, hsib.g1.2)
-    hsib.g2.2 <- FUN_make_diploid_offspring(hsib.g1.1, hsib.g1.3)
+    hsib_ind_1 <- FUN_make_diploid_offspring(hsib_dam_1, hsib_sire_1)
+    hsib_ind_2 <- FUN_make_diploid_offspring(hsib_dam_1, hsib_sire_2)
 
     hsib.names <- paste0(
       'S',sim,
@@ -302,16 +302,16 @@ family_sim_data <- function(
     )
 
     # Create cousin pair
-    cuz.g1.1 <- FUN_draw_genos(freqData, ploidy=2)
-    cuz.g1.2 <- FUN_draw_genos(freqData, ploidy=2)
+    cuz_gdam_1 <- FUN_draw_genos(freqData, ploidy=2)
+    cuz_gsire_1 <- FUN_draw_genos(freqData, ploidy=2)
 
-    cuz.g2.1 <- FUN_make_diploid_offspring(cuz.g1.1, cuz.g1.2)
-    cuz.g2.2 <- FUN_make_diploid_offspring(cuz.g1.1, cuz.g1.2)
-    cuz.g2.3 <- FUN_draw_genos(freqData, ploidy=2)
-    cuz.g2.4 <- FUN_draw_genos(freqData, ploidy=2)
+    cuz_dam_1 <- FUN_make_diploid_offspring(cuz_gdam_1, cuz_gsire_1)
+    cuz_dam_2 <- FUN_make_diploid_offspring(cuz_gdam_1, cuz_gsire_1)
+    cuz_sire_1 <- FUN_draw_genos(freqData, ploidy=2)
+    cuz_sire_2 <- FUN_draw_genos(freqData, ploidy=2)
 
-    cuz.g3.g1 <- FUN_make_diploid_offspring(cuz.g2.1, cuz.g2.3)
-    cuz.g3.g2 <- FUN_make_diploid_offspring(cuz.g2.2, cuz.g2.4)
+    cuz_ind_1 <- FUN_make_diploid_offspring(cuz_dam_1, cuz_sire_1)
+    cuz_ind_2 <- FUN_make_diploid_offspring(cuz_dam_2, cuz_sire_2)
 
     cuz.names <- paste0(
       'S',sim,
@@ -321,69 +321,69 @@ family_sim_data <- function(
     )
 
     # Create half-cousin pair
-    hcuz.g1.1 <- FUN_draw_genos(freqData, ploidy=2)
-    hcuz.g1.2 <- FUN_draw_genos(freqData, ploidy=2)
-    hcuz.g1.3 <- FUN_draw_genos(freqData, ploidy=2)
+    hcuz_gdam_1 <- FUN_draw_genos(freqData, ploidy=2)
+    hcuz_gsire_1 <- FUN_draw_genos(freqData, ploidy=2)
+    hcuz_gsire_2 <- FUN_draw_genos(freqData, ploidy=2)
 
-    hcuz.g2.1 <- FUN_make_diploid_offspring(hcuz.g1.1, hcuz.g1.2)
-    hcuz.g2.2 <- FUN_make_diploid_offspring(hcuz.g1.1, hcuz.g1.3)
-    hcuz.g2.3 <- FUN_draw_genos(freqData, ploidy=2)
-    hcuz.g2.4 <- FUN_draw_genos(freqData, ploidy=2)
+    hcuz_dam_1 <- FUN_make_diploid_offspring(hcuz_gdam_1, hcuz_gsire_1)
+    hcuz_dam_2 <- FUN_make_diploid_offspring(hcuz_gdam_1, hcuz_gsire_2)
+    hcuz_sire_1 <- FUN_draw_genos(freqData, ploidy=2)
+    hcuz_sire_2 <- FUN_draw_genos(freqData, ploidy=2)
 
-    hcuz.g3.1 <- FUN_make_diploid_offspring(hcuz.g2.1, hcuz.g2.3)
-    hcuz.g3.2 <- FUN_make_diploid_offspring(hcuz.g2.2, hcuz.g2.4)
+    hcuz_ind_1 <- FUN_make_diploid_offspring(hcuz_dam_1, hcuz_sire_1)
+    hcuz_ind_2 <- FUN_make_diploid_offspring(hcuz_dam_2, hcuz_sire_2)
 
     hcuz.names <- paste0(
-        'S',sim,
-        c('_hcuz_ind_1','_hcuz_ind_2',
-          '_hcuz_dam_1','_hcuz_dam_2','_hcuz_sire_1','_hcuz_sire_2',
-          '_hcuz_gdam_1','_hcuz_gsire_1','_hcuz_gsire_2')
-      )
+      'S',sim,
+      c('_hcuz_ind_1','_hcuz_ind_2',
+        '_hcuz_dam_1','_hcuz_dam_2','_hcuz_sire_1','_hcuz_sire_2',
+        '_hcuz_gdam_1','_hcuz_gsire_1','_hcuz_gsire_2')
+    )
 
     # Focal pairs of individuals
     foc.pairs.tab <- rbind(
-      unrel.g1.1 %>% data.table(SIM=sim, SAMPLE=unrel.names[1]),
-      unrel.g1.2 %>% data.table(SIM=sim, SAMPLE=unrel.names[2]),
-      po.g2.1 %>% data.table(SIM=sim, SAMPLE=po.names[1]),
-      po.g1.1 %>% data.table(SIM=sim, SAMPLE=po.names[2]),
-      sib.g2.1 %>% data.table(SIM=sim, SAMPLE=sib.names[1]),
-      sib.g2.2 %>% data.table(SIM=sim, SAMPLE=sib.names[2]),
-      hsib.g2.1 %>% data.table(SIM=sim, SAMPLE=hsib.names[1]),
-      hsib.g2.2 %>% data.table(SIM=sim, SAMPLE=hsib.names[2]),
-      cuz.g3.g1 %>% data.table(SIM=sim, SAMPLE=cuz.names[1]),
-      cuz.g3.g2 %>% data.table(SIM=sim, SAMPLE=cuz.names[2]),
-      hcuz.g3.1 %>% data.table(SIM=sim, SAMPLE=hcuz.names[1]),
-      hcuz.g3.2 %>% data.table(SIM=sim, SAMPLE=hcuz.names[2])
+      unrel_ind_1 %>% data.table(SIM=sim, SAMPLE=unrel.names[1]),
+      unrel_ind_2 %>% data.table(SIM=sim, SAMPLE=unrel.names[2]),
+      po_ind_1 %>% data.table(SIM=sim, SAMPLE=po.names[1]),
+      po_dam_1 %>% data.table(SIM=sim, SAMPLE=po.names[2]),
+      sib_ind_1 %>% data.table(SIM=sim, SAMPLE=sib.names[1]),
+      sib_ind_2 %>% data.table(SIM=sim, SAMPLE=sib.names[2]),
+      hsib_ind_1 %>% data.table(SIM=sim, SAMPLE=hsib.names[1]),
+      hsib_ind_2 %>% data.table(SIM=sim, SAMPLE=hsib.names[2]),
+      cuz_ind_1 %>% data.table(SIM=sim, SAMPLE=cuz.names[1]),
+      cuz_ind_2 %>% data.table(SIM=sim, SAMPLE=cuz.names[2]),
+      hcuz_ind_1 %>% data.table(SIM=sim, SAMPLE=hcuz.names[1]),
+      hcuz_ind_2 %>% data.table(SIM=sim, SAMPLE=hcuz.names[2])
     ) %>%
       data.table(
         ., FAMILY=c(
-          rep('Unrelated',2), rep('Parent-offspring',2), rep('Sibling',2),
-          rep('Half-sibling',2), rep('Cousin',2), rep('Half-cousin',2)
-          )
-        ) %>%
+          rep('Unrelated',2), rep('Parent-offspring',2), rep('Siblings',2),
+          rep('Half-siblings',2), rep('Cousins',2), rep('Half-cousins',2)
+        )
+      ) %>%
       .[, GT:=FREQ*PLOIDY]
 
     # All other dams, sires, grandams and grandsires.
     dam.sire.tab <- rbind(
-      po.g1.2 %>% data.table(SIM=sim, SAMPLE=po.names[3], FAMILY='Parent-offspring'),
-      sib.g1.1 %>% data.table(SIM=sim, SAMPLE=sib.names[3], FAMILY='Siblings'),
-      sib.g1.2 %>% data.table(SIM=sim, SAMPLE=sib.names[4], FAMILY='Siblings'),
-      hsib.g1.1 %>% data.table(SIM=sim, SAMPLE=hsib.names[3], FAMILY='Half-siblings'),
-      hsib.g1.2 %>% data.table(SIM=sim, SAMPLE=hsib.names[4], FAMILY='Half-siblings'),
-      hsib.g1.3 %>% data.table(SIM=sim, SAMPLE=hsib.names[5], FAMILY='Half-siblings'),
-      cuz.g2.1 %>% data.table(SIM=sim, SAMPLE=cuz.names[3], FAMILY='Cousins'),
-      cuz.g2.2 %>% data.table(SIM=sim, SAMPLE=cuz.names[4], FAMILY='Cousins'),
-      cuz.g2.3 %>% data.table(SIM=sim, SAMPLE=cuz.names[5], FAMILY='Cousins'),
-      cuz.g2.4 %>% data.table(SIM=sim, SAMPLE=cuz.names[6], FAMILY='Cousins'),
-      cuz.g1.1 %>% data.table(SIM=sim, SAMPLE=cuz.names[7], FAMILY='Cousins'),
-      cuz.g1.2 %>% data.table(SIM=sim, SAMPLE=cuz.names[8], FAMILY='Cousins'),
-      hcuz.g2.1 %>% data.table(SIM=sim, SAMPLE=hcuz.names[3], FAMILY='Half-cousins'),
-      hcuz.g2.2 %>% data.table(SIM=sim, SAMPLE=hcuz.names[4], FAMILY='Half-cousins'),
-      hcuz.g2.3 %>% data.table(SIM=sim, SAMPLE=hcuz.names[5], FAMILY='Half-cousins'),
-      hcuz.g2.4 %>% data.table(SIM=sim, SAMPLE=hcuz.names[6], FAMILY='Half-cousins'),
-      hcuz.g1.1 %>% data.table(SIM=sim, SAMPLE=hcuz.names[7], FAMILY='Half-cousins'),
-      hcuz.g1.2 %>% data.table(SIM=sim, SAMPLE=hcuz.names[8], FAMILY='Half-cousins'),
-      hcuz.g2.3 %>% data.table(SIM=sim, SAMPLE=hcuz.names[9], FAMILY='Half-cousins')
+      po_sire_1 %>% data.table(SIM=sim, SAMPLE=po.names[3], FAMILY='Parent-offspring'),
+      sib_dam_1 %>% data.table(SIM=sim, SAMPLE=sib.names[3], FAMILY='Siblings'),
+      sib_sire_1 %>% data.table(SIM=sim, SAMPLE=sib.names[4], FAMILY='Siblings'),
+      hsib_dam_1 %>% data.table(SIM=sim, SAMPLE=hsib.names[3], FAMILY='Half-siblings'),
+      hsib_sire_1 %>% data.table(SIM=sim, SAMPLE=hsib.names[4], FAMILY='Half-siblings'),
+      hsib_sire_2 %>% data.table(SIM=sim, SAMPLE=hsib.names[5], FAMILY='Half-siblings'),
+      cuz_dam_1 %>% data.table(SIM=sim, SAMPLE=cuz.names[3], FAMILY='Cousins'),
+      cuz_dam_2 %>% data.table(SIM=sim, SAMPLE=cuz.names[4], FAMILY='Cousins'),
+      cuz_sire_1 %>% data.table(SIM=sim, SAMPLE=cuz.names[5], FAMILY='Cousins'),
+      cuz_sire_2 %>% data.table(SIM=sim, SAMPLE=cuz.names[6], FAMILY='Cousins'),
+      cuz_gdam_1 %>% data.table(SIM=sim, SAMPLE=cuz.names[7], FAMILY='Cousins'),
+      cuz_gsire_1 %>% data.table(SIM=sim, SAMPLE=cuz.names[8], FAMILY='Cousins'),
+      hcuz_dam_1 %>% data.table(SIM=sim, SAMPLE=hcuz.names[3], FAMILY='Half-cousins'),
+      hcuz_dam_2 %>% data.table(SIM=sim, SAMPLE=hcuz.names[4], FAMILY='Half-cousins'),
+      hcuz_sire_1 %>% data.table(SIM=sim, SAMPLE=hcuz.names[5], FAMILY='Half-cousins'),
+      hcuz_sire_2 %>% data.table(SIM=sim, SAMPLE=hcuz.names[6], FAMILY='Half-cousins'),
+      hcuz_gdam_1 %>% data.table(SIM=sim, SAMPLE=hcuz.names[7], FAMILY='Half-cousins'),
+      hcuz_gsire_1 %>% data.table(SIM=sim, SAMPLE=hcuz.names[8], FAMILY='Half-cousins'),
+      hcuz_gsire_2 %>% data.table(SIM=sim, SAMPLE=hcuz.names[9], FAMILY='Half-cousins')
     ) %>%
       .[, GT:=FREQ*PLOIDY]
 

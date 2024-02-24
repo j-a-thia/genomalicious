@@ -17,7 +17,7 @@ family_sim_compare(
 }
 \arguments{
 \item{simGRM}{Matrix: The simulated GRM using the individuals generated
-from \code{family_sim_data}. See Details.}
+from \code{family_sim_genos}. See Details.}
 
 \item{obsGRM}{Matrix: The observed GRM using the observed individuals.
 See Details.}
@@ -72,7 +72,7 @@ the simulated and observed estiamtes and a plot of density curves overlaying
 the distribution of observed relatedness estimates on top of simulated values.
 }
 \details{
-The function takes the output of \code{family_sim_data} and additional calculations
+The function takes the output of \code{family_sim_genos} and additional calculations
 of the genetic relationiship matrix (GRM) that are performed by the user on
 the simulated and observed individuals.
 
@@ -94,7 +94,7 @@ genosPop1 <- data_Genos[POP=='Pop1', c('SAMPLE', 'LOCUS', 'GT')]
 freqsPop1 <- genosPop1[, .(FREQ=sum(GT)/(length(GT)*2)), by=LOCUS]
 
 # Simulate 100 families
-simFamily <- family_sim_data(
+simFamily <- family_sim_genos(
    freqData=freqsPop1,
    locusCol='LOCUS',
    freqCol='FREQ',

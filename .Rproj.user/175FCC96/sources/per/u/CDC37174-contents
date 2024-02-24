@@ -1,0 +1,127 @@
+library(MCMCglmm)
+library(rrBLUP)
+library(Matrix)
+
+freqData<- data.table(FREQ=rbeta(10000,0.3,1)) %>% 
+  .[, LOCUS:=paste0('loc_',1:.N)] %>% 
+  .[FREQ>0.005]
+
+simFamily <- family_sim_data(
+   freqData=freqData,
+   locusCol='LOCUS',
+   freqCol='FREQ',
+   numSims=10,
+   returnParents=TRUE,
+   returnPedigree=TRUE
+)
+
+# Convert simulated families into a genotype matrix
+simGenosMat <- DT2Mat_genos(rbind(simFamily$focal.pairs, simFamily$parents))
+
+# Calculate the GRM
+G <- rrBLUP::A.mat(simGenosMat, min.MAF=0)*2
+# G <- AGHmatrix::Gmatrix(simGenosMat, 'Yang', 0)
+G.inv <- Matrix(nearPD(G)$mat, sparse=TRUE) %>% solve
+
+simQTL <- family_sim_qtl(
+  famGenos=rbind(simFamily$focal.pairs, simFamily$parents),
+  numLoci=1000, additiveVar=0.5, environVar=0.5
+  )
+
+simQTL$trait
+
+G[lower.tri(G)] %>% summary
+G[lower.tri(G)] %>% hist
+
+mod.grm <- MCMCglmm(
+  P ~ 1,
+  random = ~SAMPLE, ginv = list(SAMPLE = G.inv),
+  data = simQTL$trait, 
+  prior = list(
+    G = list(G1 = list(V = 1, nu = 0.002, alpha.mu=0, alpha.V=var(simQTL$trait$P))),
+    R = list(V = 1, nu = 0.002)
+  ),
+  nitt = 100000, burnin = 5000, thin=20
+)
+
+summary(mod.grm)
+plot(mod.grm)
+
+h2.grm <- mod.grm$VCV[,'SAMPLE'] / rowSums(mod.grm$VCV)
+hist(h2.grm)
+
+A.inv <- inverseA(simFamily$pedigree)$Ainv
+
+mod.ped <- MCMCglmm(
+  P ~ 1,
+  random = ~SAMPLE, ginv = list(SAMPLE = A.inv),
+  data = simQTL$trait, 
+  prior = list(
+    G = list(G1 = list(V = 1, nu = 0.002, alpha.mu=0, alpha.V=var(simQTL$trait$P))),
+    R = list(V = 1, nu = 0.002)
+  ),
+  nitt = 500000, burnin = 50000, thin=20
+)
+
+summary(mod.ped)
+
+h2.ped <- mod.ped$VCV[,'SAMPLE'] / rowSums(mod.ped$VCV)
+hist(h2.ped, breaks=100)
+summary(h2.ped)
+
+samps <- colnames(G)
+A <- as.matrix(solve(A.inv))
+rownames(A) <- colnames(A)
+A <- A[samps,samps]
+
+plot(A, G)
+
+G.tab <- (simGRM*2) %>% pairwiseMat2DT(., flip=FALSE, 'ID1', 'ID2', 'Relate') %>% 
+  .[, Pair:=paste(ID1, ID2)]
+
+A.tab <-  A %>% pairwiseMat2DT(., flip=FALSE, 'ID1', 'ID2', 'Relate') %>% 
+  .[, Pair:=paste(ID1, ID2)]
+
+G.tab[Pair %in% A.tab[Relate==0]$Pair & Relate>0.2]
+
+
+# G to D (a distance matrix)
+i <- rep(1, ncol(G))
+D <-sqrt(diag(G)%*%t(i)+ i%*%t(diag(G))-2*G) 
+
+# Distance tree
+D.tree <- (phangorn::upgma(D))
+
+# A matrix
+Ainv.tr <- inverseA(D.tree, node='TIPS', scale=TRUE)$Ainv %>% 
+  as.matrix 
+colnames(Ainv.tr) <- rownames(Ainv.tr)
+A.tr <- solve(Ainv.tr)
+
+plot(A[samps,samps], A.tr[samps,samps])
+plot(G[samps,samps], A.tr[samps,samps])
+plot(G[samps,samps], A[samps,samps])
+
+
+mod.tr <- MCMCglmm(
+  P ~ 1,
+  random = ~SAMPLE, ginv = list(SAMPLE = solve(Matrix(A, sparse=TRUE)) ),
+  data = simQTL$trait, 
+  prior = list(
+    G = list(G1 = list(V = 1, nu = 0.002, alpha.mu=0, alpha.V=var(simQTL$trait$P))),
+    R = list(V = 1, nu = 0.002)
+  ),
+  nitt = 500000, burnin = 50000, thin=20
+)
+
+summary(mod.tr)
+
+h2.tr <- mod.tr$VCV[,'SAMPLE'] / rowSums(mod.tr$VCV)
+hist(h2.tr, breaks=100)
+
+
+G2 <- G
+G2[G2<0.05] <- 0
+solve(Matrix(nearPD(G2)$mat, sparse=TRUE))
+
+so

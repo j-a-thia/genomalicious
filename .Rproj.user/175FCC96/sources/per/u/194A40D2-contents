@@ -1,0 +1,56 @@
+library(genomalicious)
+library(MCMCglmm)
+library(rrBLUP)
+library(Matrix)
+
+freqData<- data.table(FREQ=rbeta(10000,0.3,1)) %>% 
+  .[, LOCUS:=paste0('loc_',1:.N)] %>% 
+  .[FREQ>0.005]
+
+simFamily <- family_sim_data(
+  freqData=freqData,
+  locusCol='LOCUS',
+  freqCol='FREQ',
+  numSims=25,
+  returnParents=TRUE,
+  returnPedigree=TRUE
+)
+
+# Convert simulated families into a genotype matrix
+simGenosMat <- DT2Mat_genos(rbind(simFamily$focal.pairs, simFamily$parents))
+
+# Calculate the GRM
+G <- rrBLUP::A.mat(simGenosMat, min.MAF=0)*2
+G2 <- G
+G2[G2<0.05] <- 0
+
+hist(G[lower.tri(G)], breaks=100)
+hist(G2[lower.tri(G)], breaks=100)
+plot(G2, nearPD(G2)$mat)
+
+G2.inv <- solve(Matrix(nearPD(G2)$mat, sparse=TRUE))
+
+simQTL <- family_sim_qtl(
+  famGenos=rbind(simFamily$focal.pairs, simFamily$parents),
+  numLoci=1000, additiveVar=0.5, environVar=0.5
+)
+
+simQTL$trait
+
+mod.grm <- MCMCglmm(
+  P ~ 1,
+  random = ~SAMPLE, ginv = list(SAMPLE = G2.inv),
+  data = simQTL$trait, 
+  prior = list(
+    G = list(G1 = list(V = 1, nu = 0.002, alpha.mu=0, alpha.V=var(simQTL$trait$P))),
+    R = list(V = 1, nu = 0.002)
+  ),
+  nitt = 100000, burnin = 5000, thin=15
+)
+
+
+summary(mod.grm)
+plot(mod.grm)
+
+h2.grm <- mod.grm$VCV[,'SAMPLE'] / rowSums(mod.grm$VCV)
+hist(h2.grm)
