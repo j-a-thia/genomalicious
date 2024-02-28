@@ -2,7 +2,7 @@
 
 _Genomalicious_ is live!
 
-The current available version is my devloper's code. It works on R v4.3.1.
+The current available version is my devloper's code. It works on R v4.3.2.
 
 **Reach out:** Any questions, feedback, or suggestions are greatly appreciated to make _genomalicious_ the best it can be.
 
