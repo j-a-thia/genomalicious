@@ -58,6 +58,11 @@ by \emph{n} loci with phenotypic variance, \emph{Vp}, the sum of the
 additive, \emph{Va}, and environmental, \emph{Ve}, variances.
 }
 \details{
+Note, the current implementation of this function generates a specific
+additive + environmental variance for a trait, given a set of allele frequencies
+and the number/identify of loci of interest. The phenotypes and genotypic values
+simulated are only relevant to the input sample only.
+
 A total of \emph{n} == \code{numLoci} loci from \code{famGenos} are drawn
 at random to underpin the quantitative trait. It is assumed that all loci contribute
 equally to the trait, i.e., \emph{Va}/\emph{n}. The simulation follows that
@@ -154,4 +159,7 @@ simQTL$trait
 # The locus values
 simQTL$loci
 
+}
+\references{
+Falconer and MacKay (1996) Introduction to Quantitative Genetics, 4th Ed., page 129
 }

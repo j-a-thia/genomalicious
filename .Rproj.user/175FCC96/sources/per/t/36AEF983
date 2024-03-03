@@ -3,24 +3,24 @@
     "path": "~/GitHub/genomalicious/R/family_sim_qtl.R",
     "project_path": "R/family_sim_qtl.R",
     "type": "r_source",
-    "hash": "2728781323",
+    "hash": "1983831910",
     "contents": "",
-    "dirty": false,
+    "dirty": true,
     "created": 1708731507987.0,
     "source_on_save": false,
     "relative_order": 2,
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "135,2",
-        "scrollLine": "0"
+        "cursorPosition": "280,0",
+        "scrollLine": "261"
     },
     "folds": "",
-    "lastKnownWriteTime": 1709423130,
+    "lastKnownWriteTime": 1709433172,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1709423130184,
+    "last_content_update": 1709434326093,
     "read_only": false,
     "read_only_alternatives": []
 }
