@@ -14,6 +14,11 @@
 #' @param numLoci Integer: The number of loci contributing to the trait. These loci
 #' are drawn from random in the dataset, \code{famGenos}. Therefore, it is
 #' essential the \code{numLoci} is <= the total unique loci in \code{famGenos}.
+#' Alternate parameterisation is to specify the names of the loci to use with \code{qtlLoci}.
+#'
+#' @param qtlLoci Character: A character vector of loci contributing to the trait.
+#' These loci must be present in the dataset, \code{famGenos}.
+#' Alternate parameterisation is to specify the number of  loci to use with \code{numLoci}.
 #'
 #' @param additiveVar Numeric: The additive genetic variance.
 #'
@@ -136,7 +141,7 @@
 #' simQTL$loci
 #'
 #' @export
-family_sim_qtl <- function(famGenos, numLoci, additiveVar, environVar){
+family_sim_qtl <- function(famGenos, numLoci=NULL, qtlLoci=NULL, additiveVar, environVar){
 
   # --------------------------------------------+
   # Libraries and assertions
@@ -153,11 +158,22 @@ family_sim_qtl <- function(famGenos, numLoci, additiveVar, environVar){
     stop('Not all required columns are in argument `famGenos`. See ?family_sim_qtl.')
   }
 
+  # Make sure only one of numLoci and qtlLoci are specified
+  if(is.null(numLoci) & is.null(qtlLoci)){
+    stop('Neither arugment `numLoci` or `qtlLoci` has been specified, but you must specify one of these. See ?family_sim_qtl.')
+  }
+
+  if(!is.null(numLoci) & !is.null(qtlLoci)){
+    stop('Both arguments `numLoci` and `qtlLoci` have been specified, but you must only specifcy one of these. See ?family_sim_qtl.')
+  }
+
   # Make sure that numLoci is <= the total number of loci
   loc.uniq <- unique(famGenos$LOCUS)
 
-  if(numLoci>length(loc.uniq) ){
-    stop('Argument `numLoci` must be <= the total number of unique loci in `famGenos$LOCUS`. See ?family_sim_qtl.')
+  if(!is.null(numLoci)){
+    if(numLoci>length(loc.uniq) ){
+      stop('Argument `numLoci` must be <= the total number of unique loci in `famGenos$LOCUS`. See ?family_sim_qtl.')
+    }
   }
 
   # --------------------------------------------+
@@ -172,7 +188,11 @@ family_sim_qtl <- function(famGenos, numLoci, additiveVar, environVar){
   n <- numLoci
 
   # Subset a set of loci to underpin the trait
-  traitLocTab <- uniqLocTab[sample(1:nrow(uniqLocTab), size=n, replace=FALSE),]
+  if(is.null(numLoci)==FALSE){
+    traitLocTab <- uniqLocTab[sample(1:nrow(uniqLocTab), size=n, replace=FALSE),]
+  } else if(is.null(qtlLoci)==FALSE){
+    traitLocTab <- uniqLocTab[LOCUS %in% qtlLoci]
+  }
 
   # Frequency of trait loci
   p_vec <- traitLocTab$FREQ

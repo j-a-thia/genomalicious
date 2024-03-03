@@ -4,7 +4,13 @@
 \alias{family_sim_qtl}
 \title{Simulate quantitative trait from simulated families}
 \usage{
-family_sim_qtl(famGenos, numLoci, additiveVar, environVar)
+family_sim_qtl(
+  famGenos,
+  numLoci = NULL,
+  qtlLoci = NULL,
+  additiveVar,
+  environVar
+)
 }
 \arguments{
 \item{famGenos}{Data.table: Long-format, must contain the columns
@@ -13,7 +19,12 @@ genotypes.}
 
 \item{numLoci}{Integer: The number of loci contributing to the trait. These loci
 are drawn from random in the dataset, \code{famGenos}. Therefore, it is
-essential the \code{numLoci} is <= the total unique loci in \code{famGenos}.}
+essential the \code{numLoci} is <= the total unique loci in \code{famGenos}.
+Alternate parameterisation is to specify the names of the loci to use with \code{qtlLoci}.}
+
+\item{qtlLoci}{Character: A character vector of loci contributing to the trait.
+These loci must be present in the dataset, \code{famGenos}.
+Alternate parameterisation is to specify the number of  loci to use with \code{numLoci}.}
 
 \item{additiveVar}{Numeric: The additive genetic variance.}
 
