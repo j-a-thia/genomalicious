@@ -1,26 +1,26 @@
 {
-    "id": "A29EE99B",
-    "path": "~/GitHub/genomalicious/R/dapc_plot.R",
-    "project_path": "R/dapc_plot.R",
+    "id": "78526767",
+    "path": "~/GitHub/genomalicious/R/poolfstat_DT2pooldata.R",
+    "project_path": "R/poolfstat_DT2pooldata.R",
     "type": "r_source",
-    "hash": "2013859603",
+    "hash": "307086968",
     "contents": "",
     "dirty": false,
-    "created": 1682237680840.0,
+    "created": 1710021389104.0,
     "source_on_save": false,
     "relative_order": 4,
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "83,36",
-        "scrollLine": "0"
+        "cursorPosition": "176,43",
+        "scrollLine": "151"
     },
     "folds": "",
-    "lastKnownWriteTime": 1682239992,
+    "lastKnownWriteTime": 1677995370,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1682239992708,
+    "last_content_update": 1677995370,
     "read_only": false,
     "read_only_alternatives": []
 }
