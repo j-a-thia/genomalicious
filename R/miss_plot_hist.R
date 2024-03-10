@@ -91,23 +91,23 @@
 #'
 #' ####   PLOT MISSING BY SAMPLES   ####
 #' # Histograms, ggplot and classic looks
-#' missHist(datGt, plotBy='samples', look='ggplot')
-#' missHist(datGt, plotBy='samples',, look='classic')
+#' miss_plot_hist(datGt, plotBy='samples', look='ggplot')
+#' miss_plot_hist(datGt, plotBy='samples',, look='classic')
 #'
 #' # Histograms, by population, specifying colour
-#' missHist(datGt, plotBy='samples',, look='ggplot'
+#' miss_plot_hist(datGt, plotBy='samples',, look='ggplot'
 #'                  , popCol='POP' , plotColours='deeppink2')
 #'
 #' ####   PLOT MISSING BY LOCI   ####
-#' missHist(datGt, plotBy='loci',, look='classic'
+#' miss_plot_hist(datGt, plotBy='loci',, look='classic'
 #'                  , popCol='POP' , plotColours='deeppink2')
 #'
 #' ####   CATCH PLOT OUTPUT FOR LATER USE   ####
-#' gg4pops <- missHist(datGt, plotBy='samples', popCol='POP')
+#' gg4pops <- miss_plot_hist(datGt, plotBy='samples', popCol='POP')
 #' plot(gg4pops)
 #'
 #' @export
-missHist <- function(
+miss_plot_hist <- function(
   dat, plotBy, look='ggplot', sampCol='SAMPLE', locusCol='LOCUS', genoCol='GT',
   popCol=NA, plotColours='white', plotNCol=2
   ){

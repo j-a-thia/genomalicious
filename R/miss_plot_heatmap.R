@@ -8,16 +8,22 @@
 #' the following columns,
 #' \enumerate{
 #'   \item The sampled individuals (see param \code{sampCol}).
-#'   \item The locus ID (see param \code{locusCol}).
+#'   \item The chromosome/contig ID (see param \code{chromCol}).
+#'   \item The position ID (see param \code{posCol}).
 #'   \item The genotype column, e.g. a genotype of allele frequency,
 #'   (see param \code{genoCol}).
 #' }
 #'
+#' @param sortLoci Character: Sort the loci by their genomic order (\code{'order'}),
+#' or by the proportion of missing data (\code{'missing'}). Default = \code{'order'}.
+#'
 #' @param sampCol Character: The column name with the sampled
 #' individual ID. Default = \code{'SAMPLE'}.
 #'
-#' @param locusCol Character: The column name with the locus ID.
-#' Default = \code{'LOCUS'}.
+#' @param chromCol Character: The column name with the chromosome/contig ID.
+#' Default = \code{'CHROM'}.
+#'
+#' @param posCol Character: The column name with the position ID. Default = \code{'POS'}.
 #'
 #' @param genoCol Character: The column name with the genotype info.
 #' Default = \code{'GT'}. Missing data should be represeted by \code{NA}.
@@ -82,21 +88,20 @@
 #' head(datGt, 10)
 #'
 #' # Heatmaps, default and specified colours
-#' missHeatmap(datGt)
-#' missHeatmap(datGt, plotColours=c('black', 'deeppink2'))
+#' miss_plot_heatmap(datGt)
+#' miss_plot_heatmap(datGt, plotColours=c('black', 'deeppink2'))
 #'
 #' # Heatmaps, by population
-#' missHeatmap(datGt, popCol='POP', plotNCol=4)
+#' miss_plot_heatmap(datGt, popCol='POP', plotNCol=4)
 #'
 #' ####   CATCH PLOT OUTPUT FOR LATER USE   ####
-#' gg4pops <- missHeatmap(datGt, popCol='POP')
+#' gg4pops <- miss_plot_heatmap(datGt, popCol='POP')
 #' plot(gg4pops)
 #'
 #' @export
-missHeatmap <- function(dat
-                             , sampCol='SAMPLE', locusCol='LOCUS'
-                             , genoCol='GT', popCol=NA
-                             , plotColours='white', plotNCol=2){
+miss_plot_heatmap <- function(
+    dat, sortLoci='order', chromCol='CHROM', posCol='POS', sampCol='SAMPLE',
+    genoCol='GT', popCol=NA, plotColours='white', plotNCol=2){
 
   # --------------------------------------------+
   # Libraries, assertions, and setup
@@ -105,12 +110,26 @@ missHeatmap <- function(dat
 
   # Rename columns
   colnames(dat)[
-    match(c(locusCol, genoCol, sampCol), colnames(dat))
-    ] <- c('LOCUS', 'GT', 'SAMPLE')
+    match(c(chromCol, posCol, genoCol, sampCol), colnames(dat))
+  ] <- c('CHROM', 'POS', 'GT', 'SAMPLE')
+
+  # Create a list of loci
+  uniq.loci <- dat[, c('CHROM','POS')] %>%
+    unique %>%
+    setorder(., CHROM, POS) %>%
+    .[, paste0(CHROM, '_', POS)]
+
+  dat[, LOCUS:=paste0(CHROM, '_', POS)]
 
   # Rename the population column, if it was specified
   if(is.na(popCol)==FALSE){
     colnames(dat)[which(colnames(dat)==popCol)] <- 'POP'
+  }
+
+  # Check that the sortLoci is correctly specified.
+  check.sort <- sortLoci %in% c('order','missing')
+  if(check.sort!=TRUE){
+    stop('Argument `sortLoci` must be one of "order" and "missing". See ?miss_plot_heatmap.')
   }
 
   # --------------------------------------------+
@@ -125,8 +144,19 @@ missHeatmap <- function(dat
   }
 
   # Assign a new column to record missing data
-  dat[, MISS:=as.integer(!is.na(GT))]
+  dat[, MISS:=as.integer(is.na(GT))]
 
+  # Sort
+  if(sortLoci=='order'){
+    dat[, LOCUS:=factor(LOCUS, levels=uniq.loci)]
+  } else if(sortLoci=='missing'){
+    miss.levels <- dat[, sum(MISS)/length(LOCUS), by=LOCUS] %>%
+      setorder(., V1) %>%
+      .[['LOCUS']]
+    dat[, LOCUS:=factor(LOCUS, levels=miss.levels)]
+  }
+
+  # Plot
   if(is.na(popCol)){
     # If no population column is specified (NA)
     gg <- (ggplot(dat, aes(x=SAMPLE, y=LOCUS))
