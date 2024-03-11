@@ -29,7 +29,7 @@
 #' or cumulative variance plot, respectively, and will default to 'grey20'
 #' if unspecified.
 #'
-#' @param look Character: The look of the plot. Default = \code{'ggplot'}, the
+#' @param plotLook Character: The look of the plot. Default = \code{'ggplot'}, the
 #' typical gray background with gridlines produced by \code{ggplot2}. Alternatively,
 #' when set to \code{'classic'}, produces a base R style plot.
 #'
@@ -55,7 +55,7 @@
 #'    PCA,
 #'    axisIndex=c(2,3),
 #'    plotColours=c(Pop1='gray30', Pop2='royalblue', Pop3='palevioletred3', Pop4='plum2'),
-#'    look='classic'
+#'    plotLook='classic'
 #'    )
 #'
 #' # Explained variance
@@ -67,7 +67,7 @@
 #' @export
 pca_plot <- function(
     pcaObj, type='scatter', axisIndex=NULL, pops=NULL,
-    plotColours=NULL, look='ggplot', legendPos='top'){
+    plotColours=NULL, plotLook='ggplot', legendPos='top'){
 
   # --------------------------------------------+
   # Libraries and assertions
@@ -93,9 +93,9 @@ pca_plot <- function(
          pcaObj$sdev for type=='scree' or type=='cumvar'.")
   }
 
-  # Check that look is ggplot or classic.
-  if(!look%in%c('ggplot', 'classic')){
-    stop("Argument `look` is not one of: 'ggplot' or 'classic'.")
+  # Check that plotLook is ggplot or classic.
+  if(!plotLook%in%c('ggplot', 'classic')){
+    stop("Argument `plotLook` is not one of: 'ggplot' or 'classic'.")
   }
 
   # Check if there is a $pops index in pcaObj and assign populations if the
@@ -124,10 +124,10 @@ pca_plot <- function(
     plotColours <- 'grey20'
   }
 
-  # Set the plot theme by look
-  if(look=='ggplot'){
+  # Set the plot theme by plotLook
+  if(plotLook=='ggplot'){
     plotTheme <- theme_gray() + theme(legend.position=legendPos, axis.ticks.length = unit(0.2, 'cm'))
-  } else if(look=='classic'){
+  } else if(plotLook=='classic'){
     plotTheme <- theme_bw() + theme(
       panel.grid.major=element_blank()
       , panel.grid.minor=element_blank()

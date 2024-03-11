@@ -17,6 +17,9 @@
 #' @param sortLoci Character: Sort the loci by their genomic order (\code{'order'}),
 #' or by the proportion of missing data (\code{'missing'}). Default = \code{'order'}.
 #'
+#' @param sortSamp Character: Sort the samples by their alpha-numeric order (\code{'order'}),
+#' or by the proportion of missing data (\code{'missing'}). Default = \code{'order'}.
+#'
 #' @param sampCol Character: The column name with the sampled
 #' individual ID. Default = \code{'SAMPLE'}.
 #'
@@ -33,7 +36,7 @@
 #'
 #' @param plotColours Character: Vector of colours to use in plotting with a
 #' length of 2. The first colour is the missing colour, and the second colour
-#' is the non-missing colour.
+#' is the non-missing colour. Default = NULL.
 #'
 #' @param plotNCol Integer: The number of columns to arrange indiviudal
 #' population plots into. Only takes effect when \code{popCol} is specified.
@@ -100,8 +103,9 @@
 #'
 #' @export
 miss_plot_heatmap <- function(
-    dat, sortLoci='order', chromCol='CHROM', posCol='POS', sampCol='SAMPLE',
-    genoCol='GT', popCol=NA, plotColours='white', plotNCol=2){
+    dat, sortLoci='order', sortSamp='order',
+    chromCol='CHROM', posCol='POS', sampCol='SAMPLE',
+    genoCol='GT', popCol=NA, plotColours=NULL, plotNCol=2){
 
   # --------------------------------------------+
   # Libraries, assertions, and setup
@@ -121,15 +125,23 @@ miss_plot_heatmap <- function(
 
   dat[, LOCUS:=paste0(CHROM, '_', POS)]
 
+  # Create a list of unique samples
+  uniq.samp <- dat$SAMPLE %>% unique
+
   # Rename the population column, if it was specified
   if(is.na(popCol)==FALSE){
     colnames(dat)[which(colnames(dat)==popCol)] <- 'POP'
   }
 
-  # Check that the sortLoci is correctly specified.
-  check.sort <- sortLoci %in% c('order','missing')
-  if(check.sort!=TRUE){
+  # Check that sortLoci and sortSamp are correctly specified.
+  check.sort.loci <- sortLoci %in% c('order','missing')
+  if(check.sort.loci!=TRUE){
     stop('Argument `sortLoci` must be one of "order" and "missing". See ?miss_plot_heatmap.')
+  }
+
+  check.sort.samp <- sortSamp %in% c('order','missing')
+  if(check.sort.samp!=TRUE){
+    stop('Argument `sortSamp` must be one of "order" and "missing". See ?miss_plot_heatmap.')
   }
 
   # --------------------------------------------+
@@ -150,10 +162,19 @@ miss_plot_heatmap <- function(
   if(sortLoci=='order'){
     dat[, LOCUS:=factor(LOCUS, levels=uniq.loci)]
   } else if(sortLoci=='missing'){
-    miss.levels <- dat[, sum(MISS)/length(LOCUS), by=LOCUS] %>%
+    miss.levels.loci <- dat[, sum(MISS)/length(LOCUS), by=LOCUS] %>%
       setorder(., V1) %>%
       .[['LOCUS']]
-    dat[, LOCUS:=factor(LOCUS, levels=miss.levels)]
+    dat[, LOCUS:=factor(LOCUS, levels=miss.levels.loci)]
+  }
+
+  if(sortSamp=='order'){
+    dat[, SAMPLE:=factor(SAMPLE, levels=uniq.samp)]
+  } else if(sortSamp=='missing'){
+    miss.level.samp <- dat[, sum(MISS)/length(SAMPLE), by=SAMPLE] %>%
+      setorder(., V1) %>%
+      .[['SAMPLE']]
+    dat[, SAMPLE:=factor(SAMPLE, levels=miss.level.samp)]
   }
 
   # Plot
@@ -178,7 +199,7 @@ miss_plot_heatmap <- function(
     # for each population
     gg <- (ggplot(dat, aes(x=SAMPLE, y=LOCUS))
            + geom_tile(aes(fill=as.factor(MISS)), colour=NA)
-           + scale_fill_manual(values=c('0'=plotColours[1], '1'=plotColours[2]))
+           + scale_fill_manual(values=c('1'=plotColours[1], '0'=plotColours[2]))
            + labs(x='Samples', y='Locus')
            + facet_wrap(~POP, scales='free_x', ncol=plotNCol)
            + theme(

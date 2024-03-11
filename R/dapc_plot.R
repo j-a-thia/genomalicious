@@ -8,7 +8,10 @@
 #' See details.
 #'
 #' @param type Character: The type of plot to produce. If \code{'scatter'}, a
-#' scatter plot is produced. If \code{'probs'}, a plot of posterior probability
+#' scatter plot is produced. If \code{'scree'}, a screeplot of the explained
+#' among-population variation is produced. If \code{'cumvar'}, a plot of the
+#' cumulative explained among-population variation is produced.
+#' If \code{'probs'}, a plot of posterior probability
 #' for populations identity is produced. If \code{'assign'}, a heatmap of
 #' assignment rates among population pairs is produced.
 #'
@@ -17,9 +20,11 @@
 #' background with gridlines produced by \code{ggplot2}. Alternatively,
 #' when set to \code{'classic'}, produces a base R style plot.
 #'
-#' @param axisIndex Integer: The LD axes to plot, only applicable when
-#' \code{type=='scatter'}. There must be exactly 2 values, the two LD axes
-#' to plot as a scatterplot.
+#' @param axisIndex Integer: The LD axes to plot. If \code{type=='scatter'},
+#' there must be exactly 2 values, the two LD axes to plot as a scatterplot.
+#' If \code{type=='scree'} or \code{type=='cumvar'}, these are the axes for
+#' which you want to see the explained or cumulative among-population variance,
+#' respectively. Default is NULL.
 #'
 #' @param popBarScale Numeric: A scaling value for the population guide bar,
 #' only applicable when \code{type=='probs'}. A guide bar is used to delineate
@@ -39,7 +44,7 @@
 #' are colours and their indexed names are populations. All populations need
 #' to be represented with a colour. If \code{type=='assign'}, a series of colours
 #' needs to be specified to parameterise the colour gradient in the assignment
-#' rate heatmap.
+#' rate heatmap. If \code{type=='scree'} or \code{type=='cumvar'}, a single value.
 #'
 #' @param legendPos Character: Where should the legend be positioned? Default is
 #' \code{'top'}, but could also be one of, \code{'right'}, \code{'bottom'},
@@ -80,6 +85,9 @@
 #' plotColours=c(Pop1='#08c7e0', Pop2='#4169e1', Pop3='#e46adf', Pop4='#ce0073')
 #' )
 #'
+#' # Screeplot
+#' dapc_plot(DAPC.fit, type='scree', )
+#'
 #' # Probability plot, default colours
 #' dapc_plot(DAPC.fit, type='probs')
 #'
@@ -99,7 +107,7 @@
 #'
 #' @export
 dapc_plot <- function(
-    dapcList, type, plotLook='ggplot', axisIndex=c(1,2), popBarScale=1,
+    dapcList, type, plotLook='ggplot', axisIndex=NULL, popBarScale=1,
     sampleShow=TRUE, sampleOrder='by_id', plotColours=NULL, legendPos='top'
 ){
   # --------------------------------------------+
@@ -158,6 +166,46 @@ dapc_plot <- function(
     }
   }
 
+  # Scatterplot axis
+  if(type=='scatter'){
+    if(is.null(axisIndex)==TRUE){
+      axisIndex <- 1:2
+    }
+  }
+
+  # Scree colours and axes
+  if(type=='scree'){
+    if(is.null(plotColours)==TRUE){
+      plotColours <- 'grey20'
+    }
+    if(length(plotColours)!=1){
+      stop('For `type`=="scree", argument `plotColours` must be a single value. See ?dapc_plot.')
+    }
+  }
+
+  if(type=='scree'){
+    if(is.null(axisIndex)==TRUE){
+      axisIndex <- 1:length(dapcList$da.fit$svd)
+    }
+  }
+
+  # Cumulative variance colours and axes
+  if(type=='cumvar'){
+    if(is.null(plotColours)==TRUE){
+      plotColours <- 'grey20'
+    }
+    if(length(plotColours)!=1){
+      stop('For `type`=="cumvar", argument `plotColours` must be a single value. See ?dapc_plot.')
+    }
+  }
+
+  if(type=='cumvar'){
+    if(is.null(axisIndex)==TRUE){
+      axisIndex <- 1:length(dapcList$da.fit$svd)
+    }
+  }
+
+  # Probability plots
   if(type=='probs'){
     # Population scale bar class
     if(class(popBarScale)!='numeric'){
@@ -196,6 +244,7 @@ dapc_plot <- function(
     }
   }
 
+  # Assignment plots
   if(type=='assign'){
     if(!'pairs.long' %in% names(dapcList)){
       stop('For `type==assign`, there must be index `dapcList$pairs.long`. See dapc_plot?')
@@ -240,6 +289,34 @@ dapc_plot <- function(
     if(is.null(plotColours)==FALSE){
       gg <- gg + scale_colour_manual(values=plotColours) + labs(colour=NULL)
     }
+  }
+
+  ### Plot scree or cumulative variance
+  if(type %in% c('scree', 'cumvar')){
+    # Vector of number PCs for X axis
+    S <- dapcList$da.fit$svd^2
+    X <- 1:length(S)
+
+    # If explained variance, divide eigenvalues by sum,
+    # also create Y axis label
+    if(type=='cumvar'){
+      Y <- unlist(lapply(1:length(S), function(i){
+        sum(S[1:i])/sum(S) * 100
+      }))
+      axY <- 'Cumulative variance (%)'
+    } else if(type=='scree'){
+      Y <- S/sum(S) * 100
+      axY <- 'Explained variance (%)'
+    }
+
+    # The plot
+    gg <- (data.frame(X=X[axisIndex], Y=Y[axisIndex]) %>%
+             ggplot(., aes(x=X, y=Y))
+           + plotTheme
+           + geom_col(fill=plotColours)
+           + scale_x_continuous(breaks = ~round(unique(pretty(.))))
+           + labs(x='LD axes', y=axY)
+    )
   }
 
   ### Plot probabilities

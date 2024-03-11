@@ -8,7 +8,7 @@ dapc_plot(
   dapcList,
   type,
   plotLook = "ggplot",
-  axisIndex = c(1, 2),
+  axisIndex = NULL,
   popBarScale = 1,
   sampleShow = TRUE,
   sampleOrder = "by_id",
@@ -21,7 +21,10 @@ dapc_plot(
 See details.}
 
 \item{type}{Character: The type of plot to produce. If \code{'scatter'}, a
-scatter plot is produced. If \code{'probs'}, a plot of posterior probability
+scatter plot is produced. If \code{'scree'}, a screeplot of the explained
+among-population variation is produced. If \code{'cumvar'}, a plot of the
+cumulative explained among-population variation is produced.
+If \code{'probs'}, a plot of posterior probability
 for populations identity is produced. If \code{'assign'}, a heatmap of
 assignment rates among population pairs is produced.}
 
@@ -30,9 +33,11 @@ assignment rates among population pairs is produced.}
 background with gridlines produced by \code{ggplot2}. Alternatively,
 when set to \code{'classic'}, produces a base R style plot.}
 
-\item{axisIndex}{Integer: The LD axes to plot, only applicable when
-\code{type=='scatter'}. There must be exactly 2 values, the two LD axes
-to plot as a scatterplot.}
+\item{axisIndex}{Integer: The LD axes to plot. If \code{type=='scatter'},
+there must be exactly 2 values, the two LD axes to plot as a scatterplot.
+If \code{type=='scree'} or \code{type=='cumvar'}, these are the axes for
+which you want to see the explained or cumulative among-population variance,
+respectively. Default is NULL.}
 
 \item{popBarScale}{Numeric: A scaling value for the population guide bar,
 only applicable when \code{type=='probs'}. A guide bar is used to delineate
@@ -52,7 +57,7 @@ or \code{type=='probs'}, then this needs to be a named vector, where the values
 are colours and their indexed names are populations. All populations need
 to be represented with a colour. If \code{type=='assign'}, a series of colours
 needs to be specified to parameterise the colour gradient in the assignment
-rate heatmap.}
+rate heatmap. If \code{type=='scree'} or \code{type=='cumvar'}, a single value.}
 
 \item{legendPos}{Character: Where should the legend be positioned? Default is
 \code{'top'}, but could also be one of, \code{'right'}, \code{'bottom'},
@@ -99,6 +104,9 @@ dapc_plot(DAPC.fit, type='scatter', axisIndex=c(1,2))
 dapc_plot(DAPC.fit, type='scatter', axisIndex=c(2,3), plotLook='classic',
 plotColours=c(Pop1='#08c7e0', Pop2='#4169e1', Pop3='#e46adf', Pop4='#ce0073')
 )
+
+# Screeplot
+dapc_plot(DAPC.fit, type='scree', )
 
 # Probability plot, default colours
 dapc_plot(DAPC.fit, type='probs')

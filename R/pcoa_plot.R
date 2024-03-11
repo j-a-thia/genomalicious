@@ -29,7 +29,7 @@
 #' or cumulative variance plot, respectively, and will default to 'grey20'
 #' if unspecified.
 #'
-#' @param look Character: The look of the plot. Default = \code{'ggplot'}, the
+#' @param plotLook Character: The look of the plot. Default = \code{'ggplot'}, the
 #' typical gray background with gridlines produced by \code{ggplot2}. Alternatively,
 #' when set to \code{'classic'}, produces a base R style plot.
 #'
@@ -62,7 +62,7 @@
 #'    PCOA,
 #'    type='scatter',
 #'    plotColours=c(Pop1='gray30', Pop2='royalblue', Pop3='palevioletred3', Pop4='plum2'),
-#'    look='classic'
+#'    plotLook='classic'
 #' )
 #'
 #' # Explained variance
@@ -74,7 +74,7 @@
 #' @export
 pcoa_plot <- function(
     pcoaObj, type='scatter', axisIndex=NULL,
-    plotColours=NULL, look='ggplot', legendPos='top'){
+    plotColours=NULL, plotLook='ggplot', legendPos='top'){
 
   # --------------------------------------------+
   # Libraries and assertions
@@ -102,8 +102,8 @@ pcoa_plot <- function(
   }
 
   # Check that look is ggplot or classic.
-  if(!look%in%c('ggplot', 'classic')){
-    stop("Argument `look` is not one of: 'ggplot' or 'classic'.")
+  if(!plotLook%in%c('ggplot', 'classic')){
+    stop("Argument `plotLook` is not one of: 'ggplot' or 'classic'.")
   }
 
   # Check that specified populations in plotColours are all in pops.
@@ -131,10 +131,10 @@ pcoa_plot <- function(
     plotColours <- 'grey20'
   }
 
-  # Set the plot theme by look
-  if(look=='ggplot'){
+  # Set the plot theme by plotLook
+  if(plotLook=='ggplot'){
     plotTheme <- theme_gray() + theme(legend.position=legendPos, axis.ticks.length = unit(0.2, 'cm'))
-  } else if(look=='classic'){
+  } else if(plotLook=='classic'){
     plotTheme <- theme_bw() + theme(
       panel.grid.major=element_blank()
       , panel.grid.minor=element_blank()
@@ -169,8 +169,8 @@ pcoa_plot <- function(
     gg <- ggplot(plot.tab, aes_string(x=axX, y=axY)) +
       plotTheme +
       labs(
-        x=paste0('Axis ', axisIndex[1], ' (', varX, '%)')
-        , y=paste0('Axis ', axisIndex[2], ' (', varY, '%)')
+        x=paste0('PCo', axisIndex[1], ' (', varX, '%)')
+        , y=paste0('PCo', axisIndex[2], ' (', varY, '%)')
       )
 
     # Add points and population colours if specified

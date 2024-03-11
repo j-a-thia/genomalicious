@@ -10,7 +10,7 @@ pca_plot(
   axisIndex = NULL,
   pops = NULL,
   plotColours = NULL,
-  look = "ggplot",
+  plotLook = "ggplot",
   legendPos = "top"
 )
 }
@@ -41,7 +41,7 @@ a single colour is required, which is the colour of bars in the screeplot
 or cumulative variance plot, respectively, and will default to 'grey20'
 if unspecified.}
 
-\item{look}{Character: The look of the plot. Default = \code{'ggplot'}, the
+\item{plotLook}{Character: The look of the plot. Default = \code{'ggplot'}, the
 typical gray background with gridlines produced by \code{ggplot2}. Alternatively,
 when set to \code{'classic'}, produces a base R style plot.}
 
@@ -72,7 +72,7 @@ pca_plot(
    PCA,
    axisIndex=c(2,3),
    plotColours=c(Pop1='gray30', Pop2='royalblue', Pop3='palevioletred3', Pop4='plum2'),
-   look='classic'
+   plotLook='classic'
    )
 
 # Explained variance

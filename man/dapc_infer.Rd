@@ -13,7 +13,7 @@ dapc_infer(
   kTest = 1:10L,
   pTest,
   screeMax = 20L,
-  look = "ggplot"
+  plotLook = "ggplot"
 )
 }
 \arguments{
@@ -52,7 +52,7 @@ fit K-means with.}
 
 \item{screeMax}{Integer: The maximum number of PC axes to plot in the screeplot.}
 
-\item{look}{Character: The look of the plot. Default = \code{'ggplot'}, the
+\item{plotLook}{Character: The look of the plot. Default = \code{'ggplot'}, the
 typical gray background with gridlines produced by \code{ggplot2}. Alternatively,
 when set to \code{'classic'}, produces a base R style plot.}
 }
@@ -111,7 +111,7 @@ inferK <- dapc_infer(
    kTest=1:10L,
    pTest=c(3,10,20,40),
    screeMax=10L,
-   look='ggplot'
+   plotLook='ggplot'
 )
 
 # Tabulated statistics
