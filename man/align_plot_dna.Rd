@@ -30,7 +30,7 @@ values. For example, \code{c('?'='black', 'N'='black')}.
 Default is NA, which will produce automated colours.}
 
 \item{gap_colour}{Chracter: named vector colour for gaps. For examples,
-\code{c('-'='white')}. #' Default is NA, which will produce
+\code{c('-'='white')}. Default is NA, which will produce
 automated colours.}
 
 \item{border_colour}{Character: single value, the colour of borders around
@@ -58,19 +58,20 @@ library(genomalicious)
 genomaliciousExtData <- paste0(find.package('genomalicious'), '/extdata')
 
 # Path to the demo FASTA file
-fasta <- paste0(genomaliciousExtData, '/data_COI.fasta')
+fasta <- paste0(genomaliciousExtData, '/data_COI_dna.fasta')
 
 # Multi sequence alignmnet of demo COI data.
 aln <- align_many_genes_dna(fasta, gene.names='COI')
 
-# Plot base positions from 200:250
-align_plot_dna(as.matrix(aln$COI$align), pos_vec=200:250)
+# Plot base positions from 598 to 627
+align_plot_dna(as.matrix(aln$COI$align), pos_vec=598:627)
 
-# Custom colours, no text
+# Custom colours, no text, and borders
 align_plot_dna(
    as.matrix(aln$COI$align),
-   nuc_colours=c(`A`='#ce0073',`T`='#e46adf',`G`='royalblue',`C`='#08c7e0'),
-   pos_vec=200:250,
+   nuc_colours=c(`A`='#ce0073',`T`='#e46adf',`G`='#59A3FF',`C`='#08c7e0'),
+   border_colour='grey20',
+   pos_vec=598:627,
    show_bases=FALSE
 )
 

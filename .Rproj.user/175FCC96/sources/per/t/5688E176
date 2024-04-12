@@ -1,26 +1,26 @@
 {
-    "id": "78526767",
-    "path": "~/GitHub/genomalicious/R/poolfstat_DT2pooldata.R",
-    "project_path": "R/poolfstat_DT2pooldata.R",
+    "id": "5688E176",
+    "path": "~/GitHub/genomalicious/R/align_many_genes_dna.R",
+    "project_path": "R/align_many_genes_dna.R",
     "type": "r_source",
-    "hash": "307086968",
+    "hash": "3274060850",
     "contents": "",
     "dirty": false,
-    "created": 1710021389104.0,
+    "created": 1712881377404.0,
     "source_on_save": false,
     "relative_order": 4,
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "176,43",
-        "scrollLine": "0"
+        "cursorPosition": "69,0",
+        "scrollLine": "47"
     },
     "folds": "",
-    "lastKnownWriteTime": 1677995370,
+    "lastKnownWriteTime": 1712882959,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1677995370,
+    "last_content_update": 1712882959406,
     "read_only": false,
     "read_only_alternatives": []
 }

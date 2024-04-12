@@ -1,0 +1,26 @@
+{
+    "id": "D6DEA448",
+    "path": "~/GitHub/genomalicious/R/align_plot_dna.R",
+    "project_path": "R/align_plot_dna.R",
+    "type": "r_source",
+    "hash": "384097168",
+    "contents": "",
+    "dirty": false,
+    "created": 1712879578590.0,
+    "source_on_save": false,
+    "relative_order": 2,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "55,21",
+        "scrollLine": "39"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1712886000,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1712886000648,
+    "read_only": false,
+    "read_only_alternatives": []
+}

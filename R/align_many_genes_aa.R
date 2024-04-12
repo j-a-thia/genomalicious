@@ -1,7 +1,7 @@
-#' Alignment of many genes (DNA sequences)
+#' Alignment of many genes (amino acid sequences)
 #'
 #' Reads in multiple FASTA files of different genes, performs an alignment,
-#' and tests the best evolutionary model. Specifically for DNA sequences.
+#' and tests the best evolutionary model. Specifically for amino acid sequences.
 #'
 #' @param fasta.files Character, vector of paths to FASTA files. Each one
 #' containing sequences for a specific gene for multiple taxa.
@@ -10,7 +10,7 @@
 #' Is passed to the function \code{msa::msa(... method=method)}.
 #'
 #' @param model.model Character, evolutionary models to test. Any one, or all of
-#' "JC", "F81", "K80", "HKY", "SYM", "GTR". Passed to function
+#' the possible model arguments in \code{phangorn::modelTest}. Passed to function
 #' \code{phangorn::modelTest(... model=model.model)}. Default is \code{NULL},
 #' in which case, no models will be tested.
 #'
@@ -38,7 +38,7 @@
 #' FASTA files specified in \code{fasta.files}. For each indexed gene, there
 #' are additional slots:
 #' \enumerate{
-#'    \item \code{$gene} = DNAStringSet, the imported FASTA sequences.
+#'    \item \code{$gene} = AAStringSet, the imported FASTA sequences.
 #'    \item \code{$align} = msa, the multiple sequence alignment for the gene.
 #'    \item \code{$model.test} = Data.table, the output of
 #'       \code{phangorn::modelTest}.
@@ -52,19 +52,19 @@
 #' genomaliciousExtData <- paste0(find.package('genomalicious'), '/extdata')
 #'
 #' # Path to the demo FASTA file
-#' fasta <- paste0(genomaliciousExtData, '/data_COI_dna.fasta')
+#' fasta <- paste0(genomaliciousExtData, '/data_COI_aa.fasta')
 #'
 #' # Multi sequence alignmnet of demo COI data, without model test
-#' aln <- align_many_genes_dna(fasta, gene.names='COI')
+#' aln <- align_many_genes_aa(fasta, gene.names='COI')
 #'
 #' str(aln)
 #' names(aln)
 #' aln$COI
 #'
 #' # Same again, but with model test
-#' aln.test <- align_many_genes_dna(
+#' aln.test <- align_many_genes_aa(
 #'    fasta.files=fasta, gene.names='COI', model.I=TRUE, model.G=TRUE,
-#'    model.model=c("JC", "F81", "K80", "HKY", "SYM", "GTR")
+#'    model.model='all'
 #'    )
 #'
 #' aln.test$COI$model.test
@@ -72,10 +72,10 @@
 #'
 #'
 #' @export
-align_many_genes_dna <- function(
-  fasta.files, method='ClustalW',
-  model.model=NULL,
-  model.G=TRUE, model.I=TRUE, cores=1, gene.names=NULL){
+align_many_genes_aa <- function(
+    fasta.files, method='ClustalW',
+    model.model=NULL,
+    model.G=TRUE, model.I=TRUE, cores=1, gene.names=NULL){
 
   require(ape)
   require(doParallel)
@@ -87,7 +87,7 @@ align_many_genes_dna <- function(
   if(cores==1){
     alignList <- lapply(fasta.files, function(fa){
       # Read in gene FASTA
-      gene <- readDNAStringSet(fa)
+      gene <- readAAStringSet(fa)
 
       # Align
       align <- msa(gene, method = method, order='input')
