@@ -11,7 +11,7 @@ gene_map_plot(
   gene_type = c("gene", "rRNA"),
   extra_type = c("tRNA", "D-loop"),
   plot_xmin = 0,
-  plot_xmax = genome_len,
+  plot_xmax = NULL,
   plot_ymax = 5,
   extra_ypos = 3,
   gene_txt_size = 4,

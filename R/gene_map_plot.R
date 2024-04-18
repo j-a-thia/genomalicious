@@ -136,12 +136,12 @@
 #' @export
 
 gene_map_plot <- function(
-  mapDT, genome_len=NULL, gene_colour=NULL,
-  gene_type=c('gene', 'rRNA'), extra_type=c('tRNA', 'D-loop'),
-  plot_xmin=0, plot_xmax=genome_len, plot_ymax=5,
-  extra_ypos=3,
-  gene_txt_size=4, extra_txt_size=4, font='Arial',
-  gene_border=NA, gene_size=2
+    mapDT, genome_len=NULL, gene_colour=NULL,
+    gene_type=c('gene', 'rRNA'), extra_type=c('tRNA', 'D-loop'),
+    plot_xmin=0, plot_xmax=NULL, plot_ymax=5,
+    extra_ypos=3,
+    gene_txt_size=4, extra_txt_size=4, font='Arial',
+    gene_border=NA, gene_size=2
 ){
 
   # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -197,62 +197,68 @@ gene_map_plot <- function(
     genome_len <- mapDT$END %>% max()
   }
 
+  # If plot_xmax isn't specified, give genome length
+  if(is.null(plot_xmax)){
+    plot_xmax <- genome_len
+  }
+
   # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   ####    PLOT GENE FEATURES   ####
   # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   # Base plot
   ggMito <- (
-    ggplot()
-    # Theme
-    + theme(
-      axis.line.y=element_blank(),
-      axis.text.y=element_blank(),
-      axis.ticks.y=element_blank(),
-      axis.title.y=element_blank(),
-      axis.ticks.length.x=unit(2, 'mm'),
-      axis.title.x=element_blank(),
-      legend.position='none',
-      panel.grid.minor.y=element_blank(),
-      panel.grid.major.y=element_blank(),
-      text=element_text(family=font)
-    )
-    # Gene features
-    + geom_rect(
-      data=genesDT,
-      mapping=aes(xmin=START, xmax=END, ymin=Y.MIN, ymax=Y.MAX, fill=NAME),
-      colour=gene_border, size=gene_size
-    )
-    # The central genome line
-    + geom_rect(
-      data=data.table(START=plot_xmin, END=genome_len, Y.MIN=-0.1, Y.MAX=0.1),
-      mapping=aes(xmin=START, xmax=END, ymin=Y.MIN, ymax=Y.MAX),
-    )
-    # Colours
-    + scale_colour_manual(values=gene_colour)
-    + scale_fill_manual(values=gene_colour)
-    # Axis limits
-    + xlim(plot_xmin, plot_xmax)
-    + ylim(-plot_ymax,plot_ymax)
+    ggplot() +
+      # Theme
+      theme(
+        axis.line.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        axis.title.y=element_blank(),
+        axis.ticks.length.x=unit(2, 'mm'),
+        axis.title.x=element_blank(),
+        legend.position='none',
+        panel.grid.minor.y=element_blank(),
+        panel.grid.major.y=element_blank(),
+        text=element_text(family=font)
+      ) +
+      # Gene features
+      geom_rect(
+        data=genesDT,
+        mapping=aes(xmin=START, xmax=END, ymin=Y.MIN, ymax=Y.MAX, fill=NAME),
+        colour=gene_border, linewidth=gene_size
+      ) +
+      # The central genome line
+      geom_rect(
+        data=data.table(START=plot_xmin, END=genome_len, Y.MIN=-0.1, Y.MAX=0.1),
+        mapping=aes(xmin=START, xmax=END, ymin=Y.MIN, ymax=Y.MAX),
+      ) +
+      # Colours
+      scale_colour_manual(values=gene_colour) +
+      scale_fill_manual(values=gene_colour) +
+      # Axis limits
+      xlim(plot_xmin, plot_xmax) +
+      ylim(-plot_ymax,plot_ymax)
   )
+
   # Text for genes features on positive and negative strands
   if(nrow(genesDT[STRAND==1]) > 0){
     ggMito <- (
-      ggMito
-      + geom_text(
-        data=genesDT[STRAND==1],
-        mapping=aes(x=X.MID, y=1.2, label=NAME, colour=NAME),
-        angle=45, hjust='left', size=gene_txt_size, family=font, parse=TRUE
-      )
+      ggMito +
+        geom_text(
+          data=genesDT[STRAND==1],
+          mapping=aes(x=X.MID, y=1.2, label=NAME, colour=NAME),
+          angle=45, hjust='left', size=gene_txt_size, family=font, parse=TRUE
+        )
     )
   }
   if(nrow(genesDT[STRAND==-1]) > 0){
     ggMito <- (
-      ggMito
-      + geom_text(
-        data=genesDT[STRAND==-1],
-        mapping=aes(x=X.MID, y=-1.2, label=NAME, colour=NAME),
-        angle=45, hjust='right', size=gene_txt_size, family=font, parse=TRUE
-      )
+      ggMito +
+        geom_text(
+          data=genesDT[STRAND==-1],
+          mapping=aes(x=X.MID, y=-1.2, label=NAME, colour=NAME),
+          angle=45, hjust='right', size=gene_txt_size, family=font, parse=TRUE
+        )
     )
   }
 
@@ -271,31 +277,31 @@ gene_map_plot <- function(
 
     # Add in features and their labels
     ggMito <- (
-      ggMito
-      + geom_rect(
-        data=extraPos,
-        mapping=aes(xmin=START, xmax=END, ymin=extra_ypos, ymax=extra_ypos+0.3),
-        fill=extra.pos.colour, colour=NA
-      )
-      + geom_rect(
-        data=extraNeg,
-        mapping=aes(xmin=START, xmax=END, ymin=-extra_ypos, ymax=-extra_ypos-0.3),
-        fill=extra.neg.colour, colour=NA
-      )
-      + geom_text_repel(
-        data=extraPos,
-        mapping=aes(x=X.MID, y=extra_ypos+0.3, label=NAME),
-        angle=45, min.segment.length = unit(0, 'lines'),
-        ylim=c(extra_ypos+0.5,plot_ymax), nudge_y=extra_ypos+0.5,
-        size=extra_txt_size, family=font, parse=TRUE, segment.size=0.25
-      )
-      + geom_text_repel(
-        data=extraNeg,
-        mapping=aes(x=X.MID, y=-extra_ypos-0.3, label=NAME),
-        angle=45, min.segment.length = unit(0, 'lines'),
-        ylim=c(-plot_ymax,-extra_ypos-0.5), nudge_y=-extra_ypos-0.5,
-        size=extra_txt_size, family=font, parse=TRUE, segment.size=0.25
-      )
+      ggMito +
+        geom_rect(
+          data=extraPos,
+          mapping=aes(xmin=START, xmax=END, ymin=extra_ypos, ymax=extra_ypos+0.3),
+          fill=extra.pos.colour, colour=NA
+        ) +
+        geom_rect(
+          data=extraNeg,
+          mapping=aes(xmin=START, xmax=END, ymin=-extra_ypos, ymax=-extra_ypos-0.3),
+          fill=extra.neg.colour, colour=NA
+        ) +
+        geom_text_repel(
+          data=extraPos,
+          mapping=aes(x=X.MID, y=extra_ypos+0.3, label=NAME),
+          angle=45, min.segment.length = unit(0, 'lines'),
+          ylim=c(extra_ypos+1,plot_ymax),
+          size=extra_txt_size, family=font, parse=TRUE, segment.size=0.25
+        ) +
+        geom_text_repel(
+          data=extraNeg,
+          mapping=aes(x=X.MID, y=-extra_ypos-0.3, label=NAME),
+          angle=45, min.segment.length = unit(0, 'lines'),
+          ylim=c(-plot_ymax,-extra_ypos-1),
+          size=extra_txt_size, family=font, parse=TRUE, segment.size=0.25
+        )
     )
   }
 
