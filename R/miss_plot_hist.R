@@ -153,7 +153,7 @@ miss_plot_hist <- function(
 
   if(is.na(popCol)){
     # If no population column is specified (NA)
-    stats <- dat[, sum(is.na(GT))/length(GT), by=focus]
+    stats <- dat[, 100 * sum(is.na(GT))/length(GT), by=focus]
     gg <- (ggplot(stats, aes(x=V1))
            + plotTheme
            + geom_histogram(fill=plotColours[1], colour='black')
@@ -162,7 +162,7 @@ miss_plot_hist <- function(
                   ))
   } else{
     # If population column is specified, facet plot by population
-    stats <- dat[, sum(is.na(GT))/length(GT), by=c(focus, 'POP')]
+    stats <- dat[, 100 * sum(is.na(GT))/length(GT), by=c(focus, 'POP')]
     gg <- (ggplot(stats, aes(x=V1))
            + plotTheme + theme(strip.text.x=element_text(face='bold'))
            + geom_histogram(fill=plotColours[1], colour='black')
