@@ -1,6 +1,10 @@
 #' VCF file to data table
 #'
-#' Reads a VCF file and converts to a long format data table.
+#' Reads a VCF file and converts to a long format data table. Note, that whilst
+#' the \code{data.table} object class is very memory efficient, very large genomic
+#' datasets will take a long time to read in, and/or be difficult to hold in
+#' memory. Take your operating system and the size of your input dataset into
+#' consideration when using this function.
 #'
 #' @param vcfFile Character: The path to the input VCF file.
 #'
@@ -83,8 +87,15 @@ vcf2DT <- function(vcfFile, dropCols=NULL, keepComments=FALSE, keepInfo=FALSE){
   # #### Code: VCF to data table             ####
   # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-  # What is the position of the header?
-  headPos <- grep('#CHROM', readLines(vcfFile, n=500), value=FALSE)
+  # What is the position of the column heads?
+  n <- 1
+  headPos <- NULL
+  while(length(headPos)==0){
+    headPos <- grep('#CHROM', readLines(vcfFile, n=n), value=FALSE)
+    if(length(headPos)==0){
+      n <- n + 1000
+    }
+  }
 
   # Read file from header
   cat('(1/4) Reading in VCF as a data table', sep='\n')
@@ -110,7 +121,7 @@ vcf2DT <- function(vcfFile, dropCols=NULL, keepComments=FALSE, keepInfo=FALSE){
 
   # Now convert the data from wide to long
   cat('(3/4) Converting from wide to long format', sep='\n')
-  vcfDT <- melt(
+  vcfDT <- data.table::melt(
     data=vcfDT,
     id.vars=1:(sampCols[1]-1),
     measure.vars=sampCols,
@@ -133,7 +144,7 @@ vcf2DT <- function(vcfFile, dropCols=NULL, keepComments=FALSE, keepInfo=FALSE){
   # ... Separate $DATA by $FORMAT names
   vcfDT <- cbind(
     vcfDT[, !c('FORMAT','DATA')],
-    vcfDT %>% .[, tstrsplit(DATA, ':', names=formatNames)]
+    vcfDT[, tstrsplit(DATA, ':', names=formatNames)]
   ) %>%
     as.data.table()
 

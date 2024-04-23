@@ -37,7 +37,11 @@ access Info and Comments (respectively) with: \code{attr(vcfDT, 'vcf_info')}
 and \code{attr(vcfDT, 'vcf_comments')}.
 }
 \description{
-Reads a VCF file and converts to a long format data table.
+Reads a VCF file and converts to a long format data table. Note, that whilst
+the \code{data.table} object class is very memory efficient, very large genomic
+datasets will take a long time to read in, and/or be difficult to hold in
+memory. Take your operating system and the size of your input dataset into
+consideration when using this function.
 }
 \details{
 Firstly, it should be noted that while data tables are a really
