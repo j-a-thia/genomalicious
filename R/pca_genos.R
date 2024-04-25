@@ -86,11 +86,6 @@ pca_genos <- function(dat, scaling='covar', sampCol='SAMPLE'
     dat[[genoCol]] <- genoscore_converter(dat[[genoCol]])
   }
 
-  # Convert numeric allele counts to integers
-  if(gtClass=='numeric'){
-    dat[[genoCol]] <- as.integer(dat[[genoCol]])
-  }
-
   # --------------------------------------------+
   # Code
   # --------------------------------------------+

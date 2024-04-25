@@ -107,16 +107,6 @@ DT2Mat_genos <- function(dat, sampCol='SAMPLE', locusCol='LOCUS', genoCol='GT', 
     stop('Genotypes must be either a character or integer class: see ?DT2Mat_genos')
   }
 
-  # If genotypes counts are numerics, convert to integers.
-  if(genoInitClass=='numeric'){
-    if(class(dat)[1]=='data.table'){
-      dat[[genoCol]] <- as.integer(dat[[genoCol]])
-    } else if('matirx' %in% class(dat)){
-      dat <- apply(dat, 2, as.integer)
-    }
-  }
-
-
   # --------------------------------------------+
   # Code
   # --------------------------------------------+
