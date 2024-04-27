@@ -10,8 +10,8 @@ vcf2DT(vcfFile, dropCols = NULL, keepComments = FALSE, keepInfo = FALSE)
 \item{vcfFile}{Character: The path to the input VCF file.}
 
 \item{dropCols}{Character: Vector of column names from the VCF that you
-want to drop from the data table. Default = \code{NULL}.
-Only relevant when argument \code{flip==FALSE}.}
+want to drop from the output data table. Use this for any column that occurs
+before the 'FORMAT' column in the original VCF file. Default = \code{NULL}.}
 
 \item{keepComments}{Logical: Should the VCF comments be kept?
 Default = \code{FALSE}. See Details for parameterisation.}
@@ -23,11 +23,11 @@ Default = \code{FALSE}.}
 A \code{data.table} object is returned with all the columns contained in
 the original VCF file with some additions:
 \itemize{
-    \item A column called \code{LOUCS} is generated. This is the concatenation of the
-             \code{CHROM} and \code{POS} column to form a locus ID.
-    \item A column called \code{SAMPLE} is generated. This contains the sample IDs that
-             are the columns that follow the \code{FORMAT} column in the original VCF.
-    \item The items in the original \code{FORMAT} column of the VCF are given their own columns.
+    \item A column called \code{$LOCUS} is generated. This is the concatenation of the
+             \code{$CHROM} and \code{$POS} column to form a locus ID.
+    \item A column called \code{$SAMPLE} is generated. This contains the sample IDs that
+             are the columns that follow the \code{$FORMAT} column in the original VCF.
+    \item The items in the original \code{$FORMAT} column of the VCF are given their own columns.
 } \cr
 Note, for VCF files produced by Stacks, the $CHROM is given the same value
 as the $ID column. \cr\cr
@@ -39,17 +39,19 @@ and \code{attr(vcfDT, 'vcf_comments')}.
 \description{
 Reads a VCF file and converts to a long format data table. Note, that whilst
 the \code{data.table} object class is very memory efficient, very large genomic
-datasets will take a long time to read in, and/or be difficult to hold in
+datasets might take longer to read in, and/or be difficult to hold in
 memory. Take your operating system and the size of your input dataset into
 consideration when using this function.
 }
 \details{
 Firstly, it should be noted that while data tables are a really
 excellent way of handling genotype and sequence read information in R,
-they are not necessarily the most efficient way to do so. Importing VCFs
-as data table (or the reverse, exporting data tables as VCFs), can take
-a considerable amount of time if the number of loci and samples are large.
-However, a bit of patience is worth it! \cr
+they are not necessarily the most efficient way to do so for very large
+genomic datasets. Take your operating system and/or dataset in mind before
+using this function. Most RADseq datasets should be manageable, but
+whole-genome data can be challenging if you do not have a lot of available
+memory. You can always try loading in subsets (e.g., by chromosome or contigs)
+of your dataset to see how feasible it is to load with this function.
 }
 \examples{
 # Create a link to raw external datasets in genomalicious
@@ -82,8 +84,4 @@ readVcf2 \%>\% print
 attr(readVcf2, 'vcf_comments')
 attr(readVcf2, 'vcf_info')
 
-}
-\references{
-This & Riginos (2019) genomalicious: serving up a smorgasbord of
-R functions for population genomic analyses. BioRxiv.
 }

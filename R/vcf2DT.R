@@ -2,15 +2,15 @@
 #'
 #' Reads a VCF file and converts to a long format data table. Note, that whilst
 #' the \code{data.table} object class is very memory efficient, very large genomic
-#' datasets will take a long time to read in, and/or be difficult to hold in
+#' datasets might take longer to read in, and/or be difficult to hold in
 #' memory. Take your operating system and the size of your input dataset into
 #' consideration when using this function.
 #'
 #' @param vcfFile Character: The path to the input VCF file.
 #'
 #' @param dropCols Character: Vector of column names from the VCF that you
-#' want to drop from the data table. Default = \code{NULL}.
-#' Only relevant when argument \code{flip==FALSE}.
+#' want to drop from the output data table. Use this for any column that occurs
+#' before the 'FORMAT' column in the original VCF file. Default = \code{NULL}.
 #'
 #' @param keepComments Logical: Should the VCF comments be kept?
 #' Default = \code{FALSE}. See Details for parameterisation.
@@ -20,19 +20,21 @@
 #'
 #' @details Firstly, it should be noted that while data tables are a really
 #' excellent way of handling genotype and sequence read information in R,
-#' they are not necessarily the most efficient way to do so. Importing VCFs
-#' as data table (or the reverse, exporting data tables as VCFs), can take
-#' a considerable amount of time if the number of loci and samples are large.
-#' However, a bit of patience is worth it! \cr
+#' they are not necessarily the most efficient way to do so for very large
+#' genomic datasets. Take your operating system and/or dataset in mind before
+#' using this function. Most RADseq datasets should be manageable, but
+#' whole-genome data can be challenging if you do not have a lot of available
+#' memory. You can always try loading in subsets (e.g., by chromosome or contigs)
+#' of your dataset to see how feasible it is to load with this function.
 #'
 #' @return A \code{data.table} object is returned with all the columns contained in
 #' the original VCF file with some additions:
 #' \itemize{
-#'     \item A column called \code{LOUCS} is generated. This is the concatenation of the
-#'              \code{CHROM} and \code{POS} column to form a locus ID.
-#'     \item A column called \code{SAMPLE} is generated. This contains the sample IDs that
-#'              are the columns that follow the \code{FORMAT} column in the original VCF.
-#'     \item The items in the original \code{FORMAT} column of the VCF are given their own columns.
+#'     \item A column called \code{$LOCUS} is generated. This is the concatenation of the
+#'              \code{$CHROM} and \code{$POS} column to form a locus ID.
+#'     \item A column called \code{$SAMPLE} is generated. This contains the sample IDs that
+#'              are the columns that follow the \code{$FORMAT} column in the original VCF.
+#'     \item The items in the original \code{$FORMAT} column of the VCF are given their own columns.
 #' } \cr
 #' Note, for VCF files produced by Stacks, the $CHROM is given the same value
 #' as the $ID column. \cr\cr
@@ -40,9 +42,6 @@
 #' as attributes. E.g., if the returned object is \code{vcfDT}, then you can
 #' access Info and Comments (respectively) with: \code{attr(vcfDT, 'vcf_info')}
 #' and \code{attr(vcfDT, 'vcf_comments')}.
-#'
-#' @references This & Riginos (2019) genomalicious: serving up a smorgasbord of
-#' R functions for population genomic analyses. BioRxiv.
 #'
 #' @examples
 #' # Create a link to raw external datasets in genomalicious
@@ -104,6 +103,9 @@ vcf2DT <- function(vcfFile, dropCols=NULL, keepComments=FALSE, keepInfo=FALSE){
   # Adjust header
   colnames(vcfDT) <- gsub(pattern='#', replace='', x=colnames(vcfDT))
 
+  # Which columns are the sample? The ones after the FORMAT column.
+  sampCols <- colnames(vcfDT)[(which(colnames(vcfDT)=='FORMAT')+1):ncol(vcfDT)]
+
   # Generate a $LOCUS column, place at the start of the data table
   cat('(2/4) Generating locus IDs', sep='\n')
   vcfDT[, LOCUS:=paste0(CHROM, '_', POS)]
@@ -115,14 +117,16 @@ vcf2DT <- function(vcfFile, dropCols=NULL, keepComments=FALSE, keepInfo=FALSE){
   }
   vcfDT <- vcfDT[, !'INFO']
 
-  # Which columns are the sample? The ones after the FORMAT column.
-  sampCols <- (which(colnames(vcfDT)=='FORMAT')+1):ncol(vcfDT)
+  # Drop unwanted columns here to save memory
+  if(is.null(dropCols)==FALSE){
+    vcfDT <- vcfDT[, !dropCols, with=FALSE]
+  }
 
   # Now convert the data from wide to long
   cat('(3/4) Converting from wide to long format', sep='\n')
   vcfDT <- data.table::melt(
     data=vcfDT,
-    id.vars=1:(sampCols[1]-1),
+    id.vars=colnames(vcfDT)[!colnames(vcfDT)%in%sampCols],
     measure.vars=sampCols,
     variable.name='SAMPLE',
     value.name='DATA') %>%
@@ -145,7 +149,7 @@ vcf2DT <- function(vcfFile, dropCols=NULL, keepComments=FALSE, keepInfo=FALSE){
 
   # ... Separate $DATA by $FORMAT names
   vcfDT <- vcfDT[, tstrsplit(DATA, ':', names=formatNames)] %>%
-    cbind(., vcfDT[, !'DATA']) %>%
+    cbind(vcfDT[, !'DATA'], .) %>%
     as.data.table()
 
   # .... Replace '.' values in the data columns with NA
@@ -171,9 +175,5 @@ vcf2DT <- function(vcfFile, dropCols=NULL, keepComments=FALSE, keepInfo=FALSE){
   cat('All done! <3', '\n')
 
   # Return the data.table, drop any columns if specified.
-  if(is.null(dropCols)){
-    return(vcfDT)
-  } else{
-    return(vcfDT[, !dropCols, with=FALSE])
-  }
+  return(vcfDT)
 }
