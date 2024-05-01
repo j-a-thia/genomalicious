@@ -1,0 +1,26 @@
+{
+    "id": "BB7A5C05",
+    "path": "~/GitHub/genomalicious/R/allele_uniq_DT.R",
+    "project_path": "R/allele_uniq_DT.R",
+    "type": "r_source",
+    "hash": "2035778815",
+    "contents": "",
+    "dirty": false,
+    "created": 1714538029479.0,
+    "source_on_save": false,
+    "relative_order": 10,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "34,10",
+        "scrollLine": "19"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1714538035,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1714538035696,
+    "read_only": false,
+    "read_only_alternatives": []
+}
