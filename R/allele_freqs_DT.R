@@ -184,7 +184,7 @@ allele_freqs_DT <- function(
       setorder(., POP, LOCUS) %>%
       .[!is.na(COUNTS)] %>%
       .[, COUNTS:=as.integer(COUNTS)] %>%
-      .[, ALLELE:=sub('V','',ALLELE)] %>%
+      .[, ALLELE:=as.integer(sub('V','',ALLELE))-1] %>%
       .[, FREQ:=COUNTS/sum(COUNTS), by=c('POP','LOCUS')] %>%
       merge.data.table(x=., y=pop.sizes, by.x='POP', by.y='POP') %>%
       return()
