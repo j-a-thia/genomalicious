@@ -68,8 +68,8 @@ at random to underpin the quantitative trait. It is assumed that all loci contri
 equally to the trait, i.e., \emph{Va}/\emph{n}. The simulation follows that
 genotype AA has a genetic value of +\emph{Va}/\emph{n}, Aa has a value of 0,
 and aa has a value of -\emph{Va}/\emph{n}. Because the additive genetic variance
-is also dependent on alelle frequencies: \cr
-\emph{Va} = 2\emph{pq}[\emph{a} + \emph{d}(\emph{q} - \emph{p})]^2 \cr
+is also dependent on alelle frequencies: \cr\cr
+\emph{Va} = 2\emph{pq}[\emph{a} + \emph{d}(\emph{q} - \emph{p})]^2 \cr\cr
 Then genetic values are modified relative to the allele frequencies to ensure
 the total additivie genetic variance in the sample sum to the specified \emph{Va}.
 The phenotype per indiviudal is the sum of their genotypic values plus randomly
@@ -161,5 +161,5 @@ simQTL$loci
 
 }
 \references{
-Falconer and MacKay (1996) Introduction to Quantitative Genetics, 4th Ed., page 129
+Falconer and MacKay (1996) Introduction to Quantitative Genetics, 3rd Ed., chapter 8, page 129.
 }

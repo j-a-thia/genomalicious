@@ -1,26 +1,26 @@
 {
-    "id": "D6DEA448",
-    "path": "~/GitHub/genomalicious/R/align_plot_dna.R",
-    "project_path": "R/align_plot_dna.R",
+    "id": "0F957A2E",
+    "path": "~/GitHub/genomalicious/R/family_sim_qtl.R",
+    "project_path": "R/family_sim_qtl.R",
     "type": "r_source",
-    "hash": "384097168",
+    "hash": "1345707936",
     "contents": "",
     "dirty": false,
-    "created": 1712879578590.0,
+    "created": 1715465543767.0,
     "source_on_save": false,
     "relative_order": 2,
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "55,21",
-        "scrollLine": "0"
+        "cursorPosition": "257,31",
+        "scrollLine": "251"
     },
     "folds": "",
-    "lastKnownWriteTime": 1712886000,
+    "lastKnownWriteTime": 1715465696,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1712886000648,
+    "last_content_update": 1715465696381,
     "read_only": false,
     "read_only_alternatives": []
 }
