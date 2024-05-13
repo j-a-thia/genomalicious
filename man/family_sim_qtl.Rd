@@ -65,14 +65,14 @@ simulated are only relevant to the input sample only.
 
 A total of \emph{n} == \code{numLoci} loci from \code{famGenos} are drawn
 at random to underpin the quantitative trait. It is assumed that all loci contribute
-equally to the trait, i.e., \emph{Va}/\emph{n}. The simulation follows that
-genotype AA has a genetic value of +\emph{Va}/\emph{n}, Aa has a value of 0,
-and aa has a value of -\emph{Va}/\emph{n}. Because the additive genetic variance
+equally to the trait, i.e., \emph{Va}/\emph{n}. The simulation starts by first
+fitting genotype AA with a genetic value of +1, Aa with a value of 0,
+and aa with a value of -1. Because the additive genetic variance
 is also dependent on alelle frequencies: \cr\cr
 \emph{Va} = 2\emph{pq}[\emph{a} + \emph{d}(\emph{q} - \emph{p})]^2 \cr\cr
-Then genetic values are modified relative to the allele frequencies to ensure
+The genetic values are then modified relative to the allele frequencies to ensure
 the total additivie genetic variance in the sample sum to the specified \emph{Va}.
-The phenotype per indiviudal is the sum of their genotypic values plus randomly
+The phenotype per individual is the sum of their genotypic values plus randomly
 drawn environmental deviation (\code{rnorm(.., mean=0, sd=sqrt(Ve))}).
 }
 \examples{
