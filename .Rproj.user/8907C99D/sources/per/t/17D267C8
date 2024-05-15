@@ -1,0 +1,26 @@
+{
+    "id": "17D267C8",
+    "path": "~/GitHub/genomalicious/R/het_calc.R",
+    "project_path": "R/het_calc.R",
+    "type": "r_source",
+    "hash": "1477500534",
+    "contents": "",
+    "dirty": true,
+    "created": 1715752652100.0,
+    "source_on_save": false,
+    "relative_order": 4,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "109,10",
+        "scrollLine": "103"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1715752547,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1715752668230,
+    "read_only": false,
+    "read_only_alternatives": []
+}
