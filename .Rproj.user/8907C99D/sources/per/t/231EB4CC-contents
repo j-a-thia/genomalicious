@@ -5,7 +5,9 @@
 #' is calculated as either the SNP-wise heterozygosity (at each SNP, excluding
 #' monomorphic sites), or as the genomic heterozygosity (the SNP-wise
 #' heterozygosity standardised for total sites assayed, including monomorphic
-#' sites). Expects biallelic SNP loci. Please see Details for further explanations.
+#' sites). For indivdiual genotypes, you can use multiallelic data.
+#' For population allele frequencies, you must code as biallelic reference and
+#' alternate alleles.
 #'
 #' @param snpData Data table: Genotypes for individuals or frquencies (read coiunts)
 #' for populations in long-format. See Details for parameterisation.
@@ -29,7 +31,8 @@
 #' Default is \code{'LOCUS'}.
 #'
 #' @param genoCol Character: The column with the genotype info.
-#' Default is \code{'GT'}.
+#' Default is \code{'GT'}. Genotypes should be scored as alleles separated by
+#' '/', e.g., '0/0', '0/1', '1/1', etc.
 #'
 #' @param roCol Character: The column with reference allele counts.
 #' Default is \code{'RO'}.
@@ -102,11 +105,47 @@
 #' }
 #'
 #' @return Returns a data table of heterozygosity estimates per sample or population.
+#' Genomic heterozygosity is reported per chromosome, SNP-wise heterozygosity is
+#' reported across all SNPs.
 #'
 #' @references
 #' Ferretti et al. (2013) Molecular Ecology. DOI: 10.1111/mec.12522 \cr
 #' Schmidt et al. (2021) Methods in Ecology and Evolution. DOI: 10.1111/2041-210X.13659
 #'
+#' @examples
+#' library(genomalicious)
+#'
+#' data(data_Genos)
+#' data(data_PoolFreqs)
+#'
+#' # Convert genos to characters
+#' data_Genos[, GT:=genoscore_converter(GT)]
+#'
+#' # Make extra data for the samples and populatin pools
+#' extraSampInfo <- CJ(
+#'   SAMPLE=unique(data_Genos$SAMPLE),
+#'   CHROM=unique(data_Genos$CHROM),
+#'   COV.SITES=150
+#'   )
+#'
+#' extraPoolInfo <- CJ(
+#'   POP=unique(data_PoolFreqs$POP),
+#'   CHROM=unique(data_PoolFreqs$CHROM),
+#'   COV.SITES=150,
+#'   INDS=30
+#'   )
+#'
+#' # Genomic heterozygosity of individuals, per chromosome/contig
+#' het_calc(data_Genos, extraSampInfo, type='genos', method='genomic')
+#'
+#' # SNP-wise heterozygosity of indivdiuals, SNP-wise
+#' het_calc(data_Genos, extraSampInfo, type='genos', method='snpwise')
+#'
+#' # Genomic heterozygosity of population pools, per chromosome/contig
+#' het_calc(data_PoolFreqs, extraPoolInfo, type='freqs', method='genomic')
+#'
+#' # Genomic heterozygosity of population pools, SNP-wise
+#' het_calc(data_PoolFreqs, extraPoolInfo, type='freqs', method='snpwise')
 #' @export
 
 het_calc <- function(
@@ -156,7 +195,9 @@ het_calc <- function(
       snpData <- copy(snpData) %>%
         setnames(., check.col.snp, c('CHROM','POS','LOCUS','SAMPLE','GT'))
     }
-  } else if (type=='freqs'){
+  }
+
+  if (type=='freqs'){
     # Genomic heterozygosity
     if(method=='genomic'){
       # SNP data
@@ -184,12 +225,12 @@ het_calc <- function(
       snpData <- copy(snpData) %>%
         setnames(., check.col.snp, c('CHROM', 'POS', 'LOCUS', 'POP', 'RO', 'AO'))
       # Extra data
-      check.col.extra <- c(chromCol, sampCol, indsCol)
+      check.col.extra <- c(chromCol, popCol, indsCol)
       if(length(check.col.extra)!=3){
         stop('Argument `type`=="freqs" and `method`=="snpwise". All columns `chromCol`, `sampCol`, and `indsCol` must be in `extraData`. See ?het_calc.')
       }
       extraData <- copy(extraData) %>%
-        setnames(., check.col.extra, c('CHROM', 'SAMPLE', 'INDS'))
+        setnames(., check.col.extra, c('CHROM', 'POP', 'INDS'))
     }
   }
 
@@ -206,19 +247,10 @@ het_calc <- function(
       snpData[, ALLELE.2:=sub('.*/','',GT), by=c('SAMPLE','LOCUS')]
       snpData[, HET:=(ALLELE.1!=ALLELE.2), by=c('SAMPLE','LOCUS')]
 
-      result <- lapply(1:nrow(extraData), function(i){
-        chrom <- extraData$CHROM[i]
-        samp <- extraData$SAMPLE[i]
-        cov.sites <- extraData$COV.SITES[i]
-
-        het.sites <- snpData[CHROM==chrom & SAMPLE==samp] %>%
-          .[, sum(HET)]
-
-        het <- het.sites / cov.sites
-
-        data.table(CHROM=chrom, SAMPLE=samp, HET=het)
-      }) %>%
-        do.call('rbind', . )
+      result <- snpData[, .(HET=sum(HET)), by=c('CHROM','SAMPLE')] %>%
+        merge.data.table(., extraData) %>%
+        .[, HET:=HET/COV.SITES] %>%
+        .[, c('CHROM','SAMPLE','HET')]
     }
     # Using population allele frequencies
     if(type=='freqs'){
@@ -256,7 +288,7 @@ het_calc <- function(
       snpData[, ALLELE.1:=sub('/.*','',GT), by=c('SAMPLE','LOCUS')]
       snpData[, ALLELE.2:=sub('.*/','',GT), by=c('SAMPLE','LOCUS')]
       snpData[, HET:=(ALLELE.1!=ALLELE.2), by=c('SAMPLE','LOCUS')]
-      result <- snpData[, .(HET=sum(HET)/length(HET)), by=c('CHROM','SAMPLE')]
+      result <- snpData[, .(HET=sum(HET)/length(HET)), by=c('SAMPLE')]
     }
     # Using population allele frequencies
     if(type=='freqs'){

@@ -47,7 +47,8 @@ Default is \code{'LOCUS'}.}
 Default is \code{'SAMPLE'}.}
 
 \item{genoCol}{Character: The column with the genotype info.
-Default is \code{'GT'}.}
+Default is \code{'GT'}. Genotypes should be scored as alleles separated by
+'/', e.g., '0/0', '0/1', '1/1', etc.}
 
 \item{popCol}{Character: The column name with population ID.
 Default is \code{'POP'}.}
@@ -66,6 +67,8 @@ per population per chromosome. Default is \code{'INDS'}.}
 }
 \value{
 Returns a data table of heterozygosity estimates per sample or population.
+Genomic heterozygosity is reported per chromosome, SNP-wise heterozygosity is
+reported across all SNPs.
 }
 \description{
 This function takes in a long format data table of genotypes or allele
@@ -73,7 +76,9 @@ frequencies (allelic counts) and calculates heterozygosity. Heterozygosity
 is calculated as either the SNP-wise heterozygosity (at each SNP, excluding
 monomorphic sites), or as the genomic heterozygosity (the SNP-wise
 heterozygosity standardised for total sites assayed, including monomorphic
-sites). Expects biallelic SNP loci. Please see Details for further explanations.
+sites). For indivdiual genotypes, you can use multiallelic data.
+For population allele frequencies, you must code as biallelic reference and
+alternate alleles.
 }
 \details{
 The genomic heterozygosity (also known as the autosomal
@@ -127,6 +132,41 @@ If \code{type=='freqs'} and \code{method=='snpwise'}:
    \item \code{extraData} requires columns specified in:
    \code{chromCol}, \code{sampCol}, and \code{indsCol}.
 }
+}
+\examples{
+library(genomalicious)
+
+data(data_Genos)
+data(data_PoolFreqs)
+
+# Convert genos to characters
+data_Genos[, GT:=genoscore_converter(GT)]
+
+# Make extra data for the samples and populatin pools
+extraSampInfo <- CJ(
+  SAMPLE=unique(data_Genos$SAMPLE),
+  CHROM=unique(data_Genos$CHROM),
+  COV.SITES=150
+  )
+
+extraPoolInfo <- CJ(
+  POP=unique(data_PoolFreqs$POP),
+  CHROM=unique(data_PoolFreqs$CHROM),
+  COV.SITES=150,
+  INDS=30
+  )
+
+# Genomic heterozygosity of individuals, per chromosome/contig
+het_calc(data_Genos, extraSampInfo, type='genos', method='genomic')
+
+# SNP-wise heterozygosity of indivdiuals, SNP-wise
+het_calc(data_Genos, extraSampInfo, type='genos', method='snpwise')
+
+# Genomic heterozygosity of population pools, per chromosome/contig
+het_calc(data_PoolFreqs, extraPoolInfo, type='freqs', method='genomic')
+
+# Genomic heterozygosity of population pools, SNP-wise
+het_calc(data_PoolFreqs, extraPoolInfo, type='freqs', method='snpwise')
 }
 \references{
 Ferretti et al. (2013) Molecular Ecology. DOI: 10.1111/mec.12522 \cr
