@@ -55,7 +55,9 @@ Returns a long format data table with the following columns:
  population count data.
  \item \code{$INDS}, the number of individuals sampled per population.
  \item \code{$FREQ}, the estimated allele frequency.
- \item \code{$HET}, the proportion of heterozygotes, only output when \code{type=="genos"}.
+ \item \code{$HET}, the proportion of heterozygotes, calculated directly from
+ genotype data, or estimated as the expected heteroygosity for population
+ allele frequencies. Assumes diploid organisms.
 }
 }
 \description{
@@ -73,9 +75,6 @@ Note, when \code{type=="counts"}, the allele frequencies are based on the
 proportion of counts per allele relative to the total number of observed counts
 at a locus. However, this function will align the total sample number of
 sequenced individuals against the counts.
-
-Note, when \code{type=="genos"}, heterozygosity is calculated assuming the
-studied organism is a diploid.
 }
 \examples{
 library(genomalicious)

@@ -114,6 +114,9 @@ poolfstat_DT2pooldata <- function(dat, flip=FALSE, poolInfo){
   # --------------------------------------------+
   if(flip==FALSE){
     dat[, LOCUS:=paste(CHROM, POS, sep='_')]
+    dat[, RO:=as.integer(RO)]
+    dat[, AO:=as.integer(AO)]
+
     dat$DP <- dat$AO + dat$RO
 
     setorderv(dat, cols=c('LOCUS', 'POOL'))

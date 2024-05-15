@@ -41,9 +41,6 @@
 #' at a locus. However, this function will align the total sample number of
 #' sequenced individuals against the counts.
 #'
-#' Note, when \code{type=="genos"}, heterozygosity is calculated assuming the
-#' studied organism is a diploid.
-#'
 #' @returns Returns a long format data table with the following columns:
 #' \enumerate{
 #'  \item \code{$POP}, the population ID column.
@@ -55,7 +52,9 @@
 #'  population count data.
 #'  \item \code{$INDS}, the number of individuals sampled per population.
 #'  \item \code{$FREQ}, the estimated allele frequency.
-#'  \item \code{$HET}, the proportion of heterozygotes, only output when \code{type=="genos"}.
+#'  \item \code{$HET}, the proportion of heterozygotes, calculated directly from
+#'  genotype data, or estimated as the expected heteroygosity for population
+#'  allele frequencies. Assumes diploid organisms.
 #' }
 #'
 #' @examples
@@ -156,24 +155,25 @@ allele_freqs_DT <- function(
       variable.name='VAR',
       value.name='ALLELE'
     ) %>%
-      merge.data.table(., pop.samps, by.x='SAMPLE', by.y='SAMPLE') %>%
+      left_join(., pop.samps) %>%
+      as.data.table %>%
       .[, .(COUNTS=length(VAR)), by=c('POP','LOCUS','ALLELE')]  %>%
-      merge.data.table(., pop.size, by.x='POP', by.y='POP') %>%
+      left_join(., pop.size) %>%
+      as.data.table() %>%
       .[, FREQ:=COUNTS/(INDS*2)] %>%
       setorder(., POP, LOCUS)
 
     # Output
-    merge.data.table(
-      freq.tab, het.tab,
-      by.x=c('POP','LOCUS'), by.y=c('POP','LOCUS')
-    ) %>% return()
+    left_join(freq.tab, het.tab) %>%
+      as.data.table %>%
+      return()
   } else if(type=='counts'){
     # Population information
     pop.sizes <- dat[, c('POP','INDS')] %>% unique
 
     # Split the allele counts, then get allele frequencies as
     # proportion of read counts.
-    dat[, tstrsplit(COUNTS, ',')] %>%
+    freq.tab <- dat[, tstrsplit(COUNTS, ',')] %>%
       cbind(dat[, c('POP','LOCUS')], .) %>%
       data.table::melt(
         .,
@@ -186,7 +186,18 @@ allele_freqs_DT <- function(
       .[, COUNTS:=as.integer(COUNTS)] %>%
       .[, ALLELE:=as.integer(sub('V','',ALLELE))-1] %>%
       .[, FREQ:=COUNTS/sum(COUNTS), by=c('POP','LOCUS')] %>%
-      merge.data.table(x=., y=pop.sizes, by.x='POP', by.y='POP') %>%
-      return()
+      left_join(x=., y=pop.sizes) %>%
+      as.data.table()
+
+    # Heterozygosity
+    het.tab <- freq.tab %>%
+      .[, .(HET=1-sum(FREQ^2)), by=c('POP','LOCUS')] %>%
+      left_join(., pop.sizes) %>%
+      as.data.table %>%
+      .[, .(HET=(INDS/(INDS-1))*HET), by=c('LOCUS','POP')]
+
+    # Output
+    left_join(freq.tab, het.tab) %>%
+    return()
   }
 }
