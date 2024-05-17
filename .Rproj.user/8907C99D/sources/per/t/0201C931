@@ -1,26 +1,26 @@
 {
-    "id": "D6B23DC2",
-    "path": "~/GitHub/genomalicious/DEV.R",
-    "project_path": "DEV.R",
+    "id": "0201C931",
+    "path": "~/GitHub/genomalicious/R/fstat_calc.R",
+    "project_path": "R/fstat_calc.R",
     "type": "r_source",
-    "hash": "3976420499",
+    "hash": "1018319569",
     "contents": "",
     "dirty": false,
-    "created": 1715636921538.0,
+    "created": 1715847066600.0,
     "source_on_save": false,
     "relative_order": 3,
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "15,0",
-        "scrollLine": "3"
+        "cursorPosition": "175,4",
+        "scrollLine": "173"
     },
     "folds": "",
-    "lastKnownWriteTime": 1687278251,
+    "lastKnownWriteTime": 1715847072,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1687278251,
+    "last_content_update": 1715847072400,
     "read_only": false,
     "read_only_alternatives": []
 }

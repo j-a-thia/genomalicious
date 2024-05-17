@@ -4,7 +4,7 @@
 \alias{fstat_varcomps}
 \title{Calculate variance components for F-statistics}
 \usage{
-fstat_varcomps(pi, ni, r, hi = NULL, hetStand = FALSE)
+fstat_varcomps(pi, ni, r, hi)
 }
 \arguments{
 \item{pi}{Numeric: A vector of allele frequencies for each population.}
@@ -15,9 +15,6 @@ for each population.}
 \item{r}{Integer: A single value, the number of populations.}
 
 \item{hi}{Numeric: A vector of observed heterozygosities for each population.}
-
-\item{hetStand}{Logical: Should the estimates be standardised for observed
-heterozygosity?}
 }
 \value{
 Returns a data table. If \code{hetStand==FALSE}, then the list has three
@@ -33,11 +30,6 @@ populations, and heterozygosity, and returns variance components, as
 per Weir & Cockerham (1984). Assumes that all values are for a single
 biallelic SNP locus. \cr\cr Note, this function is not exported and is an
 internal function for \code{fstat_calc}.
-}
-\examples{
-fstat_varcomps(pi=c(0.5,0.25), ni=c(20,20), r=2, hetStand=FALSE)
-
-fstat_varcomps(pi=c(0.5,0.25), ni=c(20,20), r=2, hi=c(0.05,0.375), hetStand=TRUE)
 }
 \references{
 Weir & Cockerham (1984) Evolution. DOI: 10.1111/j.1558-5646.1984.tb05657.x

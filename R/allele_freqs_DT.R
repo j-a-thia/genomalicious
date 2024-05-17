@@ -144,8 +144,8 @@ allele_freqs_DT <- function(
       cbind(dat[, c('SAMPLE','LOCUS')], .)
 
     # Heterozygote proportions per population and locus
-    het.tab <- dat.spl[, .(HET=sum(V1==V2)), by=c('SAMPLE','LOCUS')] %>%
-      left_join(., pop.samps) %>%
+    het.tab <- dat.spl[, .(HET=sum(V1!=V2)), by=c('SAMPLE','LOCUS')] %>%
+      left_join(., pop.samps, by='SAMPLE') %>%
       .[, .(HET=sum(HET)/length(SAMPLE)), by=c('POP','LOCUS')]
 
     # Allele frequencies per population and locus
@@ -155,16 +155,16 @@ allele_freqs_DT <- function(
       variable.name='VAR',
       value.name='ALLELE'
     ) %>%
-      left_join(., pop.samps) %>%
+      left_join(., pop.samps, by='SAMPLE') %>%
       as.data.table %>%
       .[, .(COUNTS=length(VAR)), by=c('POP','LOCUS','ALLELE')]  %>%
-      left_join(., pop.size) %>%
+      left_join(., pop.size, by='POP') %>%
       as.data.table() %>%
       .[, FREQ:=COUNTS/(INDS*2)] %>%
       setorder(., POP, LOCUS)
 
     # Output
-    left_join(freq.tab, het.tab) %>%
+    left_join(freq.tab, het.tab, by=c('POP','LOCUS')) %>%
       as.data.table %>%
       return()
   } else if(type=='counts'){
@@ -186,18 +186,18 @@ allele_freqs_DT <- function(
       .[, COUNTS:=as.integer(COUNTS)] %>%
       .[, ALLELE:=as.integer(sub('V','',ALLELE))-1] %>%
       .[, FREQ:=COUNTS/sum(COUNTS), by=c('POP','LOCUS')] %>%
-      left_join(x=., y=pop.sizes) %>%
+      left_join(x=., y=pop.sizes, by='POP') %>%
       as.data.table()
 
     # Heterozygosity
     het.tab <- freq.tab %>%
       .[, .(HET=1-sum(FREQ^2)), by=c('POP','LOCUS')] %>%
-      left_join(., pop.sizes) %>%
+      left_join(., pop.sizes, by='POP') %>%
       as.data.table %>%
       .[, .(HET=(INDS/(INDS-1))*HET), by=c('LOCUS','POP')]
 
     # Output
-    left_join(freq.tab, het.tab) %>%
+    left_join(freq.tab, het.tab, by=c('POP','LOCUS')) %>%
     return()
   }
 }

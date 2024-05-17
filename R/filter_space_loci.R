@@ -75,30 +75,31 @@ filter_space_loci <- function(dat, chromCol='CHROM', posCol='POS', locusCol='LOC
       D.chr.sub.loci <- D.uniq.loci[CHROM==chrom] %>%
         setorder(., POS)
 
-      # Iterate over loci if more than 1 per contig
-      if(nrow(D.chr.sub.loci)>1){
-        # Default keep the first locus
-        D.chr.sub.loci[1, KEEP:=TRUE]
+      # Keep stepping past the smallest position measured.
+      # Start with the first locus, then go from there.
+      # WHILE loop will only step if stepping past the most recent
+      # position will take you past the extent of the dataset.
+      small.pos <- D.chr.sub.loci$POS[1]
+      max.pos <- max(D.chr.sub.loci$POS)
+      keep.pos <- D.chr.sub.loci$POS[1]
 
-        # Iterate through each subsequent locus, keep if >= stepSize from
-        # the previous locus.
-        for(i in 2:nrow(D.chr.sub.loci)){
-          pos.diff <- D.chr.sub.loci$POS[i] - D.chr.sub.loci$POS[i-1]
-          if(pos.diff >= stepSize){
-            D.chr.sub.loci$KEEP[i] <- TRUE
-          } else{
-            D.chr.sub.loci$KEEP[i] <- FALSE
-          }
+      check.loop <- 0
+      while(check.loop==0){
+        x <- D.chr.sub.loci[POS>(small.pos+stepSize)][1,]$POS
+        small.pos <- x
+        keep.pos <- c(keep.pos, x)
+        if( (small.pos+stepSize) > max.pos ){
+          check.loop <- 1
         }
-
-        # Output
-        D.chr.sub.loci
       }
+
+      # Output
+      D.chr.sub.loci[POS %in% keep.pos]
     }) %>%
     # Combine all chromosomes
     do.call('rbind', .)
 
   # Output
-  return(D.keep.loci[KEEP==TRUE]$LOCUS)
+  return(D.keep.loci$LOCUS)
   # ... END
 }

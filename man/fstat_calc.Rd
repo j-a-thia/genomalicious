@@ -2,30 +2,30 @@
 % Please edit documentation in R/fstat_calc.R
 \name{fstat_calc}
 \alias{fstat_calc}
-\title{Calculate F-statistics from genotypes or allele frequencies}
+\title{Calculate F-statistics from genotypes or allele frequencies (counts)}
 \usage{
 fstat_calc(
   dat,
   type,
-  fstat = NULL,
+  method,
+  fstatVec = NULL,
   popCol = "POP",
   sampCol = "SAMPLE",
   locusCol = "LOCUS",
   genoCol = "GT",
-  freqCol = "FREQ",
+  countCol = "COUNTS",
   indsCol = "INDS",
-  global = TRUE,
-  pairwise = FALSE,
   permute = FALSE,
+  keepLocus = TRUE,
   numPerms = 100,
   numCores = 1
 )
 }
 \arguments{
-\item{dat}{Data table: A long-format data table of biallelic genotypes,
-coded as '/' separated alleles ('0/0', '0/1', '1/1'), or counts
-of the Alt alleles (0, 1, 2, respectively). Alternatively, a long-format
-data table of allele frequencies.
+\item{dat}{Data table: For genotype data, a long-format data table of genotypes,
+coded as '/' separated alleles ('0/0', '0/1', '1/1'). For allele frequency data,
+a long-format data table of allele counts.
+
 Columns required for \strong{both} genotypes and allele frequencies:
 \enumerate{
    \item The population ID (see param \code{popCol}).
@@ -38,7 +38,7 @@ Columns required only for \strong{genotypes}:
 }
 Columns required only for \strong{allele frequencies}:
 \enumerate{
-   \item The allele frequencies (see param \code{freqCol}).
+   \item The allelic count column (see param \code{countCol}).
    \item The number of individuals used to obtain the allele frequency
    estimate (see param \code{indsCol}).
 }}
@@ -46,8 +46,11 @@ Columns required only for \strong{allele frequencies}:
 \item{type}{Character: One of \code{'genos'} or \code{'freqs'}, to calculate
 F-statistics from genotype or allele frequency data, respectively.}
 
-\item{fstat}{Character: A vector of F-statistics to calculate. This is only
-applicable for genotype data. Must include one of \code{"FST"},
+\item{method}{Character: One of \code{'global'} or \code{'pairwise'} for
+global or pairwise F-statistics, respectively.}
+
+\item{fstatVec}{Character: A vector of F-statistics to calculate. This is only
+applicable for genotype data, \code{type=='genos'}. Must include one of \code{"FST"},
 \code{"FIS"}, or \code{"FIT"}.}
 
 \item{popCol}{Character: The column name with the population information.
@@ -62,23 +65,23 @@ Default is \code{'LOCUS'}.}
 \item{genoCol}{Character: The column name with the genotype information.
 Default is \code{'GT'}.}
 
-\item{freqCol}{Character: The column name with the allele freuqency information.
-Default is \code{'FREQ'}.}
+\item{countCol}{Character: The column name with the allele count information.
+Default is \code{'FREQ'}. Counts for each allele need to be separated with a
+comma, starting with the Ref allele, followed by each subsequent Alt allele.
+E.g., '0,25', or '5,7,10', for a locus with 2 alleles and 3 alleles, respectively.
+You must code alleles within a locus at same positions in the character
+string across all populations.}
 
 \item{indsCol}{Character: The column name with the number of individuals
 contributing to the allele freuqency estimate. Default is \code{indsCol}.}
 
-\item{global}{Logical: Calculate global F-statistics across all populations?
-Default is \code{TRUE}. Note, \code{global==TRUE} and \code{pairwise==TRUE}
-is not permitted.}
-
-\item{pairwise}{Logical: Calculate pairwise FST between populations?
-Default is \code{FALSE}. Note, \code{global==TRUE} and \code{pairwise==TRUE}
-is not permitted.}
-
 \item{permute}{Logical: Should permutations be performed to test the
 statistical significance of F-statistics? Default is \code{FALSE}.
-Can only be performed on genotype data, i.e., \code{type=='genos'}.}
+Can only be performed on genotype data, \code{type=='genos'}.}
+
+\item{keepLocus}{Logical: Should locus-specific estimates of F-statistics be
+kept? Default is TRUE. Dropping locus-specific estimates will dramatically
+save memory and the size of the returned list.}
 
 \item{numPerms}{Integer: The number of permutations to perform. Default is 100.}
 
@@ -119,8 +122,8 @@ will only contain data if \code{type=='genos'} and \code{permute==TRUE}.
 \description{
 Function takes a genotypes or allele frequencies in a long-format data table
 and calculates Weir & Cockerham's F-statistics (Weir & Cockerham, 1984).
-Permutations can be used to test statistical significance of FST in
-genotype data sets. See Details for more information.
+Permutations can be used to test statistical significance of F-statistics in
+genotype data sets. Can deal with multiallelic data. See Details for more information.
 }
 \details{
 With genotype data, the F-statistics FST, FIS, and FIT can be calculated.
@@ -128,11 +131,9 @@ Only FST can be calculated from allele frequency data.
 
 F-statistics from genotype data are calculated from the variance components
 'a', 'b', and 'c', which have been standardised for observed heterozygosity.
-FST from allele frequencies is calculated using estimates of MSP
-(mean squares for populations), MSG (mean squares for gametes) and
-nc (the weighted mean sample size).
+FST from allele frequency data uses an estimate of the expected heterozygosity.
 
-Permutation tests involve random shuffling of individuals
+Permutation tests for genotype data involve random shuffling of individuals
 among populations, recalculating F-statistics, and testing the hypothesis
 that the permuted F-statistic > observed F-statistic. The p-value represents the
 proportion of permutation that were TRUE to this expression. That is,
@@ -146,78 +147,58 @@ data(data_Genos)
 data(data_PoolFreqs)
 data(data_PoolInfo)
 
-### Genotypes, global estimates for FST, FIS and FIT, with 50 permutations
-genoGlobal <- fstat_calc(
-   data_Genos,
-   type='genos',
-   fstat=c('FST','FIS','FIT'),
-   global=TRUE,
-   permute=TRUE,
-   numPerms=50)
+# Set genotypes as characters
+data_Genos$GT \%>\% head
+data_Genos[, GT:=genoscore_converter(GT)]
+data_Genos$GT \%>\% head
 
-# Genome-wide estimate
-genoGlobal$genome
+# Set allele counts and individuals in pool-seq data
+data_PoolFreqs \%>\% head
+data_PoolInfo \%>\% head
 
-# Locus specific estimates
-genoGlobal$locus \%>\% head
+data_PoolFreqs[, COUNTS:=paste(RO,AO,sep=',')]
 
-# Permutations
-genoGlobal$permute$fstat
-genoGlobal$permute$pval
+data_PoolFreqs$INDS <- data_PoolInfo$INDS[
+match(data_PoolFreqs$POOL, data_PoolInfo$POOL)
+]
 
-### Genotypes, pairwise estimates for FST, FIS and FIT, no permutations
-genoPairs <- fstat_calc(
-   data_Genos,
-   type='genos',
-   fstat=c('FST','FIS','FIT'),
-   global=FALSE,
-   pairwise=TRUE
-   )
+head(data_PoolFreqs)
 
-# Genome-wide estimates
-genoPairs$genome \%>\% head
-
-# Locus specific estimates
-genoPairs$locus \%>\% head
-
-# Permutations (there are none!)
-genoPairs$permute
-
-### Genotypes, pairwise, FST only, with 10 permutations
-genoPairsPerms <- fstat_calc(
-   data_Genos,
-   type='genos',
-   fstat='FST',
-   global=FALSE,
-   pairwise=TRUE,
-   permute=TRUE,
-   numPerms=10
-   )
-
-# Permuted FST
-genoPairsPerms$permute$fstat \%>\% head
-
-# Permuted p-value
-genoPairsPerms$permute$pval \%>\% head
-
-### Frequencies, pairwise (can only do FST)
-# Note columns in data_PoolFreqs
-colnames(data_PoolFreqs)
-
-# We need to add in the number of diploid individuals, $INDS
-newFreqData <- left_join(data_PoolFreqs, data_PoolInfo)
-head(newFreqData)
-
-# There is no $POP column, but there is a $POOL column that contains
-# the population pool ID. Need to manually specify this.
-freqPairs <- fstat_calc(
-   newFreqData,
-   type='freqs',
-   global=FALSE,
-   pairwise=TRUE
+# Genotypes and global F-statistics
+geno_global_f <- fstat_calc(
+dat=data_Genos,
+type='genos', method='global', fstatVec=c('FST','FIS','FIT'),
+popCol='POP', sampCol='SAMPLE',
+locusCol='LOCUS', genoCol='GT',
+permute=FALSE
 )
 
-freqPairs
+# Genotypes and pairwise F-statistics
+geno_pair_f <- fstat_calc(
+dat=data_Genos,
+type='genos', method='pairwise', fstatVec=c('FST','FIS','FIT'),
+popCol='POP', sampCol='SAMPLE',
+locusCol='LOCUS', genoCol='GT',
+permute=FALSE
+)
+
+# Allele frequencies (from counts) and global FST
+freqs_global_f <- fstat_calc(
+dat=data_PoolFreqs,
+type='freqs', method='global', fstatVec=NULL,
+popCol='POP', locusCol='LOCUS',
+countCol='COUNTS', indsCol='INDS',
+permute=FALSE
+)
+
+# Allele frequencies (from counts) and pairwise FST
+freqs_pair_f <- fstat_calc(
+dat=data_PoolFreqs,
+type='freqs', method='pairwise', fstatVec=NULL,
+popCol='POP', locusCol='LOCUS',
+countCol='COUNTS', indsCol='INDS',
+permute=FALSE
+)
 
 }
 \references{
