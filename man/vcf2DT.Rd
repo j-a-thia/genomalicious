@@ -24,7 +24,7 @@ A \code{data.table} object is returned with all the columns contained in
 the original VCF file with some additions:
 \itemize{
     \item A column called \code{$LOCUS} is generated. This is the concatenation of the
-             \code{$CHROM} and \code{$POS} column to form a locus ID.
+             \code{$CHROM} and \code{$POS} column to form a locus ID. "CHROM:POS".
     \item A column called \code{$SAMPLE} is generated. This contains the sample IDs that
              are the columns that follow the \code{$FORMAT} column in the original VCF.
     \item The items in the original \code{$FORMAT} column of the VCF are given their own columns.

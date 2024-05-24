@@ -1,26 +1,26 @@
 {
-    "id": "D6B23DC2",
-    "path": "~/GitHub/genomalicious/DEV.R",
-    "project_path": "DEV.R",
+    "id": "45CD6EBB",
+    "path": "~/GitHub/genomalicious/R/vcf2DT.R",
+    "project_path": "R/vcf2DT.R",
     "type": "r_source",
-    "hash": "3976420499",
+    "hash": "1628306673",
     "contents": "",
     "dirty": false,
-    "created": 1715636921538.0,
+    "created": 1716539561587.0,
     "source_on_save": false,
-    "relative_order": 3,
+    "relative_order": 4,
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "15,0",
-        "scrollLine": "5"
+        "cursorPosition": "63,0",
+        "scrollLine": "53"
     },
     "folds": "",
-    "lastKnownWriteTime": 1687278251,
+    "lastKnownWriteTime": 1716539628,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1687278251,
+    "last_content_update": 1716539628568,
     "read_only": false,
     "read_only_alternatives": []
 }
