@@ -86,19 +86,9 @@ vcf2DT <- function(vcfFile, dropCols=NULL, keepComments=FALSE, keepInfo=FALSE){
   # #### Code: VCF to data table             ####
   # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-  # What is the position of the column heads?
-  n <- 1
-  headPos <- NULL
-  while(length(headPos)==0){
-    headPos <- grep('#CHROM', readLines(vcfFile, n=n), value=FALSE)
-    if(length(headPos)==0){
-      n <- n + 1000
-    }
-  }
-
   # Read file from header
   cat('(1/4) Reading in VCF as a data table', sep='\n')
-  vcfDT <- fread(vcfFile, skip=headPos-1, sep='\t', header=TRUE)
+  vcfDT <- fread(vcfFile, skip='#CHROM', sep='\t', header=TRUE)
 
   # Adjust header
   colnames(vcfDT) <- gsub(pattern='#', replace='', x=colnames(vcfDT))
