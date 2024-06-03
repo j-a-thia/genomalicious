@@ -17,12 +17,9 @@ for each population.}
 \item{hi}{Numeric: A vector of observed heterozygosities for each population.}
 }
 \value{
-Returns a data table. If \code{hetStand==FALSE}, then the list has three
-columns: \code{$MSP}, mean sqaures for populations; \code{$MSG}, mean squares
-for gametes; \code{$Nc}, a sample size constant. If \code{hetStand==TRUE},
-then the three columns are \code{$A}, \code{$B}, \code{$C}, which
-correspond to the 'a', 'b' and 'c' variance components described in
-Weir & Cockheram (1984).
+Returns a data table with three columns \code{$A}, \code{$B},
+\code{$C}, which correspond to the 'a', 'b' and 'c' variance components
+described in Weir & Cockheram (1984).
 }
 \description{
 Takes a list of values of allele frequencies, sample sizes, number of
