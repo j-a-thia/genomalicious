@@ -83,6 +83,16 @@ filter_space_loci <- function(dat, chromCol='CHROM', posCol='POS', locusCol='LOC
       max.pos <- max(D.chr.sub.loci$POS)
       keep.pos <- D.chr.sub.loci$POS[1]
 
+      # Two cases where to stop before stepping out from the 1st locus:
+      # 1) if there is one locus, smallest and maximum are the same.
+      # 2) smallest position + step size yields no additional loci.
+      if(small.pos==max.pos){
+        return(D.chr.sub.loci[POS %in% keep.pos])
+      } else if(nrow(D.chr.sub.loci[POS>=(small.pos + stepSize)]) == 0){
+        return(D.chr.sub.loci[POS %in% keep.pos])
+      }
+
+      # If you get to this point, perform the stepping procedure.
       check.loop <- 0
       while(check.loop==0){
         x <- D.chr.sub.loci[POS>(small.pos+stepSize)][1,]$POS
