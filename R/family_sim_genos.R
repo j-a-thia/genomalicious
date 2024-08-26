@@ -78,10 +78,10 @@
 #'    \item \code{$GT}, the genotype as counts of the Alt alleles.
 #' }
 #'
-#' If parent genotypes are requested, the \code{$pedigree} index will contain
-#' a data.table.
+#' If parent genotypes are requested, the \code{$parents} index will contain
+#' a data.table with the same structure as that in \code{$focal.pairs}.
 #'
-#' If the pedigree is requested,
+#' If the pedigree is requested, a data table is returned with structure:
 #' \enumerate{
 #'    \item \code{$SAMPLE}, the sample ID.
 #'    \item \code{$DAM}, the dam's ID.
@@ -121,7 +121,7 @@
 #' library(AGHmatrix)
 #'
 #' # A genotype matrix for the focal pairs
-#' obsGenosMat <- simFamily$focal.pairs %>% DT2Mat_genos()
+#' obsGenosMat <- genosPop1 %>% DT2Mat_genos()
 #'
 #' # Calculate the GRM
 #' obsGRM <- Gmatrix(obsGenosMat, method='Yang', ploidy=2)

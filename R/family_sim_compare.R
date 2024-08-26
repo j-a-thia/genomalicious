@@ -284,13 +284,15 @@ family_sim_compare <- function(
     .[, FAMILY:=factor(FAMILY, levels=c('Observed','Unrelated','Half-cousins','Cousins','Half-siblings','Siblings','Parent-offspring'))]
 
   # Make the plot
+  min.val.x <- round(min(rel_data$RELATE)/0.1) * 0.1
+
   rel_gg <- ggplot(rel_data, aes(x=RELATE, fill=FAMILY, colour=FAMILY)) +
     plotTheme +
     geom_density(alpha=curveAlpha,position="identity") +
     geom_vline(xintercept=c(0,0.0625,0.125,0.25,0.5), linetype='longdash') +
     scale_colour_manual(values=curveOutline) +
     scale_fill_manual(values=curveFill) +
-    scale_x_continuous(breaks=seq(-0.1, 1, 0.1)) +
+    scale_x_continuous(breaks=seq(min.val.x, 1, 0.1)) +
     labs(x='Relatedness', y='Density', fill='', colour='')
 
   # Return a list

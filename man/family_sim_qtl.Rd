@@ -108,7 +108,7 @@ simFamily$pedigree
 library(AGHmatrix)
 
 # A genotype matrix for the focal pairs
-obsGenosMat <- simFamily$focal.pairs \%>\% DT2Mat_genos()
+obsGenosMat <- genosPop1 \%>\% DT2Mat_genos()
 
 # Calculate the GRM
 obsGRM <- Gmatrix(obsGenosMat, method='Yang', ploidy=2)
