@@ -1,0 +1,26 @@
+{
+    "id": "93F4FADA",
+    "path": "~/GitHub/genomalicious/R/family_sim_compare.R",
+    "project_path": "R/family_sim_compare.R",
+    "type": "r_source",
+    "hash": "1615366491",
+    "contents": "",
+    "dirty": false,
+    "created": 1728935890770.0,
+    "source_on_save": false,
+    "relative_order": 1,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "300,0",
+        "scrollLine": "280"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1728936023,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1728936023609,
+    "read_only": false,
+    "read_only_alternatives": []
+}
