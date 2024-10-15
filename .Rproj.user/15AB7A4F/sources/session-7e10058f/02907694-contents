@@ -1,0 +1,94 @@
+library(genomalicious)
+data(data_Genos)
+
+# Subset Pop1 genotypes
+genosPop1 <- data_Genos[POP=='Pop1', c('SAMPLE', 'LOCUS', 'GT')]
+
+# Get the allele frequencies for Pop1
+freqsPop1 <- genosPop1[, .(FREQ=sum(GT)/(length(GT)*2)), by=LOCUS]
+
+# Simulate 100 families
+simFamily <- family_sim_genos(
+  freqData=freqsPop1,
+  locusCol='LOCUS',
+  freqCol='FREQ',
+  numSims=100
+)
+
+# Create some siblings in Pop1 from two sets of parents
+parentList <- list(c('Ind1_1','Ind1_2'), c('Ind1_3','Ind1_4'))
+genosSibs <- lapply(1:2, function(i){
+  parents <- parentList[[i]]
+  
+  child <- paste(sub('Ind1_', '', parents), collapse='.')
+  
+  gamete1 <- genosPop1[SAMPLE == parents[1]] %>%
+    .[, .(GAMETE=rbinom(n=2,size=1,prob=GT/2)), by=c('SAMPLE','LOCUS')] %>%
+    .[, SIB:=1:2, by=LOCUS]
+  
+  gamete2 <- genosPop1[SAMPLE == parents[2]] %>%
+    .[, .(GAMETE=rbinom(n=2,size=1,prob=GT/2)), by=c('SAMPLE','LOCUS')] %>%
+    .[, SIB:=1:2, by=LOCUS]
+  
+  rbind(gamete1, gamete2) %>%
+    .[, .(GT=sum(GAMETE)), by=c('LOCUS','SIB')] %>%
+    .[, SAMPLE:=paste0('Child_',child,'_',SIB)]
+}) %>%
+  do.call('rbind', .)
+
+### THE OBSERVED GENOMIC RELATIONSHIPS MATRIX
+library(AGHmatrix)
+
+# Combine the population samples and the created siblings
+# into a single genotype matrix
+obsGenosMat <- rbind(genosPop1, genosSibs[, c('SAMPLE','LOCUS','GT')]) %>%
+  DT2Mat_genos()
+
+# Calculate the GRM
+obsGRM <- Gmatrix(obsGenosMat, method='Yang', ploidy=2)
+
+### THE SIMULATED GENOMIC RELATIONSHIPS MATRIX
+# Convert simulated families into a genotype matrix
+simGenosMat <- DT2Mat_genos(simFamily)
+
+# Calculate the GRM
+simGRM <- Gmatrix(simGenosMat, method='Yang', ploidy=2)
+
+### COMPARE THE OBSERVED AND SIMULATED
+relComp <- family_sim_compare(
+  simGRM=simGRM,
+  obsGRM=obsGRM,
+  look='classic',
+  curveAlpha = 0.3,
+  facetGrid=FALSE
+)
+
+# The data
+relComp$data
+
+# Simulated dataset
+relComp$data[!is.na(SIM)]
+
+# The observed dataset
+relComp$data[is.na(SIM)]
+
+# Plot of relatedness values. Dashed lines denote relatedness
+# values of 0, 0.0625, 0.125, 0.25, and 0.5, which are the theoretical
+# expectations for unrelated individuals, half-cousins, cousins, half-siblings,
+# and siblings, respectively.
+# You will note a large variance are the expected values, which
+# is not surprising for this very small SNP dataset (200 loci).
+relComp$plot
+
+# Take a look at the "known" relationships in the observed dataset using the
+# offspring we created.
+# Note, siblings and parent-offspring pairs have a theoretical
+# relatedness of 0.5. But you will probably find the "observed"
+# relatedness might be lower.
+relComp$data[SAMPLE1=='Child_1.2_1' & SAMPLE2%in%c('Child_1.2_2','Ind1_1','Ind1_2')]
+relComp$data[SAMPLE1=='Child_3.4_1' & SAMPLE2%in%c('Child_3.4_2','Ind1_3','Ind1_4')]
+
+# Now take a look at the simulated distribution: the possible values for
+# siblings given this dataset are quite wide.
+relComp$data[FAMILY=='Half-siblings']$RELATE %>% summary()
+relComp$data[FAMILY=='Siblings']$RELATE %>% summary()

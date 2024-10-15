@@ -3,7 +3,7 @@
     "path": "~/GitHub/genomalicious/R/family_sim_compare.R",
     "project_path": "R/family_sim_compare.R",
     "type": "r_source",
-    "hash": "1615366491",
+    "hash": "0",
     "contents": "",
     "dirty": false,
     "created": 1728935890770.0,
@@ -12,15 +12,15 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "300,0",
-        "scrollLine": "280"
+        "cursorPosition": "41,2",
+        "scrollLine": "0"
     },
     "folds": "",
-    "lastKnownWriteTime": 1728936023,
+    "lastKnownWriteTime": 1728971381,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1728936023609,
+    "last_content_update": 1728971381875,
     "read_only": false,
     "read_only_alternatives": []
 }

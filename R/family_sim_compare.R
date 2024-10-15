@@ -40,6 +40,9 @@
 #' a length of 5, with colours corresponding to the levels 'Unrelated', 'Cousins',
 #' 'Half-siblings', 'Siblings', and 'Observed', in that order.
 #'
+#' @param facetFamily Logical: Should the plot be faceted by family relationship?
+#' Default is FALSE.
+#'
 #' @details The GRMs for arguments \code{simGRM} and \code{obsGRM} need to be
 #' created by the user with whatever program they want to use to calculate
 #' pairwise relatedness among individuals. The same function call should be used
@@ -116,7 +119,7 @@
 #'
 #' ### THE SIMULATED GENOMIC RELATIONSHIPS MATRIX
 #' # Convert simulated families into a genotype matrix
-#' simGenosMat <- DT2Mat_genos(simFamily)
+#' simGenosMat <- DT2Mat_genos(simFamily$focal.pairs)
 #'
 #' # Calculate the GRM
 #' simGRM <- Gmatrix(simGenosMat, method='Yang', ploidy=2)
@@ -162,16 +165,19 @@
 
 family_sim_compare <- function(
     simGRM, obsGRM, plotColous=NULL, look='ggplot', legendPos='right',
-    curveAlpha=0.7, curveFill=NULL, curveOutline=NULL
+    curveAlpha=0.7, curveFill=NULL, curveOutline=NULL, facetFamily=FALSE
 ){
   # --------------------------------------------+
   # Libraries and assertions
   # --------------------------------------------+
   require(data.table); require(ggplot2); require(tidyverse)
 
+  # Default colours
+  default.colours <- c("#DE3232", "#FF9510", "#E8CE00", "#54C567", "#02CEF2", "#4F74E6","#DA5EE4")
+
   # Adjust values for curveOutline if NULL or if length != 7
   if(is.null(curveOutline)){
-    curveOutline <- c("#DE3232", "#FF9510", "#E8CE00", "#54C567", "#02CEF2", "#4F74E6","#DA5EE4")
+    curveOutline <- default.colours
   }
 
   if(length(curveOutline)<7){
@@ -187,7 +193,7 @@ family_sim_compare <- function(
   }
 
   if(is.null(curveFill)){
-    curveFill <- c("#DE3232", "#EA8404", "#E8CE00", "#54C567", "#02CEF2", "#4F74E6","#DA5EE4")
+    curveFill <- default.colours
   }
 
   # Legend position
@@ -209,6 +215,11 @@ family_sim_compare <- function(
       , text=element_text(colour='black')
       , legend.position=legendPos
       , axis.ticks.length=unit(0.2, 'cm'))
+  }
+
+  # Make sure facetFamily is logical
+  if(class(facetFamily)!='logical'){
+    stop('Argument `facetFamily` must be a logical object. See ?family_sim_plot.')
   }
 
   # --------------------------------------------+
@@ -294,6 +305,11 @@ family_sim_compare <- function(
     scale_fill_manual(values=curveFill) +
     scale_x_continuous(breaks=seq(min.val.x, 1, 0.1)) +
     labs(x='Relatedness', y='Density', fill='', colour='')
+
+  # Facet the plot?
+  if(facetFamily==TRUE){
+  rel_gg <- rel_gg + facet_wrap(~FAMILY, ncol=1, nrow=7)
+  }
 
   # Return a list
   list(data=rel_data, plot=rel_gg) %>% return()

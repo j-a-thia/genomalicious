@@ -12,7 +12,8 @@ family_sim_compare(
   legendPos = "right",
   curveAlpha = 0.7,
   curveFill = NULL,
-  curveOutline = NULL
+  curveOutline = NULL,
+  facetFamily = FALSE
 )
 }
 \arguments{
@@ -42,6 +43,9 @@ a length of 5, with colours corresponding to the levels 'Unrelated', 'Cousins',
 but is an optional argument. Default = \code{NULL}. If specified, must be
 a length of 5, with colours corresponding to the levels 'Unrelated', 'Cousins',
 'Half-siblings', 'Siblings', and 'Observed', in that order.}
+
+\item{facetFamily}{Logical: Should the plot be faceted by family relationship?
+Default is FALSE.}
 
 \item{numSims}{Integer: The number of simulated individuals for each family
 relationship. Default is 100.}
@@ -135,7 +139,7 @@ obsGRM <- Gmatrix(obsGenosMat, method='Yang', ploidy=2)
 
 ### THE SIMULATED GENOMIC RELATIONSHIPS MATRIX
 # Convert simulated families into a genotype matrix
-simGenosMat <- DT2Mat_genos(simFamily)
+simGenosMat <- DT2Mat_genos(simFamily$focal.pairs)
 
 # Calculate the GRM
 simGRM <- Gmatrix(simGenosMat, method='Yang', ploidy=2)
