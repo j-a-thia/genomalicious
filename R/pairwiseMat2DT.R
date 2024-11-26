@@ -119,6 +119,7 @@ pairwiseMat2DT <- function(dat, flip=FALSE, X1, X2, Y, diagAdd=TRUE, diagVal=0){
       rownames_to_column(., 'X1') %>%
       as.data.table %>%
       melt(., id.vars='X1', variable.name='X2', value.name='Y') %>%
+      as.data.table %>%
       .[!is.na(Y)] %>%
       .[, X1:=as.character(X1)] %>%
       .[, X2:=as.character(X2)] %>%
