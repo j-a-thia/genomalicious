@@ -105,44 +105,29 @@ simFamily <- family_sim_genos(
    numSims=100
 )
 
-# Create some siblings in Pop1 from two sets of parents
-parentList <- list(c('Ind1_1','Ind1_2'), c('Ind1_3','Ind1_4'))
-genosSibs <- lapply(1:2, function(i){
-  parents <- parentList[[i]]
-
-  child <- paste(sub('Ind1_', '', parents), collapse='.')
-
-  gamete1 <- genosPop1[SAMPLE == parents[1]] \%>\%
-    .[, .(GAMETE=rbinom(n=2,size=1,prob=GT/2)), by=c('SAMPLE','LOCUS')] \%>\%
-    .[, SIB:=1:2, by=LOCUS]
-
-  gamete2 <- genosPop1[SAMPLE == parents[2]] \%>\%
-    .[, .(GAMETE=rbinom(n=2,size=1,prob=GT/2)), by=c('SAMPLE','LOCUS')] \%>\%
-    .[, SIB:=1:2, by=LOCUS]
-
-  rbind(gamete1, gamete2) \%>\%
-    .[, .(GT=sum(GAMETE)), by=c('LOCUS','SIB')] \%>\%
-    .[, SAMPLE:=paste0('Child_',child,'_',SIB)]
-}) \%>\%
-  do.call('rbind', .)
-
 ### THE OBSERVED GENOMIC RELATIONSHIPS MATRIX
-library(AGHmatrix)
+library(sommer)
 
-# Combine the population samples and the created siblings
-# into a single genotype matrix
-obsGenosMat <- rbind(genosPop1, genosSibs[, c('SAMPLE','LOCUS','GT')]) \%>\%
+# Note, for sommer, we have to adjust genotyeps to range from -1 to 1.
+
+# A genotype matrix for the focal pairs
+obsGenosMat <- genosPop1 \%>\%
+  copy \%>\%
+  .[, GT:=GT-1] \%>\%
   DT2Mat_genos()
 
 # Calculate the GRM
-obsGRM <- Gmatrix(obsGenosMat, method='Yang', ploidy=2)
+obsGRM <- sommer::A.mat(obsGenosMat)
 
 ### THE SIMULATED GENOMIC RELATIONSHIPS MATRIX
 # Convert simulated families into a genotype matrix
-simGenosMat <- DT2Mat_genos(simFamily$focal.pairs)
+simGenosMat <- simFamily$focal.pairs \%>\%
+  copy \%>\%
+  .[, GT:=GT-1] \%>\%
+  DT2Mat_genos()
 
 # Calculate the GRM
-simGRM <- Gmatrix(simGenosMat, method='Yang', ploidy=2)
+simGRM <- sommer::A.mat(simGenosMat)
 
 ### COMPARE THE OBSERVED AND SIMULATED
 relComp <- family_sim_compare(
@@ -170,15 +155,10 @@ relComp$plot
 
 # Take a look at the "known" relationships in the observed dataset using the
 # offspring we created.
-# Note, siblings and parent-offspring pairs have a theoretical
-# relatedness of 0.5. But you will probably find the "observed"
-# relatedness might be lower.
-relComp$data[SAMPLE1=='Child_1.2_1' & SAMPLE2\%in\%c('Child_1.2_2','Ind1_1','Ind1_2')]
-relComp$data[SAMPLE1=='Child_3.4_1' & SAMPLE2\%in\%c('Child_3.4_2','Ind1_3','Ind1_4')]
-
-# Now take a look at the simulated distribution: the possible values for
-# siblings given this dataset are quite wide.
+# Note, whilst values are centered on their theoretical expectations,
+you will probably find the "observed" relatedness might be lower or even higher.
 relComp$data[FAMILY=='Half-siblings']$RELATE \%>\% summary()
 relComp$data[FAMILY=='Siblings']$RELATE \%>\% summary()
+relComp$data[FAMILY=='Parent-offspring']$RELATE \%>\% summary()
 
 }

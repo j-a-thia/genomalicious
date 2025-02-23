@@ -135,20 +135,28 @@ simFamily$parents
 simFamily$pedigree
 
 ### THE OBSERVED GENOMIC RELATIONSHIPS MATRIX
-library(AGHmatrix)
+library(sommer)
+
+# Note, for sommer, we have to adjust genotyeps to range from -1 to 1.
 
 # A genotype matrix for the focal pairs
-obsGenosMat <- genosPop1 \%>\% DT2Mat_genos()
+obsGenosMat <- genosPop1 \%>\%
+  copy \%>\%
+  .[, GT:=GT-1] \%>\%
+  DT2Mat_genos()
 
 # Calculate the GRM
-obsGRM <- Gmatrix(obsGenosMat, method='Yang', ploidy=2)
+obsGRM <- sommer::A.mat(obsGenosMat)
 
 ### THE SIMULATED GENOMIC RELATIONSHIPS MATRIX
 # Convert simulated families into a genotype matrix
-simGenosMat <- DT2Mat_genos(simFamily$focal.pairs)
+simGenosMat <- simFamily$focal.pairs \%>\%
+  copy \%>\%
+  .[, GT:=GT-1] \%>\%
+  DT2Mat_genos()
 
 # Calculate the GRM
-simGRM <- Gmatrix(simGenosMat, method='Yang', ploidy=2)
+simGRM <- sommer::A.mat(simGenosMat)
 
 ### COMPARE THE OBSERVED AND SIMULATED
 relComp <- family_sim_compare(
@@ -177,16 +185,42 @@ relComp$plot
 ### SIMULATE A QUANTITATIVE TRAIT
 
 # Combine the focal pairs and parentals, and simualte a trait controlled by
-# 100 loci with Va = 1, and Ve = 1.
-simQTL <- family_sim_qtl(
+# 100 loci with Va = 1, and Ve = 1, with equal effect sizes.
+simQTL.equal <- family_sim_qtl(
   famGenos=rbind(simFamily$focal.pairs, simFamily$parents),
-  numLoci=100, additiveVar=1, environVar=1
+  numLoci=100, additiveVar=1, environVar=1, effectSizes=1
+  )
+
+# The trait values for equal effect sizes.
+simQTL.equal$trait
+
+# The locus values to equal effect sizes.
+simQTL.equal$loci
+
+# This time, let's use vairable effect sizes that follow a gamma
+# distribution of effects.
+eff_sizes <- rgamma(5000, shape=0.5, scale=0.2)
+
+# Fit with the same loci as used above.
+simQTL.variable <- family_sim_qtl(
+  famGenos=rbind(simFamily$focal.pairs, simFamily$parents),
+  qtlNames=simQTL.equal$loci$LOCUS,
+  additiveVar=1, environVar=1, effectSizes=eff_sizes
   )
 
 # The trait values
-simQTL$trait
+simQTL.variable$trait
 
 # The locus values
-simQTL$loci
+simQTL.variable$loci
+
+# Compare the values
+plot(simQTL.equal$trait$P, simQTL.variable$trait$P)
+
+# But they both have the desired variances
+var(simQTL.equal$trait$G)
+var(simQTL.variable$trait$G)
+var(simQTL.equal$trait$E)
+var(simQTL.variable$trait$E)
 
 }

@@ -7,9 +7,10 @@
 family_sim_qtl(
   famGenos,
   numLoci = NULL,
-  qtlLoci = NULL,
+  qtlNames = NULL,
   additiveVar,
-  environVar
+  environVar,
+  effectSizes = 1
 )
 }
 \arguments{
@@ -20,15 +21,19 @@ genotypes.}
 \item{numLoci}{Integer: The number of loci contributing to the trait. These loci
 are drawn from random in the dataset, \code{famGenos}. Therefore, it is
 essential the \code{numLoci} is <= the total unique loci in \code{famGenos}.
-Alternate parameterisation is to specify the names of the loci to use with \code{qtlLoci}.}
+Alternate parameterisation is to specify the names of the loci to use with \code{qtlNames}.}
 
-\item{qtlLoci}{Character: A character vector of loci contributing to the trait.
+\item{qtlNames}{Character: A character vector of loci contributing to the trait.
 These loci must be present in the dataset, \code{famGenos}.
 Alternate parameterisation is to specify the number of  loci to use with \code{numLoci}.}
 
 \item{additiveVar}{Numeric: The additive genetic variance.}
 
 \item{environVar}{Numeric: The environmental variance.}
+
+\item{effectSizes}{Numeric: A vector of effect sizes (positive values only) to
+assign to AA homozygous genotype. Default = 1, that is, all QTLs will have the
+same effect size.}
 }
 \value{
 A list with the indexes \code{$trait} and \code{$loci} is returned, containing
@@ -74,6 +79,11 @@ The genetic values are then modified relative to the allele frequencies to ensur
 the total additivie genetic variance in the sample sum to the specified \emph{Va}.
 The phenotype per individual is the sum of their genotypic values plus randomly
 drawn environmental deviation (\code{rnorm(.., mean=0, sd=sqrt(Ve))}).
+
+When assigning variable effect sizes to argument \code{effectSizes}, the user
+needs to generate a vector of values. For example, using the \code{rgamma} or
+the \code{rexp} functions. Note, these represent the homozygous AA genotype
+effect sizes, so the aa genotype effect sizes will be the negative of these values.
 }
 \examples{
 library(genomalicious)
@@ -105,20 +115,28 @@ simFamily$parents
 simFamily$pedigree
 
 ### THE OBSERVED GENOMIC RELATIONSHIPS MATRIX
-library(AGHmatrix)
+library(sommer)
+
+# Note, for sommer, we have to adjust genotyeps to range from -1 to 1.
 
 # A genotype matrix for the focal pairs
-obsGenosMat <- genosPop1 \%>\% DT2Mat_genos()
+obsGenosMat <- genosPop1 \%>\%
+  copy \%>\%
+  .[, GT:=GT-1] \%>\%
+  DT2Mat_genos()
 
 # Calculate the GRM
-obsGRM <- Gmatrix(obsGenosMat, method='Yang', ploidy=2)
+obsGRM <- sommer::A.mat(obsGenosMat)
 
 ### THE SIMULATED GENOMIC RELATIONSHIPS MATRIX
 # Convert simulated families into a genotype matrix
-simGenosMat <- DT2Mat_genos(simFamily$focal.pairs)
+simGenosMat <- simFamily$focal.pairs \%>\%
+  copy \%>\%
+  .[, GT:=GT-1] \%>\%
+  DT2Mat_genos()
 
 # Calculate the GRM
-simGRM <- Gmatrix(simGenosMat, method='Yang', ploidy=2)
+simGRM <- sommer::A.mat(simGenosMat)
 
 ### COMPARE THE OBSERVED AND SIMULATED
 relComp <- family_sim_compare(
@@ -147,17 +165,43 @@ relComp$plot
 ### SIMULATE A QUANTITATIVE TRAIT
 
 # Combine the focal pairs and parentals, and simualte a trait controlled by
-# 100 loci with Va = 1, and Ve = 1.
-simQTL <- family_sim_qtl(
+# 100 loci with Va = 1, and Ve = 1, with equal effect sizes.
+simQTL.equal <- family_sim_qtl(
   famGenos=rbind(simFamily$focal.pairs, simFamily$parents),
-  numLoci=100, additiveVar=1, environVar=1
+  numLoci=100, additiveVar=1, environVar=1, effectSizes=1
+  )
+
+# The trait values for equal effect sizes.
+simQTL.equal$trait
+
+# The locus values to equal effect sizes.
+simQTL.equal$loci
+
+# This time, let's use vairable effect sizes that follow a gamma
+# distribution of effects.
+eff_sizes <- rgamma(5000, shape=0.5, scale=0.2)
+
+# Fit with the same loci as used above.
+simQTL.variable <- family_sim_qtl(
+  famGenos=rbind(simFamily$focal.pairs, simFamily$parents),
+  qtlNames=simQTL.equal$loci$LOCUS,
+  additiveVar=1, environVar=1, effectSizes=eff_sizes
   )
 
 # The trait values
-simQTL$trait
+simQTL.variable$trait
 
 # The locus values
-simQTL$loci
+simQTL.variable$loci
+
+# Compare the values
+plot(simQTL.equal$trait$P, simQTL.variable$trait$P)
+
+# But they both have the desired variances
+var(simQTL.equal$trait$G)
+var(simQTL.variable$trait$G)
+var(simQTL.equal$trait$E)
+var(simQTL.variable$trait$E)
 
 }
 \references{

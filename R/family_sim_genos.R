@@ -376,25 +376,19 @@ family_sim_genos <- function(
 
     # Focal pairs of individuals
     foc.pairs.tab <- rbind(
-      unrel_ind_1 %>% data.table(SIM=sim, SAMPLE=unrel.names[1]),
-      unrel_ind_2 %>% data.table(SIM=sim, SAMPLE=unrel.names[2]),
-      po_ind_1 %>% data.table(SIM=sim, SAMPLE=po.names[1]),
-      po_dam_1 %>% data.table(SIM=sim, SAMPLE=po.names[2]),
-      sib_ind_1 %>% data.table(SIM=sim, SAMPLE=sib.names[1]),
-      sib_ind_2 %>% data.table(SIM=sim, SAMPLE=sib.names[2]),
-      hsib_ind_1 %>% data.table(SIM=sim, SAMPLE=hsib.names[1]),
-      hsib_ind_2 %>% data.table(SIM=sim, SAMPLE=hsib.names[2]),
-      cuz_ind_1 %>% data.table(SIM=sim, SAMPLE=cuz.names[1]),
-      cuz_ind_2 %>% data.table(SIM=sim, SAMPLE=cuz.names[2]),
-      hcuz_ind_1 %>% data.table(SIM=sim, SAMPLE=hcuz.names[1]),
-      hcuz_ind_2 %>% data.table(SIM=sim, SAMPLE=hcuz.names[2])
+      unrel_ind_1 %>% data.table(SIM=sim, SAMPLE=unrel.names[1], FAMILY='Unrelated'),
+      unrel_ind_2 %>% data.table(SIM=sim, SAMPLE=unrel.names[2], FAMILY='Unrelated'),
+      po_ind_1 %>% data.table(SIM=sim, SAMPLE=po.names[1], FAMILY='Parent-offspring'),
+      po_dam_1 %>% data.table(SIM=sim, SAMPLE=po.names[2], FAMILY='Parent-offspring'),
+      sib_ind_1 %>% data.table(SIM=sim, SAMPLE=sib.names[1], FAMILY='Siblings'),
+      sib_ind_2 %>% data.table(SIM=sim, SAMPLE=sib.names[2], FAMILY='Siblings'),
+      hsib_ind_1 %>% data.table(SIM=sim, SAMPLE=hsib.names[1], FAMILY='Half-siblings'),
+      hsib_ind_2 %>% data.table(SIM=sim, SAMPLE=hsib.names[2], FAMILY='Half-siblings'),
+      cuz_ind_1 %>% data.table(SIM=sim, SAMPLE=cuz.names[1], FAMILY='Cousins'),
+      cuz_ind_2 %>% data.table(SIM=sim, SAMPLE=cuz.names[2], FAMILY='Cousins'),
+      hcuz_ind_1 %>% data.table(SIM=sim, SAMPLE=hcuz.names[1], FAMILY='Half-cousins'),
+      hcuz_ind_2 %>% data.table(SIM=sim, SAMPLE=hcuz.names[2], FAMILY='Half-cousins')
     ) %>%
-      data.table(
-        ., FAMILY=c(
-          rep('Unrelated',2), rep('Parent-offspring',2), rep('Siblings',2),
-          rep('Half-siblings',2), rep('Cousins',2), rep('Half-cousins',2)
-        )
-      ) %>%
       .[, GT:=FREQ*PLOIDY]
 
     # All other dams, sires, grandams and grandsires.
@@ -473,3 +467,4 @@ family_sim_genos <- function(
     pedigree=do.call('rbind',pedigreeLs)
   ) %>% return
 }
+
