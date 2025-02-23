@@ -10,7 +10,8 @@ family_sim_genos(
   freqCol = "FREQ",
   numSims = 100L,
   returnParents = FALSE,
-  returnPedigree = FALSE
+  returnPedigree = FALSE,
+  numCores = 1
 )
 }
 \arguments{
@@ -28,8 +29,11 @@ relationship. Default is 100.}
 \item{returnParents}{Logical: Should the parental genotypes also be returned?
 Default is FALSE.}
 
-\item{returnPedigree}{Logical: Shoudl the pedgree also be returned?
+\item{returnPedigree}{Logical: Should the pedgree also be returned?
 Default is FALSE.}
+
+\item{numCores}{Integer: Number of cores to run. Default is 1, run on a single
+core. If >1, then will run as a parallel job.}
 }
 \value{
 Returns a list with indexes \code{$focal.pairs}, \code{$parents}, and

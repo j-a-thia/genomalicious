@@ -26,8 +26,11 @@
 #' @param returnParents Logical: Should the parental genotypes also be returned?
 #' Default is FALSE.
 #'
-#' @param returnPedigree Logical: Shoudl the pedgree also be returned?
+#' @param returnPedigree Logical: Should the pedgree also be returned?
 #' Default is FALSE.
+#'
+#' @param numCores Integer: Number of cores to run. Default is 1, run on a single
+#' core. If >1, then will run as a parallel job.
 #'
 #' @details In this function, a 'simulation' comprises a draw of 10 individuals:
 #' 2 are unrelated to each other and all other individuals in the simulation,
@@ -210,11 +213,11 @@
 
 family_sim_genos <- function(
     freqData, locusCol='LOCUS', freqCol='FREQ', numSims=100L,
-    returnParents=FALSE, returnPedigree=FALSE){
+    returnParents=FALSE, returnPedigree=FALSE, numCores=1){
   # --------------------------------------------+
   # Libraries and assertions
   # --------------------------------------------+
-  for(lib in c('tidyr', 'data.table')){require(lib, character.only=TRUE)}
+  for(lib in c('tidyr', 'data.table', 'doParallel')){require(lib, character.only=TRUE)}
 
   # Check if data.table/can be converted to data.table
   freqData <- as.data.table(freqData)
@@ -288,14 +291,11 @@ family_sim_genos <- function(
       data.table(PLOIDY=2, .)
   }
 
-  # --------------------------------------------+
-  # Code
-  # --------------------------------------------+
-  focPairsLs <- list()
-  parentsLs <- list()
-  pedigreeLs <- list()
+  FUN_make_family_pairs <- function(sim){
+    # Makes a single pair for each of the familial relationships.
 
-  for(sim in 1:numSims){
+    # sim = The simulation number.
+
     # Note, 'g[x]' indicates generation in each group.
 
     # Random completely unrelated individuals
@@ -448,23 +448,49 @@ family_sim_genos <- function(
       )
     )
 
-    # Add in where relevant
-    focPairsLs[[sim]] <- foc.pairs.tab
+    # Output
+    return(list(focal.pairs=foc.pairs.tab, parents=dam.sire.tab, pedigree=ped.tab))
+  }
 
-    if(returnParents==TRUE){
-      parentsLs[[sim]] <- dam.sire.tab
-    }
+  # --------------------------------------------+
+  # Code
+  # --------------------------------------------+
 
-    if(returnPedigree==TRUE){
-      pedigreeLs[[sim]] <- ped.tab
+  # Single core or parallel?
+  if(numCores==1){
+    simFamList <- lapply(1:numSims, FUN_make_family_pairs)
+  } else if(numCores>1){
+    my.cluster <- makeCluster(numCores)
+    registerDoParallel(my.cluster)
+    simFamList <- foreach(sim=1:numSims) %dopar% {
+      require(genomalicious)
+      FUN_make_family_pairs(sim=sim)
     }
+    stopCluster(my.cluster)
   }
 
   # Output
+  focPairsTab <- lapply(simFamList, function(X) X$focal.pairs) %>%
+    rbindlist()
+
+  if(returnParents==TRUE){
+    parentsTab <- lapply(simFamList, function(X) X$parents) %>%
+      rbindlist()
+  } else{
+    parentsTab <- NULL
+  }
+
+  if(returnPedigree==TRUE){
+    pedigreeTab <- lapply(simFamList, function(X) X$pedigree) %>%
+      rbindlist()
+  } else{
+    pedigreeTab <- NULL
+  }
+
   list(
-    focal.pairs=do.call('rbind',focPairsLs),
-    parents=do.call('rbind',parentsLs),
-    pedigree=do.call('rbind',pedigreeLs)
+    focal.pairs=focPairsTab,
+    parents=parentsTab,
+    pedigree=pedigreeTab
   ) %>% return
 }
 
