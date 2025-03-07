@@ -136,7 +136,7 @@
 #' # Take a look at the "known" relationships in the observed dataset using the
 #' # offspring we created.
 #' # Note, whilst values are centered on their theoretical expectations,
-#' you will probably find the "observed" relatedness might be lower or even higher.
+#' # you will probably find the "observed" relatedness might be lower or even higher.
 #' relComp$data[FAMILY=='Half-siblings']$RELATE %>% summary()
 #' relComp$data[FAMILY=='Siblings']$RELATE %>% summary()
 #' relComp$data[FAMILY=='Parent-offspring']$RELATE %>% summary()
