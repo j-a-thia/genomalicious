@@ -2,7 +2,9 @@
 #'
 #' Convert a DNA coding sequence into a data.table of codons, nucleotide indexes,
 #' DNA triplet sequences, and amino acids. If provided with coding sequences split
-#' into exons, these will also be incorporated into the table.
+#' into exons, these will also be incorporated into the table. Note that 
+#' this function is designed for a single gene. To apply this function to
+#' multiple genes, you will need to use a loop.
 #'
 #' @param dnaSeq Character: For a coding sequence (e.g., cDNA transcript), a single
 #' character vector. For a group of exons, a list of character vectors.
