@@ -1,7 +1,9 @@
 #' Align a codon data.table to genomic positions
 #'
 #' Takes a codon table produced from \code{dna2codonDT} and aligns genomic
-#' positions against exons and codons, using a set of annotations.
+#' positions against exons and codons, using a set of annotations. Note that 
+#' this function is designed for a single gene. To apply this function to
+#' multiple genes, you will need to use a loop.
 #'
 #' @param codonDT Data.table: The output from \code{dna2codonDT}. Note, this
 #' must have been generated using the exon functionality. It could be the
@@ -69,12 +71,12 @@ codonDT2genome <- function(codonDT, genomeAnnot, isCompressed){
   ####   EXECUTE   ####
   # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-  # Number of exons and stran position of the gene
-  num_exons <- nrow(genomeAnnot)
+  # Number of exons and strand position of the gene
+  uniq.exons <- sort(unique(genomeAnnot$EXON))
   strand <- genomeAnnot$STRAND[1]
 
   # Create a table of nucleotide positions in the genome, relative to exons.
-  nucGenome <- lapply(1:num_exons, function(i){
+  nucGenome <- lapply(uniq.exons, function(i){
     st <- genomeAnnot[EXON==i]$START
     en <- genomeAnnot[EXON==i]$END
     chrom <- genomeAnnot[EXON==i]$CHROM
