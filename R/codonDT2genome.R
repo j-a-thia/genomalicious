@@ -2,8 +2,8 @@
 #'
 #' Takes a codon table produced from \code{dna2codonDT} and aligns genomic
 #' positions against exons and codons, using a set of annotations. Note that 
-#' this function is designed for a single gene. To apply this function to
-#' multiple genes, you will need to use a loop.
+#' this function is designed for a single gene on a single chromosome
+#' or contig. To apply this function to multiple genes, you will need to use a loop.
 #'
 #' @param codonDT Data.table: The output from \code{dna2codonDT}. Note, this
 #' must have been generated using the exon functionality. It could be the
