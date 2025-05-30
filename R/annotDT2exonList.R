@@ -4,9 +4,9 @@
 #' used to generate a list containing each exon as an indexed item.
 #' The indexes exon sequences are in the order and orientation that
 #' they would be transcribed in. That is, they can be pasted together
-#' and translated to form the protein sequence. Note, this function has
-#' been designed to work for a single gene on a single chromosome.
-#' If you want to run multiple genes, you will need to loop the function.
+#' and translated to form the protein sequence. Note that 
+#' this function is designed for a single gene. To apply this function to
+#' multiple genes, you will need to use a loop.
 #'
 #' @param annotDT Data.table: Contains information on the exon positions.
 #' Requires the following columns:
