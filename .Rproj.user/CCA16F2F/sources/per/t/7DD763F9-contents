@@ -1,0 +1,670 @@
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+####   F-STATISTICS MAIN FUNCTION   ####
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+#' @title  Calculate F-statistics from genotypes or allele frequencies (counts)
+#'
+#' @description Function takes a genotypes or allele frequencies in a long-format data table
+#' and calculates Weir & Cockerham's F-statistics (Weir & Cockerham, 1984).
+#' Permutations can be used to test statistical significance of F-statistics in
+#' genotype data sets. Can deal with multiallelic data. See Details for more information.
+#'
+#' @param dat Data table: For genotype data, a long-format data table of genotypes,
+#' coded as '/' separated alleles ('0/0', '0/1', '1/1'). For allele frequency data,
+#' a long-format data table of allele counts.
+#'
+#' Columns required for \strong{both} genotypes and allele frequencies:
+#' \enumerate{
+#'    \item The population ID (see param \code{popCol}).
+#'    \item The locus ID (see param \code{locusCol}).
+#' }
+#' Columns required only for \strong{genotypes}:
+#' \enumerate{
+#'    \item The sample ID (see param \code{sampCol}).
+#'    \item The genotypes (see param \code{genoCol}).
+#' }
+#' Columns required only for \strong{allele frequencies}:
+#' \enumerate{
+#'    \item The allelic count column (see param \code{countCol}).
+#'    \item The number of individuals used to obtain the allele frequency
+#'    estimate (see param \code{indsCol}).
+#' }
+#'
+#' @param type Character: One of \code{'genos'} or \code{'freqs'}, to calculate
+#' F-statistics from genotype or allele frequency data, respectively.
+#'
+#' @param method Character: One of \code{'global'} or \code{'pairwise'} for
+#' global or pairwise F-statistics, respectively.
+#'
+#' @param fstatVec Character: A vector of F-statistics to calculate. This is only
+#' applicable for genotype data, \code{type=='genos'}. Must include one of \code{"FST"},
+#' \code{"FIS"}, or \code{"FIT"}.
+#'
+#' @param popCol Character: The column name with the population information.
+#' Default is \code{'POP'}.
+#'
+#' @param sampCol Character: The column name with the sampled individual information.
+#' Default is \code{'SAMPLE'}.
+#'
+#' @param locusCol Character: The column name with the locus information.
+#' Default is \code{'LOCUS'}.
+#'
+#' @param genoCol Character: The column name with the genotype information.
+#' Default is \code{'GT'}.
+#'
+#' @param countCol Character: The column name with the allele count information.
+#' Default is \code{'FREQ'}. Counts for each allele need to be separated with a
+#' comma, starting with the Ref allele, followed by each subsequent Alt allele.
+#' E.g., '0,25', or '5,7,10', for a locus with 2 alleles and 3 alleles, respectively.
+#' You must code alleles within a locus at same positions in the character
+#' string across all populations.
+#'
+#' @param indsCol Character: The column name with the number of individuals
+#' contributing to the allele freuqency estimate. Default is \code{indsCol}.
+#'
+#' @param permute Logical: Should permutations be performed to test the
+#' statistical significance of F-statistics? Default is \code{FALSE}.
+#' Can only be performed on genotype data, \code{type=='genos'}.
+#'
+#' @param keepLocus Logical: Should locus-specific estimates of F-statistics be
+#' kept? Default is TRUE. Dropping locus-specific estimates will dramatically
+#' save memory and the size of the returned list.
+#'
+#' @param numPerms Integer: The number of permutations to perform. Default is 100.
+#'
+#' @param numCores Integer: The number of cores to use when running permutations. Default is 1.
+#'
+#' @details With genotype data, the F-statistics FST, FIS, and FIT can be calculated.
+#' Only FST can be calculated from allele frequency data.
+#'
+#' F-statistics from genotype data are calculated from the variance components
+#' 'a', 'b', and 'c', which have been standardised for observed heterozygosity.
+#' FST from allele frequency data uses an estimate of the expected heterozygosity.
+#'
+#' Permutation tests for genotype data involve random shuffling of individuals
+#' among populations, recalculating F-statistics, and testing the hypothesis
+#' that the permuted F-statistic > observed F-statistic. The p-value represents the
+#' proportion of permutation that were TRUE to this expression. That is,
+#' if no permuted values are greater than the observed, p=0. Likewise, if all
+#' the permuted values are greater than the observed, p=1.
+#'
+#' @return A list is returned with three indexes.
+#'
+#' The first index is \code{$genome}, the genome-wide F-statistics. If global
+#' estimates were requested, \code{global==TRUE}, then this is just a single row;
+#' the estimates across all populations. If pairwise esimates were requested,
+#' \code{pairwise==TRUE}, then there are \code{$POP1} and \code{$POP2}, which
+#' represent two populations tested.
+#'
+#' The second index is \code{$locus}, the locus-specific F-statistics. This is
+#' a data table with a \code{$LOCUS} column for global estimates at each locus.
+#' when \code{global==TRUE}. If pairwise population estimates have been requested,
+#' \code{pairwise==TRUE}, then there are \code{$POP1} and \code{$POP2}, which
+#' represent the two populations tested.
+#'
+#' The third index is \code{$permute}, the permutation results. This index will
+#' be \code{NULL} when frequencies are used, i.e., \code{type=='freqs'}, and
+#' will only contain data if \code{type=='genos'} and \code{permute==TRUE}.
+#' \code{$permute} is itself a list, with two subindexes:
+#' \enumerate{
+#'    \item \code{$fstat}: The permuted F-statistics. If \code{global==TRUE}, then
+#'    this will simply be a single row of global estimates. If \code{pairwise==TRUE},
+#'    then this will be a data table with columns \code{$POP1}, \code{$POP2}, and
+#'    a column for each F-statistic.
+#'
+#'    \item \code{$pval}: The permuted p-values. This is a long-format data table.
+#'    If \code{global==TRUE}, then there are two column: \code{$STAT}, which
+#'    contains the F-statistic; and \code{$PVAL}, which contains the global
+#'    permuted p-value. If \code{pairwise==TRUE}, then there will two additional
+#'    columns, \code{$POP1} and \code{$POP2}.
+#' }
+#'
+#' @references Weir & Cockerham (1984) Evolution. DOI: 10.1111/j.1558-5646.1984.tb05657.x
+#' Weir et al. (2002) Annals of Human Genetics. DOI: 10.1146/annurev.genet.36
+#'
+#' @export
+#'
+#' @examples
+#' library(genomalicious)
+#'
+#' data(data_Genos)
+#' data(data_PoolFreqs)
+#' data(data_PoolInfo)
+#'
+#' # Set genotypes as characters
+#' data_Genos$GT %>% head
+#' data_Genos[, GT:=genoscore_converter(GT)]
+#' data_Genos$GT %>% head
+#'
+#' # Set allele counts and individuals in pool-seq data
+#' data_PoolFreqs %>% head
+#' data_PoolInfo %>% head
+#'
+#' data_PoolFreqs[, COUNTS:=paste(RO,AO,sep=',')]
+#'
+#' data_PoolFreqs$INDS <- data_PoolInfo$INDS[
+#' match(data_PoolFreqs$POOL, data_PoolInfo$POOL)
+#' ]
+#'
+#' head(data_PoolFreqs)
+#'
+#' # Genotypes and global F-statistics
+#' geno_global_f <- fstat_calc(
+#' dat=data_Genos,
+#' type='genos', method='global', fstatVec=c('FST','FIS','FIT'),
+#' popCol='POP', sampCol='SAMPLE',
+#' locusCol='LOCUS', genoCol='GT',
+#' permute=FALSE
+#' )
+#'
+#' # Genotypes and pairwise F-statistics
+#' geno_pair_f <- fstat_calc(
+#' dat=data_Genos,
+#' type='genos', method='pairwise', fstatVec=c('FST','FIS','FIT'),
+#' popCol='POP', sampCol='SAMPLE',
+#' locusCol='LOCUS', genoCol='GT',
+#' permute=FALSE
+#' )
+#'
+#' # Allele frequencies (from counts) and global FST
+#' freqs_global_f <- fstat_calc(
+#' dat=data_PoolFreqs,
+#' type='freqs', method='global', fstatVec=NULL,
+#' popCol='POP', locusCol='LOCUS',
+#' countCol='COUNTS', indsCol='INDS',
+#' permute=FALSE
+#' )
+#'
+#' # Allele frequencies (from counts) and pairwise FST
+#' freqs_pair_f <- fstat_calc(
+#' dat=data_PoolFreqs,
+#' type='freqs', method='pairwise', fstatVec=NULL,
+#' popCol='POP', locusCol='LOCUS',
+#' countCol='COUNTS', indsCol='INDS',
+#' permute=FALSE
+#' )
+#'
+fstat_calc <- function(
+    dat, type, method, fstatVec=NULL,
+    popCol='POP', sampCol='SAMPLE', locusCol='LOCUS',
+    genoCol='GT', countCol='COUNTS', indsCol='INDS',
+    permute=FALSE, keepLocus=TRUE, numPerms=100, numCores=1
+){
+  # --------------------------------------------+
+  # Assertions and environment
+  # --------------------------------------------+
+  require(data.table); require(tidyverse)
+
+  # Make sure dat is a data.table
+  dat <- as.data.table(dat)
+
+  # Has type been specified correctly?
+  if(!type %in% c('genos','freqs')){
+    stop('Argument `type` must be one of "genos" or "freqs". See ?fstat_calc.')
+  }
+
+  # Check that method is assigned properly
+  if(!method %in% c('global','pairwise')){
+    stop('Argument `method` must be one of "global" or "snpwise". See ?fstat_calc.')
+  }
+
+  # Check that permute is logical
+  if(class(permute)!='logical'){
+    stop('Argument `permute` must be a logical value. See ?fstat_calc.')
+  }
+
+  # If permute is specified, then check numPerms is >0 and is an integer
+  if(permute==TRUE){
+    if(numPerms<1){
+      stop('Argument `numPerms` must be an integer >0. See ?fstat_calc.')
+    }
+
+    numPerms <- as.integer(numPerms)
+  }
+
+  # Checks specific to each type
+  if(type=='genos'){
+    # Check all necessary columns are present and reassign values.
+    if(sum(c(popCol,sampCol,locusCol,genoCol) %in% colnames(dat))!=4){
+      stop(
+        'Argument `dat` requires columns `popCol`, `sampCol`, `locusCol` and
+        `genoCol` to estimate F-statistics from genotypes. See ?fstat_calc.')
+
+      dat <- copy(dat) %>%
+        setnames(.,c(popCol,sampCol,locusCol,genoCol),c('POP','SAMPLE','LOCUS','GT'))
+    }
+
+    # If genotypes are not character separated with '/' throw error.
+    if(class(dat$GT)!='character'){
+      stop(
+        'The genotypes specified in `genoCol` must be characters, alleles
+        separated by a "/". Please check before running this function. See ?fstat_calc.'
+      )
+    }
+
+    # If no F-statistics have been specified for genotypes, stop.
+    if(is.null(fstatVec)){
+      stop(
+        'Argument `fstatVec` cannot be NULL when requesting F-statistics
+      from genotypes. See ?fstat_calc.')
+    }
+
+    # Make sure the specified value in fstat are correct
+    if(sum(!fstatVec %in% c('FST','FIS','FIT'))!=0){
+      stop(
+        'Argument `fstatVec` must only contain "FST", "FIS", and/or "FIT" when
+        requesting F-statistics from genotypes. See ?fstat_calc.'
+      )
+    }
+  }
+
+  if(type=='freqs'){
+    if(sum(c(popCol,locusCol,countCol,indsCol) %in% colnames(dat))!=4){
+      stop(
+        'Argument `dat` requires columns `popCol`, `locusCol`, `countCol`, and
+        `indsCol` to estimate F-statistics from allele frequencies. See ?fstat_calc.')
+
+      dat <- copy(dat) %>%
+        setnames(.,c(popCol,locusCol,countCol,indsCol),c('POP','LOCUS','COUNTS','INDS'))
+    }
+
+    if(is.null(fstatVec)!=TRUE){
+      stop(
+        'Argument `fstatVec` must be NULL when requesting FST from allele
+        frequencies. See ?fstat_calc.'
+      )
+    }
+  }
+
+  # ------------------------------------------------+
+  # Allele frequencies and global FST
+  # ------------------------------------------------+
+  if(type=='freqs' & method=='global'){
+    # Empty output list
+    fstat.output <- list(genome=NULL, locus=NULL, permute=NULL)
+
+    # Frequency table
+    freqTab <- allele_freqs_DT(
+      dat=dat, type='counts', popCol='POP',
+      locusCol='LOCUS', countCol='COUNTS', indsCol='INDS'
+    ) %>%
+      setorder(., LOCUS, POP, ALLELE)
+    # Variance components
+    ABC <- freqTab %>%
+      .[, fstat_varcomps(pi=FREQ, ni=INDS, r=length(POP), hi=HET), by=c('LOCUS','ALLELE')]
+    # FST
+    f.list <- fstat_subfun(ABC=ABC, type='freqs', fstat='FST')
+    fstat.output$genome <- f.list$genome
+    if(keepLocus==TRUE){
+      fstat.output$locus <- f.list$locus
+    }
+  }
+
+  # ------------------------------------------------+
+  # Allele frequencies and pairwise FST
+  # ------------------------------------------------+
+  if(type=='freqs' & method=='pairwise'){
+    # Empty output list
+    fstat.output <- list(genome=NULL, locus=NULL, permute=NULL)
+
+    # Frequency table
+    freqTab <- allele_freqs_DT(
+      dat=dat, type='counts', popCol='POP',
+      locusCol='LOCUS', countCol='COUNTS', indsCol='INDS'
+    ) %>%
+      setorder(., LOCUS, POP, ALLELE)
+
+    # Population pairs
+    popPairs <- combn(unique(dat$POP), 2) %>% t()
+
+    # Iterate over population pairs
+    for(i in 1:nrow(popPairs)){
+      cat('Pair:',i,'/',nrow(popPairs),'\n')
+      # Subset the population pair
+      pop.pair <- popPairs[i,]
+      # Variance components
+      ABC <- freqTab[POP %in% c(pop.pair)] %>%
+        .[, fstat_varcomps(pi=FREQ, ni=INDS, r=length(POP), hi=HET), by=c('LOCUS','ALLELE')]
+      # Calculate FST
+      f.list <- fstat_subfun(ABC=ABC, type='freqs', fstat='FST')
+      f.list$locus <- data.table(POP.1=pop.pair[1], POP.2=pop.pair[2], f.list$locus)
+      f.list$genome <- data.table(POP.1=pop.pair[1], POP.2=pop.pair[2], f.list$genome)
+      # Output
+      fstat.output$genome <- rbind(fstat.output$genome, f.list$genome)
+      if(keepLocus==TRUE){
+        fstat.output$locus <- rbind(fstat.output$locus, f.list$locus)
+      }
+
+      # Clean up
+      rm(pop.pair,ABC,f.list)
+    }
+  }
+
+  # ------------------------------------------------+
+  # Individual genotypes and global F-statistics
+  # ------------------------------------------------+
+  if(type=='genos' & method=='global'){
+    # Empty output list
+    fstat.output <- list(genome=NULL, locus=NULL, permute=NULL)
+
+    # OBSERVED DATA
+    # Allele frequency table
+    freqTab <- allele_freqs_DT(
+      dat, type='genos', sampCol='SAMPLE', popCol='POP',
+      locusCol='LOCUS', genoCol='GT'
+    ) %>%
+      setorder(., LOCUS, POP, ALLELE)
+
+    # Variance components
+    ABC <- freqTab[, fstat_varcomps(pi=FREQ, ni=INDS, r=length(POP), hi=HET), by=c('LOCUS','ALLELE')]
+
+    # Iterate over requested F-statistics
+    for(f in fstatVec){
+      f.list <- fstat_subfun(ABC=ABC, type='genos', fstat=f)
+      fstat.output$genome <- cbind(fstat.output$genome, f.list$genome)
+      if(keepLocus==TRUE){
+        if(is.null(fstat.output$locus)){
+          fstat.output$locus <- f.list$locus
+        } else{
+          fstat.output$locus <- left_join(fstat.output$locus, f.list$locus, by='LOCUS')
+        }
+      }
+      rm(f, f.list)
+    }
+
+    # PERMUTE?
+    if(permute==TRUE){
+      # Populations and samples to shuffle
+      samp.pop.tab <- unique(dat[, c('SAMPLE','POP')])
+
+      # Make cluster
+      my.cluster <- makeCluster(numCores)
+      registerDoParallel(my.cluster)
+
+      # Iterate over permutations
+      perm.stats <- foreach(j=1:numPerms) %dopar% {
+        library(genomalicious)
+
+        # Shuffle populations
+        samp.pop.tab$POP <- sample(samp.pop.tab$POP, nrow(samp.pop.tab), FALSE)
+
+        # Make permuted dataset
+        dat.j <- left_join(copy(dat[, c('SAMPLE','LOCUS','GT')]), samp.pop.tab, by='SAMPLE')
+
+        # Permuted allele frequencies
+        freq.j <- allele_freqs_DT(
+          dat.j, type='genos', sampCol='SAMPLE', popCol='POP',
+          locusCol='LOCUS', genoCol='GT'
+        ) %>%
+          setorder(., LOCUS, POP, ALLELE)
+
+        # Permuted variance components
+        ABC <- freq.j[, fstat_varcomps(pi=FREQ, ni=INDS, r=length(POP), hi=HET), by=c('LOCUS','ALLELE')]
+
+        # Permuted F-statistics
+        lapply(fstatVec, function(f){
+          fstat_subfun(ABC=ABC, type='genos', fstat=f)$genome
+        }) %>%
+          do.call('cbind',.) %>%
+          data.table(PERM=j, .)
+      } %>%
+        do.call('rbind', .)
+
+      # Kill cluster
+      stopCluster(my.cluster)
+
+      # Output
+      fstat.output$permute <- left_join(
+        perm.stats %>%
+          data.table::melt(., id.vars='PERM', variable.name='STAT', value.name='MIX'),
+        data.table(STAT=names(fstat.output$genome), OBS=as.vector(fstat.output$genome)),
+        by='STAT'
+      ) %>%
+        as.data.table %>%
+        .[, TEST:=MIX>OBS] %>%
+        .[, .(PVAL=sum(TEST)/length(PERM)), by=STAT]
+    }
+  }
+
+  # ------------------------------------------------+
+  # Genotypes and pairwise F-statistics
+  # ------------------------------------------------+
+  if(type=='genos' & method=='pairwise'){
+    # Empty output list
+    fstat.output <- list(genome=NULL, locus=NULL, permute=NULL)
+
+    # OBSERVED DATA
+    # Allele frequency table
+    freqTab <- allele_freqs_DT(
+      dat, type='genos', sampCol='SAMPLE', popCol='POP',
+      locusCol='LOCUS', genoCol='GT'
+    ) %>%
+      setorder(., LOCUS, POP, ALLELE)
+
+    # Population pairs
+    popPairs <- combn(unique(dat$POP), 2) %>% t()
+
+    # Iterate over population pairs
+    for(i in 1:nrow(popPairs)){
+      cat('Pair:',i,'/',nrow(popPairs),'\n')
+
+      # Subset population pair
+      pop.pair <- popPairs[i,]
+
+      # Variance components
+      ABC <- freqTab[POP %in% pop.pair] %>%
+        .[, fstat_varcomps(pi=FREQ, ni=INDS, r=length(POP), hi=HET), by=c('LOCUS','ALLELE')]
+
+      # F-statistics for the population pair
+      f.pair <- list(genome=NULL, locus=NULL)
+      for(f in fstatVec){
+        f.list <- fstat_subfun(ABC=ABC, type='genos', fstat=f)
+
+        f.pair$genome <- cbind(f.pair$genome, f.list$genome)
+
+        if(keepLocus==TRUE){
+          if(is.null(f.pair$locus)){
+            f.pair$locus <- cbind(f.pair$locus, f.list$locus)
+          } else{
+            f.pair$locus <- left_join(f.pair$locus, f.list$locus, by='LOCUS')
+          }
+        }
+      }
+
+      # Save
+      fstat.output$genome <- rbind(
+        fstat.output$genome,
+        data.table(POP.1=pop.pair[1], POP.2=pop.pair[2], f.pair$genome)
+      )
+
+      if(keepLocus==TRUE){
+        fstat.output$locus <- rbind(
+          fstat.output$locus,
+          data.table(POP.1=pop.pair[1], POP.2=pop.pair[2], f.pair$locus)
+        )
+      }
+
+      # Clean up
+      rm(pop.pair,ABC,f.pair,i)
+    }
+
+    # PERMUTE?
+    if(permute==TRUE){
+      samp.pop.tab <- unique(dat[, c('SAMPLE','POP')])
+
+      # Set up cluster
+      my.cluster <- makeCluster(numCores)
+      registerDoParallel(my.cluster)
+
+      perm.stats <- foreach(j=1:numPerms) %dopar% {
+        library(genomalicious)
+
+        # Permute individuals over populations
+        samp.pop.tab$POP <- sample(samp.pop.tab$POP, nrow(samp.pop.tab), FALSE)
+
+        lapply(1:nrow(popPairs), function(i){
+          # Population pair
+          pop.pair <- popPairs[i,]
+
+          # Subset data on permuted populations
+          dat.ij <- dat %>%
+            .[POP %in% pop.pair, c('SAMPLE','LOCUS','GT')] %>%
+            left_join(., samp.pop.tab, by='SAMPLE')
+
+          # Permuted allele frequencies
+          freq.ij <- allele_freqs_DT(
+            dat.ij, type='genos', sampCol='SAMPLE', popCol='POP',
+            locusCol='LOCUS', genoCol='GT'
+          ) %>%
+            setorder(., LOCUS, POP, ALLELE)
+
+          # Permuted Variance components
+          ABC <- freq.ij[, fstat_varcomps(pi=FREQ, ni=INDS, r=length(POP), hi=HET), by=c('LOCUS','ALLELE')]
+
+          # Permuted F-statistics
+          lapply(fstatVec, function(f){
+            fstat_subfun(ABC=ABC, type='genos', fstat=f)$genome
+          }) %>%
+            do.call('cbind',.) %>%
+            data.table(POP.1=pop.pair[1], POP.2=pop.pair[2], PERM=j, .)
+        }) %>%
+          do.call('rbind', .)
+      } %>%
+        do.call('rbind', .)
+
+      # Kill cluster
+      stopCluster(my.cluster)
+
+      # Summarise permutations and get significance
+      fstat.output$permute <- left_join(
+        perm.stats %>%
+          data.table::melt(., id.vars=c('PERM','POP.1','POP.2'), variable.name='STAT', value.name='MIX'),
+        fstat.output$genome %>%
+          data.table::melt(., id.vars=c('POP.1','POP.2'), variable.name='STAT', value.name='OBS'),
+        by=c('STAT','POP.1','POP.2')
+      ) %>%
+        as.data.table %>%
+        .[, TEST:=MIX>OBS] %>%
+        .[, .(PVAL=sum(TEST)/length(PERM)), by=c('STAT','POP.1','POP.2')]
+    }
+  }
+
+  # ------------------------------------------------+
+  # Return the output
+  # ------------------------------------------------+
+  return(fstat.output)
+}
+
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+####   VARIANCE COMPONENTS   ####
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+#' @title  Calculate variance components for F-statistics
+#'
+#' @description Takes a list of values of allele frequencies, sample sizes, number of
+#' populations, and heterozygosity, and returns variance components, as
+#' per Weir & Cockerham (1984). Assumes that all values are for a single
+#' biallelic SNP locus. \cr\cr Note, this function is not exported and is an
+#' internal function for \code{fstat_calc}.
+#'
+#' @keywords internal
+#'
+#' @param pi Numeric: A vector of allele frequencies for each population.
+#'
+#' @param ni Numeric: A vector of sample sizes (number of diploid individuals)
+#' for each population.
+#'
+#' @param r Integer: A single value, the number of populations.
+#'
+#' @param hi Numeric: A vector of observed heterozygosities for each population.
+#'
+#' @returns Returns a data table with three columns \code{$A}, \code{$B},
+#' \code{$C}, which correspond to the 'a', 'b' and 'c' variance components
+#' described in Weir & Cockheram (1984).
+#'
+#' @references Weir & Cockerham (1984) Evolution. DOI: 10.1111/j.1558-5646.1984.tb05657.x
+#' Weir et al. (2002) Annals of Human Genetics. DOI: 10.1146/annurev.genet.36
+#'
+#' @export
+fstat_varcomps <- function(pi, ni, r, hi){
+  # The mean sample size
+  n.mean <- sum(ni/r)
+
+  # The sample size scaling parameter
+  nc <- (r*n.mean - sum((ni^2)/(r*n.mean))) / (r-1)
+
+  # The average sample allele frequency
+  p.mean <- sum((ni*pi)/(r*n.mean))
+
+  # The variance in allele frequencies
+  s2 <- sum( (ni*(pi-p.mean)^2)/((r-1)*n.mean) )
+
+  # The average heterozygosity
+  h.mean <- sum( (ni*hi)/(r*n.mean) )
+
+  # The a, b, and c components
+  a <- (nc/n.mean) * (s2 - (1/(n.mean-1))*((p.mean*(1-p.mean)) - (s2*(r-1)/r) - (0.25*h.mean)))
+
+  b <- (n.mean/(n.mean-1)) * ((p.mean*(1-p.mean)) - (s2*(r-1)/r) - (h.mean*((2*n.mean-1)/(4*n.mean))))
+
+  c <- 0.5 * h.mean
+
+  # Return as list
+  return(data.table(A=a, B=b, C=c))
+}
+
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+####   SUBFUNCTION FOR FSTAT CALC   ####
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+fstat_subfun <- function(ABC, type, fstat){
+  # Frequencies
+  if(type=='freqs'){
+    # Locus
+    f.tab.loc <- ABC[, .(FST=sum(A)/sum(A+B+C)), by='LOCUS']
+    # Genome
+    f.tab.genome <- left_join(
+      ABC %>% na.omit %>% .[, .(NUMER=sum(A)), by='LOCUS'],
+      ABC %>% na.omit %>% .[, .(DENOM=sum(A+B+C)), by='LOCUS'],
+      by='LOCUS'
+    ) %>%
+      .[, .(FST=sum(NUMER)/sum(DENOM))]
+  }
+  # Genotypes
+  if(type=='genos'){
+    if(fstat=='FST'){
+      # Locus
+      f.tab.loc <- ABC[, .(FST=sum(A)/sum(A+B+C)), by='LOCUS']
+      # Genome
+      f.tab.genome <- left_join(
+        ABC %>% na.omit %>% .[, .(NUMER=sum(A)), by='LOCUS'],
+        ABC %>% na.omit %>% .[, .(DENOM=sum(A+B+C)), by='LOCUS'],
+        by='LOCUS'
+      ) %>%
+        .[, .(FST=sum(NUMER)/sum(DENOM))]
+    } else if(fstat=='FIS'){
+      # Locus
+      f.tab.loc <- ABC[, .(FIS=1-(sum(C)/sum(B+C))), by='LOCUS']
+      # Genome
+      f.tab.genome <- left_join(
+        ABC %>% na.omit() %>% .[, .(NUMER=sum(C)), by='LOCUS'],
+        ABC %>% na.omit() %>% .[, .(DENOM=sum(B+C)), by='LOCUS'],
+        by='LOCUS'
+      ) %>%
+        .[, .(FIS=1-sum(NUMER)/sum(DENOM))]
+    } else if(fstat=='FIT'){
+      # Locus
+      f.tab.loc <- ABC[, .(FIT=1-(sum(C)/sum(A+B+C))), by='LOCUS']
+      # Genome
+      f.tab.genome <- left_join(
+        ABC %>% na.omit() %>% .[, .(NUMER=sum(C)), by='LOCUS'],
+        ABC %>% na.omit() %>% .[, .(DENOM=sum(A+B+C)), by='LOCUS'],
+        by='LOCUS'
+      ) %>%
+        .[, .(FIT=1-sum(NUMER)/sum(DENOM))]
+    }
+  }
+
+  # Output
+  return(list(genome=f.tab.genome, locus=f.tab.loc))
+}

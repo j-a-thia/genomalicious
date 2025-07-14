@@ -41,5 +41,7 @@ and \code{$POS}, the chromosome and the genomic positions, respectively.
 }
 \description{
 Takes a codon table produced from \code{dna2codonDT} and aligns genomic
-positions against exons and codons, using a set of annotations.
+positions against exons and codons, using a set of annotations. Note that 
+this function is designed for a single gene on a single chromosome
+or contig. To apply this function to multiple genes, you will need to use a loop.
 }

@@ -49,7 +49,9 @@ Otherwise, if \code{compressTab==FALSE}:
 \description{
 Convert a DNA coding sequence into a data.table of codons, nucleotide indexes,
 DNA triplet sequences, and amino acids. If provided with coding sequences split
-into exons, these will also be incorporated into the table.
+into exons, these will also be incorporated into the table. Note that 
+this function is designed for a single gene on a single chromosome
+or contig. To apply this function to multiple genes, you will need to use a loop.
 }
 \details{
 The argument \code{type} dictates what to pass to the argument

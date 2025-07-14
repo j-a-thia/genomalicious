@@ -52,7 +52,7 @@ A data.table with information on the start and end of exons is
 used to generate a list containing each exon as an indexed item.
 The indexes exon sequences are in the order and orientation that
 they would be transcribed in. That is, they can be pasted together
-and translated to form the protein sequence. Note, this function has
-been designed to work for a single gene on a single chromosome.
-If you want to run multiple genes, you will need to loop the function.
+and translated to form the protein sequence. Note that 
+this function is designed for a single gene on a single chromosome
+or contig. To apply this function to multiple genes, you will need to use a loop.
 }
