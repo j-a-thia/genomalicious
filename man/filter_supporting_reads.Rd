@@ -52,7 +52,7 @@ This function can almost be seen like a minor allele frequency or count filter
 at the level of a the sample (instead of the whole dataset). It will mark
 a sample as having insufficient supporting reads for the allele with lower coverage
 if they are below a certain threshold. This might be useful, for example, when
-using pooled allele frequencies, or when genotypes individuals are sequenced at
+using pooled allele frequencies, or when genotyped individuals are sequenced at
 low-to-moderate coverage.
 }
 \details{
