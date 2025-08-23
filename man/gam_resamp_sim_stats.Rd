@@ -40,6 +40,6 @@ form a pipeline:
 The \code{gam_resamp_sim_stats} function is used to summarise observed and
 simulated estimates and produce statistics for reporting. You will need to
 compile the estimates from your analyses into data.tables that will be fed
-into this function. Estimates could be anything (heritability, additive variance,
-residual environmental variance, model comparison P-values, etc).
+into this function. Estimates could be the heritability or the variance
+components from the genomic animal models.
 }
