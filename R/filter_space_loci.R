@@ -57,6 +57,39 @@ filter_space_loci <- function(dat, chromCol='CHROM', posCol='POS', locusCol='LOC
   }
 
   # --------------------------------------------+
+  # Internal function
+  # --------------------------------------------+
+
+  FUN_sample_positions <- function(pos.vec, stepSize) {
+    # Sort positions so we always move left → right
+    pos <- sort(pos.vec)
+    n <- length(pos)
+
+    # Handle trivial cases early
+    if (n <= 1) {
+      return(pos) # zero or one value, nothing to filter
+    }
+    if (stepSize <= 0) {
+      return(pos) # no spacing constraint, return everything
+    }
+
+    # Greedy single-pass selection
+    keep <- logical(n) # preallocate
+    keep[1] <- TRUE # always keep the first
+    acc <- 0 # distance since last kept
+
+    for (i in 2:n) {
+      acc <- acc + (pos[i] - pos[i - 1])
+      if (acc >= stepSize) {
+        keep[i] <- TRUE
+        acc <- 0 # reset counter
+      }
+    }
+
+    pos[keep]
+  }
+
+  # --------------------------------------------+
   # Code
   # --------------------------------------------+
 
@@ -68,46 +101,10 @@ filter_space_loci <- function(dat, chromCol='CHROM', posCol='POS', locusCol='LOC
   # Get unique loci
   D.uniq.loci <- dat[, c('CHROM','POS','LOCUS')] %>% unique()
 
-  # Iterate over chromosomes
-  D.keep.loci <- unique(D.uniq.loci$CHROM) %>%
-    lapply(., function(chrom){
-      # Subset the chormosome
-      D.chr.sub.loci <- D.uniq.loci[CHROM==chrom] %>%
-        setorder(., POS)
-
-      # Keep stepping past the smallest position measured.
-      # Start with the first locus, then go from there.
-      # WHILE loop will only step if stepping past the most recent
-      # position will take you past the extent of the dataset.
-      small.pos <- D.chr.sub.loci$POS[1]
-      max.pos <- max(D.chr.sub.loci$POS)
-      keep.pos <- D.chr.sub.loci$POS[1]
-
-      # Two cases where to stop before stepping out from the 1st locus:
-      # 1) if there is one locus, smallest and maximum are the same.
-      # 2) smallest position + step size yields no additional loci.
-      if(small.pos==max.pos){
-        return(D.chr.sub.loci[POS %in% keep.pos])
-      } else if(nrow(D.chr.sub.loci[POS>=(small.pos + stepSize)]) == 0){
-        return(D.chr.sub.loci[POS %in% keep.pos])
-      }
-
-      # If you get to this point, perform the stepping procedure.
-      check.loop <- 0
-      while(check.loop==0){
-        x <- D.chr.sub.loci[POS>(small.pos+stepSize)][1,]$POS
-        small.pos <- x
-        keep.pos <- c(keep.pos, x)
-        if( (small.pos+stepSize) > max.pos ){
-          check.loop <- 1
-        }
-      }
-
-      # Output
-      D.chr.sub.loci[POS %in% keep.pos]
-    }) %>%
-    # Combine all chromosomes
-    do.call('rbind', .)
+  # Loci to keep
+  D.keep.loci <- D.uniq.loci[, .(POS=unique(POS)), by=CHROM] %>%
+    .[, .(POS=FUN_sample_positions(POS, stepSize)), by=CHROM] %>%
+    merge.data.table(., D.uniq.loci, by=c('CHROM', 'POS'))
 
   # Output
   return(D.keep.loci$LOCUS)
