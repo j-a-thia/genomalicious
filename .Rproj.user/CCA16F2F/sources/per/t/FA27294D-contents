@@ -16,11 +16,10 @@ roxygenise()
 # Load currently installed genomalicious
 library(genomalicious)
 
-# # Make the 4 pop genotype dataset
-# fsc_genos <- fread('inst/extdata/fsc2_sim_radseq_1_1.gen', skip=1)
-# fsc_head <- colnames(fread('inst/extdata/fsc2_sim_radseq_1_1.gen', nrow=0))
+# Make the 4 pop genotype dataset
+# fsc_genos <- fread('inst/extdata/fsc2_sim_radseq_1_1.gen')
 #
-# fsc_tab <- fsc_genos[, 1:(ncol(fsc_genos)-1)] %>%
+# fsc_tab <- fsc_genos %>%
 #   setnames(., new=fsc_head) %>%
 #   setnames(
 #     .,
@@ -42,7 +41,9 @@ library(genomalicious)
 #
 # fsc_tab[, length(unique(LOCUS)), by=CHROM]$V1 %>%  table
 #
-# keep.loci <- fsc_tab[LOCUS %in% filter_maf(fsc_tab, type='genos', maf=0.05)]$LOCUS %>%
+# keep.loci <- fsc_tab %>%
+#   .[LOCUS %in% filter_maf(., type='genos', maf=0.05)] %>%
+#   .[['LOCUS']] %>%
 #   unique() %>% .[1:200]
 #
 # fsc_tab[LOCUS %in% keep.loci, length(unique(LOCUS)), by=CHROM]$V1 %>%  table

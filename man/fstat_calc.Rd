@@ -66,14 +66,14 @@ Default is \code{'LOCUS'}.}
 Default is \code{'GT'}.}
 
 \item{countCol}{Character: The column name with the allele count information.
-Default is \code{'FREQ'}. Counts for each allele need to be separated with a
+Default is \code{'COUNTS'}. Counts for each allele need to be separated with a
 comma, starting with the Ref allele, followed by each subsequent Alt allele.
 E.g., '0,25', or '5,7,10', for a locus with 2 alleles and 3 alleles, respectively.
 You must code alleles within a locus at same positions in the character
 string across all populations.}
 
 \item{indsCol}{Character: The column name with the number of individuals
-contributing to the allele freuqency estimate. Default is \code{indsCol}.}
+contributing to the allele frequency estimate. Default is \code{indsCol}.}
 
 \item{permute}{Logical: Should permutations be performed to test the
 statistical significance of F-statistics? Default is \code{FALSE}.
@@ -92,7 +92,7 @@ A list is returned with three indexes.
 
 The first index is \code{$genome}, the genome-wide F-statistics. If global
 estimates were requested, \code{global==TRUE}, then this is just a single row;
-the estimates across all populations. If pairwise esimates were requested,
+the estimates across all populations. If pairwise estimates were requested,
 \code{pairwise==TRUE}, then there are \code{$POP1} and \code{$POP2}, which
 represent two populations tested.
 
@@ -121,7 +121,8 @@ will only contain data if \code{type=='genos'} and \code{permute==TRUE}.
 }
 \description{
 Function takes a genotypes or allele frequencies in a long-format data table
-and calculates Weir & Cockerham's F-statistics (Weir & Cockerham, 1984).
+and calculates Weir & Cockerham's F-statistics (Weir & Cockerham, 1984)
+for genotype data, and the classic Neis's Fst from allele frequency data (Nei, 1973).
 Permutations can be used to test statistical significance of F-statistics in
 genotype data sets. Can deal with multiallelic data. See Details for more information.
 }
@@ -131,7 +132,6 @@ Only FST can be calculated from allele frequency data.
 
 F-statistics from genotype data are calculated from the variance components
 'a', 'b', and 'c', which have been standardised for observed heterozygosity.
-FST from allele frequency data uses an estimate of the expected heterozygosity.
 
 Permutation tests for genotype data involve random shuffling of individuals
 among populations, recalculating F-statistics, and testing the hypothesis
@@ -204,4 +204,5 @@ permute=FALSE
 \references{
 Weir & Cockerham (1984) Evolution. DOI: 10.1111/j.1558-5646.1984.tb05657.x
 Weir et al. (2002) Annals of Human Genetics. DOI: 10.1146/annurev.genet.36
+Nei (1973) Proceedings of the National Academy of Sciences. DOI: 10.1073/pnas.70.12.3321
 }
