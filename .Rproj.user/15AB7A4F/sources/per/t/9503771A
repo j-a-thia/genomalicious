@@ -1,26 +1,26 @@
 {
-    "id": "EACD2355",
-    "path": "~/GitHub/genomalicious/R/replace_miss_genos.R",
-    "project_path": "R/replace_miss_genos.R",
+    "id": "9503771A",
+    "path": "~/GitHub/genomalicious/R/dna2codonDT.R",
+    "project_path": "R/dna2codonDT.R",
     "type": "r_source",
-    "hash": "3235441594",
+    "hash": "2898134170",
     "contents": "",
     "dirty": false,
-    "created": 1743150334279.0,
+    "created": 1788997088271.0,
     "source_on_save": false,
     "relative_order": 1,
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "154,30",
-        "scrollLine": "140"
+        "cursorPosition": "67,10",
+        "scrollLine": "0"
     },
     "folds": "",
-    "lastKnownWriteTime": 1743150381,
+    "lastKnownWriteTime": 1788997386,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1743150381127,
+    "last_content_update": 1788997386752,
     "read_only": false,
     "read_only_alternatives": []
 }

@@ -49,7 +49,7 @@ Otherwise, if \code{compressTab==FALSE}:
 \description{
 Convert a DNA coding sequence into a data.table of codons, nucleotide indexes,
 DNA triplet sequences, and amino acids. If provided with coding sequences split
-into exons, these will also be incorporated into the table. Note that 
+into exons, these will also be incorporated into the table. Note that
 this function is designed for a single gene on a single chromosome
 or contig. To apply this function to multiple genes, you will need to use a loop.
 }
@@ -70,8 +70,8 @@ reading frame.
 \examples{
 X <- 'ATGCGTACTTCA'
 
-dna2codonDT(X, compressTab=TRUE)
+dna2codonDT(X, type='cds', compressTab=TRUE)
 
-dna2codonDT(X, compressTab=FALSE)
+dna2codonDT(X, type='cds', compressTab=FALSE)
 
 }
