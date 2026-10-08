@@ -1,0 +1,27 @@
+{
+    "id": "B77E5DB5",
+    "path": "~/GitHub/genomalicious/R/window_discrete_ranges.R",
+    "project_path": "R/window_discrete_ranges.R",
+    "type": "r_source",
+    "hash": "1227776758",
+    "contents": "",
+    "dirty": false,
+    "created": 1791492238580.0,
+    "source_on_save": false,
+    "relative_order": 8,
+    "properties": {
+        "tempName": "Untitled1",
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "25,0",
+        "scrollLine": "13"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1791492326,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1791492326706,
+    "read_only": false,
+    "read_only_alternatives": []
+}
